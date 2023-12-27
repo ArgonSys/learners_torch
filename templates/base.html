@@ -1,0 +1,15 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ChatApp</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {% comment %} <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css"> {% endcomment %}
+    <link rel="stylesheet" href="{% static 'stylesheets/base.css' %}">
+    {% block extendhead %}{% endblock %}
+  </head>
+  <body>
+  {% block main %}{% endblock %}
+  </body>
+</html>
