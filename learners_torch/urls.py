@@ -17,9 +17,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from django.http import HttpResponse
-from django.shortcuts import render
-
 from plans.views import PlansIndexView
 
 
