@@ -10,7 +10,7 @@ class Plan(models.Model):
     is_public = models.BooleanField(_("is_public"), default=False)
     # 学習時間データを利用するため、ownerを削除してもplanは保持される
     owner = models.ForeignKey(User, verbose_name=_("owner"), on_delete=models.PROTECT)
-    permittee = models.ManyToManyField(
+    permittees = models.ManyToManyField(
         User,
         related_name="plans",
         related_query_name="plan",
