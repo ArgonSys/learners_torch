@@ -2,4 +2,7 @@
 
 
 {% block main %}
+{% for plan in plans %}
+  <a href="{% url 'plans:show' plan.pk %}" class="plan-name">{{ plan.name }}</a>
+{% endfor %}
 {% endblock %}

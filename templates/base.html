@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>ChatApp</title>
+    <title>Learners' Torch</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.css">
     <link rel="stylesheet" href="{% static 'stylesheets/base.css' %}">
@@ -11,14 +11,19 @@
   </head>
   <body>
     <header>
-      <h1 class="header__leading">Learners' Torch</h1>
+      <a href="{% url 'top' %}" class="header__leading">Learners' Torch</h1>
       {% if user.is_authenticated %}
         <div class="header__user">
           <img src="{% static 'images/dummy_icon.png' %}" class="header__user icon">
           <div class="header__user username">{{user.username}}</div>
         </div>
         <div class="header__activate">
-          タスクをアクティブにする
+          <a href="#" class="btn">タスクをアクティブにする</a>
+        </div>
+        <div class="header__plan-new">
+          <a href="{% url 'plans:new' %}" class="btn">
+            新しくプランを立てる
+          </a>
         </div>
         <form action="{% url 'users:logout' %}" method="post" class="header__logout">
           {% csrf_token %}
