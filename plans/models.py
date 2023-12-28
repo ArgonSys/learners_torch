@@ -14,7 +14,7 @@ class Plan(models.Model):
         User,
         related_name="plans",
         related_query_name="plan",
-        through="plans_permittees"
+        through="PlansPermittees"
     )
     date_created = models.DateTimeField(_("created datetime"), auto_now_add=True)
     date_updated = models.DateTimeField(_("updated datetime"), auto_now=True)
@@ -27,7 +27,8 @@ class Plan(models.Model):
 
 
 class PlansPermittees(models.Model):
-    plan = models.ForeignKey("Plan", on_delete=models.CASCADE)
+    plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     permittee = models.ForeignKey(User, on_delete=models.CASCADE)
+    date_assigned = models.DateTimeField(_("assigned"), auto_now_add=True)
     class Meta:
         db_table ="plans_permittees"
