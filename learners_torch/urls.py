@@ -18,9 +18,14 @@ from django.contrib import admin
 from django.urls import path, include
 
 from django.http import HttpResponse
+from django.shortcuts import render
+
+from plans.views import PlansIndexView
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", lambda request: HttpResponse(b"Hello"), name="top"),
+    path("", PlansIndexView.as_view(), name="top"),
     path("users/", include("users.urls")),
+    path("plans/", include("plans.urls")),
 ]
