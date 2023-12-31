@@ -25,4 +25,5 @@ urlpatterns = [
     path("", PlansIndexView.as_view(), name="top"),
     path("users/", include("users.urls")),
     path("plans/", include("plans.urls")),
+    path("stages/"), include("stages.urls"),
 ]

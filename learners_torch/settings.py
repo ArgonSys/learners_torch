@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     "users.apps.UsersConfig",
     "plans.apps.PlansConfig",
+    "stages.apps.PlansConfig",
 ]
 
 MIDDLEWARE = [
