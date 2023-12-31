@@ -11,34 +11,47 @@
   </head>
   <body>
     <header>
-      <a href="{% url 'top' %}" class="header__leading">Learners' Torch</h1>
+      <div class="header__leading">
+        <a href="{% url 'top' %}">Learners' Torch</a>
+      </div>
       {% if user.is_authenticated %}
-        <div class="header__user">
-          <img src="{% static 'images/dummy_icon.png' %}" class="header__user icon">
-          <div class="header__user username">{{user.username}}</div>
-        </div>
         <div class="header__activate">
           <a href="#" class="btn">タスクをアクティブにする</a>
         </div>
-        <div class="header__plan-new">
-          <a href="{% url 'plans:new' %}" class="btn">
-            新しくプランを立てる
-          </a>
+        <div class="header__right">
+          <div class="menu">
+            <div class="header__plan-new">
+              <a href="{% url 'plans:new' %}" class="btn">
+                新しいプラン
+              </a>
+            </div>
+            <form action="{% url 'users:logout' %}" method="post" class="header__logout">
+              {% csrf_token %}
+              <button type="submit" class="btn like-a">ログアウト</button>
+            </form>
+          </div>
+          <div class="header__user">
+            <img src="{% static 'images/dummy_icon.png' %}" class="icon">
+            <div class="username">{{user.username}}</div>
+          </div>
         </div>
-        <form action="{% url 'users:logout' %}" method="post" class="header__logout">
-          {% csrf_token %}
-          <button type="submit" class="btn like-a">ログアウト</button>
-        </form>
       {% else %}
-        <div class="header__signup">
-          <a href="{% url 'users:signup' %}" class="btn">新規登録</a>
-        </div>
-        <div class="header__login">
-          <a href="{% url 'users:login' %}" class="btn">ログイン</a>
+        <div class="header__right">
+          <div class="menu">
+            <div class="header__signup">
+              <a href="{% url 'users:signup' %}" class="btn">新規登録</a>
+            </div>
+            <div class="header__login">
+              <a href="{% url 'users:login' %}" class="btn">ログイン</a>
+            </div>
+          </div>
         </div>
       {% endif %}
     </header>
+    <main>
+    <div class="header-spacer"></div>
     {% block main %}{% endblock %}
+    </main>
     <footer>
     </footer>
   </body>
