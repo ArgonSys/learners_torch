@@ -89,5 +89,34 @@ div.plan__header {
   justify-content: space-between;
 }
 
-div.plan__menu {
+div.stages-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items : center;
+}
+
+
+div.stages {
+  width: 80%;
+  background-color: aqua;
+  display: flex;
+  align-items: center;
+  padding: 40px 0px 40px 40px;
+  overflow-x: scroll;
+}
+
+div.stage {
+  width: 300px;
+  height: 500px;
+  flex-shrink: 0;
+  background-color: bisque;
+  padding: 20px;
+  border-radius: 15px;
+  box-shadow: 10px 10px 10px gray;
+  margin-right: 40px;
+}
+
+div.stage__header {
+  display: flex;
+  justify-content: space-between;
 }
