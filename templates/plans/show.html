@@ -6,7 +6,11 @@
   {% include "plans/_plan.html"%}
 </div>
 <div class="stages">
+  <div class="stages__menu">
+    <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
+  </div>
   {% for stage in stages %}
     {% include "stages/_stage.html" %}
   {% endfor %}
+</div>
 {% endblock %}
