@@ -11,7 +11,7 @@ from .forms import PlanForm
 class PlansShowView(LoginRequiredMixin, View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        if request.user != plan.owner and request.user not in plan.permittees:
+        if request.user != plan.owner and request.user not in plan.permittees.all():
             return HttpResponseForbidden("このプランを閲覧することは禁止されています。")
         stages = plan.stage_set.all()
         context = {"plan": plan, "stages": stages}
@@ -45,8 +45,8 @@ class PlansCreateView(LoginRequiredMixin, View):
 class PlansUpdateView(LoginRequiredMixin, View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        if request.user != plan.owner and request.user not in plan.permittees:
-            return HttpResponseForbidden("このプランを閲覧することは禁止されています。")
+        if request.user != plan.owner and request.user not in plan.permittees.all():
+            return HttpResponseForbidden("このプランを編集することは禁止されています。")
 
         form = PlanForm(instance=plan)
         context = {"form": form}
@@ -54,8 +54,8 @@ class PlansUpdateView(LoginRequiredMixin, View):
 
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        if request.user != plan.owner and request.user not in plan.permittees:
-            return HttpResponseForbidden("このプランを閲覧することは禁止されています。")
+        if request.user != plan.owner and request.user not in plan.permittees.all():
+            return HttpResponseForbidden("このプランを更新することは禁止されています。")
 
         form = PlanForm(request.POST, instance=plan)
         if form.is_valid:
