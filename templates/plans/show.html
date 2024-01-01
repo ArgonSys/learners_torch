@@ -5,4 +5,8 @@
 <div class="plans">
   {% include "plans/_plan.html"%}
 </div>
+<div class="stages">
+  {% for stage in stages %}
+    {% include "stages/_stage.html" %}
+  {% endfor %}
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class SatgesConfig(AppConfig):
+class StagesConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "satges"
+    name = "stages"
