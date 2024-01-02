@@ -4,7 +4,6 @@ a {
 }
 
 .btn {
-  z-index: 1100;
 }
 
 .like-a {
@@ -166,12 +165,14 @@ header {
   z-index: 1001;
 }
 
-.draggable {
-  z-index: 1000;
-}
 
 .dragging {
   cursor: grabbing;
   position: absolute;
   z-index: 2000;
+}
+
+.droppable {
+  background-color: blueviolet;
+  z-index: 3000;
 }
