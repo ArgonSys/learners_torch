@@ -10,6 +10,7 @@
     <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
   </div>
   <div class="stages">
+    <div class="stage-drop droppable" order="0"></div>
     {% for stage in stages %}
       {% include "stages/_stage.html" %}
     {% endfor %}

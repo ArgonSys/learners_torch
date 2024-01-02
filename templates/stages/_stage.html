@@ -1,13 +1,17 @@
-<div class="stage draggable" stage-id="{{ stage.pk }}">
-  <div class="stage__header">
-    <div class="stage__name">{{ stage.name }}</div>
-    <div class="stage__menu">
-      <a href="{% url 'stages:edit' plan.pk stage.pk %}" class="btn">編集</a>
-      <form action="{% url 'stages:delete' plan.pk stage.pk %}" method="post" class="delete">
-        {% csrf_token %}
-        <button type="submit" class="delete-btn like-a">削除</a>
-      </form>
+<div class="stage-wrapper draggable"  stage-id="{{ stage.pk }}" order="{{ stage.order }}">
+  <div class="stage">
+    <div class="drag-handle"></div>
+    <div class="stage__header">
+      <div class="stage__name">{{ stage.name }}</div>
+      <div class="stage__menu">
+        <a href="{% url 'stages:edit' plan.pk stage.pk %}" class="btn">編集</a>
+        <form action="{% url 'stages:delete' plan.pk stage.pk %}" method="post" class="delete">
+          {% csrf_token %}
+          <button type="submit" class="delete-btn like-a">削除</a>
+        </form>
+      </div>
     </div>
+    <div class="stage__description">{{ stage.description }}</div>
   </div>
-  <div class="stage__description">{{ stage.description }}</div>
+  <div class="stage-drop droppable" order={{ stage.order }}></div>
 </div>

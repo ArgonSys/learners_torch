@@ -4,9 +4,9 @@ let relMouseY;
 
 function dragAndDrop(){
 
-  const draggables = document.querySelectorAll(".draggable")
+  const dragHandles = document.querySelectorAll(".drag-handle")
 
-  draggables.forEach((ele) => {
+  dragHandles.forEach((ele) => {
 
     ele.addEventListener("mousedown", mouseDown, false);
     ele.addEventListener("touchstart", mouseDown, false);
@@ -17,16 +17,17 @@ function dragAndDrop(){
 
 function mouseDown(event){
 
-  this.classList.add("dragging");
-
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
+  //  マウスとの位置関係を保持
   relMouseX = event.pageX - this.offsetLeft;
   relMouseY = event.pageY - this.offsetTop;
 
+  this.closest(".draggable").classList.add("dragging");
+
   document.body.addEventListener("mousemove", mouseMove, false);
-  document.body.addEventListener("touchmove", mouseMove, false);
+  document.body.addEventListener("touchmove", mouseMove, {passive: false});
 
 }
 
