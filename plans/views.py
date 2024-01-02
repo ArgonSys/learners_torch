@@ -13,7 +13,7 @@ class PlansShowView(LoginRequiredMixin, View):
         plan = get_object_or_404(Plan, pk=plan_pk)
         if request.user != plan.owner and request.user not in plan.permittees.all():
             return HttpResponseForbidden("このプランを閲覧することは禁止されています。")
-        stages = plan.stage_set.all()
+        stages = plan.stage_set.order_by("order")
         context = {"plan": plan, "stages": stages}
         return render(request, "plans/show.html", context)
 

@@ -16,16 +16,16 @@ class StageCreateView(View):
         return render(request, "stages/new.html", context)
 
     def post(self, request, plan_pk):
+        plan = get_object_or_404(Plan, pk=plan_pk)
         form = StageForm(request.POST)
         if form.is_valid:
             stage = form.save(commit=False)
-            stage.plan = get_object_or_404(Plan, pk=plan_pk)
-            stage.order = Stage.objects.count() + 1
+            stage.plan = plan
+            stage.order = plan.stage_set.count() + 1
             stage.save()
             return redirect("plans:show", plan_pk=plan_pk)
         context = {"form": form}
         return render(request, "stages/new.html", context)
-
 
 
 class StageUpdateView(View):
