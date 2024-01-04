@@ -6,6 +6,7 @@
 {% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
 <script> const swapURL = "{% url 'stages:swap' %}" </script>
 <script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
+<script src="{% static 'javascripts/horizontal_scroll.js' %}"></script>
 {% endblock %}
 
 
@@ -17,7 +18,7 @@
   <div class="stage-new">
     <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
   </div>
-  <div class="stages" id="stages">
+  <div class="stages horizontal-scroll" id="stages">
     <div class="stage-wrapper">
       <div class="stage-drop droppable" order="0"></div>
     </div>
