@@ -13,5 +13,5 @@
     </div>
     <div class="stage__description">{{ stage.description }}</div>
   </div>
-  <div class="stage-drop droppable" order={{ stage.order }}></div>
+  <div class="stage-drop droppable" stage-id="{{ stage.pk }}" order="{{ stage.order }}"></div>
 </div>

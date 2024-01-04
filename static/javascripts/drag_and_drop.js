@@ -64,9 +64,12 @@ function mouseMove(event){
 
 function dropDown(event){
 
-//  ドラッグ中の要素からdraggingクラスを取り除き、droppableの後に挿入し、元の要素を削除する
+  //  ドラッグ中の要素からdraggingクラスを取り除き、droppableの後に挿入し、元の要素を削除する
   const dragging = document.querySelector(".dragging");
   dragging.classList.remove("dragging");
+
+  //  eventlistenerの削除
+  mouseUp(event);
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
@@ -125,7 +128,6 @@ function dropDown(event){
       }
     }
   }
-  mouseUp(event);
 }
 
 function mouseUp(event){
