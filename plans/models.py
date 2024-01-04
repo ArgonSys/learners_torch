@@ -11,14 +11,10 @@ class Plan(models.Model):
     # 学習時間データを利用するため、ownerを削除してもplanは保持される
     owner = models.ForeignKey(User, verbose_name=_("owner"), on_delete=models.PROTECT)
     permittees = models.ManyToManyField(
-        User,
-        related_name="plans",
-        related_query_name="plan",
-        through="PlansPermittees"
+        User, related_name="plans", related_query_name="plan", through="PlansPermittees"
     )
     date_created = models.DateTimeField(_("created datetime"), auto_now_add=True)
     date_updated = models.DateTimeField(_("updated datetime"), auto_now=True)
-
 
     class Meta:
         db_table = "plans"
@@ -30,5 +26,6 @@ class PlansPermittees(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     permittee = models.ForeignKey(User, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField(_("assigned"), auto_now_add=True)
+
     class Meta:
-        db_table ="plans_permittees"
+        db_table = "plans_permittees"

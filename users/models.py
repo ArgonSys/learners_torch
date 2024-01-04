@@ -4,7 +4,7 @@ from django.apps import apps
 from django.contrib.auth.models import (
     AbstractBaseUser,
     PermissionsMixin,
-    UserManager as BaseUserManager
+    UserManager as BaseUserManager,
 )
 from django.contrib.auth.hashers import make_password
 
@@ -34,7 +34,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-
     username_validator = UnicodeUsernameValidator()
     username = models.CharField(
         _("username"),

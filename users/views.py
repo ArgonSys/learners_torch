@@ -1,6 +1,6 @@
-from django.contrib.auth.views import(
+from django.contrib.auth.views import (
     LoginView as BaseLoginView,
-    LogoutView as BaseLogoutView
+    LogoutView as BaseLogoutView,
 )
 from django.views.generic import CreateView
 from django.urls import reverse_lazy

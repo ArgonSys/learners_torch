@@ -6,4 +6,8 @@ from .models import Plan
 class PlanForm(forms.ModelForm):
     class Meta:
         model = Plan
-        fields = ("name", "description", "is_public",)
+        fields = (
+            "name",
+            "description",
+            "is_public",
+        )
