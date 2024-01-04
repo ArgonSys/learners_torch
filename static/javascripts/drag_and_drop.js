@@ -16,15 +16,19 @@ function dragAndDrop(){
 
 
 function mouseDown(event){
+  //  draggingオブジェクトの取得、初期位置からの
+  const dragging = this.closest(".draggable");
+  dragging.style.top = dragging.offsetTop + "px";
+  dragging.style.left = dragging.offsetLeft + "px";
+  dragging.classList.add("dragging");
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
-  //  マウスとの位置関係を保持
-  relMouseX = event.pageX - this.offsetLeft;
-  relMouseY = event.pageY - this.offsetTop;
 
-  this.closest(".draggable").classList.add("dragging");
+  //  マウスとの位置関係を保持
+  relMouseX = event.pageX - dragging.offsetLeft;
+  relMouseY = event.pageY - dragging.offsetTop;
 
   document.body.addEventListener("mousemove", mouseMove, false);
   document.body.addEventListener("touchmove", mouseMove, {passive: false});
@@ -68,9 +72,6 @@ function dropDown(event){
   const dragging = document.querySelector(".dragging");
   dragging.classList.remove("dragging");
 
-  //  eventlistenerの削除
-  mouseUp(event);
-
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
   let destinationOrder = Number(this.getAttribute("order"));
@@ -90,6 +91,10 @@ function dropDown(event){
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
   XHR.setRequestHeader("content-type", "application/json");
   XHR.send(data);
+
+  // top, left削除
+  dragging.removeAttribute("style");
+  dragging.classList.remove("dragging");
 
   // 見た目上の並べ替え
   this.closest(".stage-wrapper").insertAdjacentHTML("afterend", dragging.outerHTML);
@@ -128,6 +133,8 @@ function dropDown(event){
       }
     }
   }
+  //  eventlistenerの削除
+  mouseUp(event);
 }
 
 function mouseUp(event){
@@ -136,6 +143,7 @@ function mouseUp(event){
   const droppables = document.querySelectorAll(".droppable")
 
   if(dragging){
+    dragging.removeAttribute("style");
     dragging.classList.remove("dragging");
     dragging.removeEventListener("mouseup", mouseUp, false);
     dragging.removeEventListener("touchend", mouseUp, false);
