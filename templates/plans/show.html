@@ -1,4 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
+
+
+{% block extendhead %}
+{% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
+<script> const swapURL = "{% url 'stages:swap' %}" </script>
+<script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
+{% endblock %}
 
 
 {% block main %}
