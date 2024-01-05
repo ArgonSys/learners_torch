@@ -4,7 +4,7 @@ function horizontal_scroll() {
   scrollArea.addEventListener("wheel", (event) => {
     // 縦スクロールの抑制
     event.preventDefault();
-    scrollArea.scrollLeft += event.deltaY.sign() * PX_PER_SCROLL;
+    scrollArea.scrollLeft += Math.sign(event.deltaY) * PX_PER_SCROLL;
   });
 }
 
