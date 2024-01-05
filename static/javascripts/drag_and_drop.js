@@ -1,22 +1,23 @@
 let relMouseX;
 let relMouseY;
-
+let scrollLeftBeforeScroll = 0;
 
 function dragAndDrop(){
 
-  const dragHandles = document.querySelectorAll(".drag-handle")
+  const dragHandles = document.querySelectorAll(".drag-handle");
+  const stages = document.querySelector(".stages");
+
+  stages.addEventListener("scrollend", mouseScroll, false);
 
   dragHandles.forEach((ele) => {
-
     ele.addEventListener("mousedown", mouseDown, false);
     ele.addEventListener("touchstart", mouseDown, false);
-
   });
 }
 
 
 function mouseDown(event){
-  //  draggingオブジェクトの取得、初期位置からの
+  //  draggingオブジェクトの取得、初期位置からtop, left設定
   const dragging = this.closest(".draggable");
   dragging.style.top = dragging.offsetTop + "px";
   dragging.style.left = dragging.offsetLeft + "px";
@@ -27,19 +28,19 @@ function mouseDown(event){
 
 
   //  マウスとの位置関係を保持
-  relMouseX = event.pageX - dragging.offsetLeft;
+  relMouseX = event.pageX + stages.scrollLeft - dragging.offsetLeft;
   relMouseY = event.pageY - dragging.offsetTop;
 
   document.body.addEventListener("mousemove", mouseMove, false);
   document.body.addEventListener("touchmove", mouseMove, {passive: false});
-
 }
 
 
 function mouseMove(event){
 
   const dragging = document.querySelector(".dragging");
-  const droppables = document.querySelectorAll(".droppable")
+  const droppables = document.querySelectorAll(".droppable");
+  const stages = document.querySelector(".stages");
   if (!dragging) return null;
 
   // ドラッギングに伴うページスクロールを抑制
@@ -50,7 +51,7 @@ function mouseMove(event){
 
   // 要素とクリック・タッチ位置の関係を維持しながら動かす
   dragging.style.top = event.pageY - relMouseY + "px";
-  dragging.style.left = event.pageX - relMouseX + "px";
+  dragging.style.left = event.pageX - relMouseX + stages.scrollLeft + "px";
 
   droppables.forEach((ele) => {
     ele.addEventListener("mouseup", dropDown);
@@ -64,6 +65,32 @@ function mouseMove(event){
   document.body.addEventListener("mouseleave", mouseUp, false);
   document.body.addEventListener("touchleave", mouseUp, false);
 
+}
+
+function mouseScroll(event){
+
+  const dragging = document.querySelector(".dragging");
+  const droppables = document.querySelectorAll(".droppable");
+  const stages = document.querySelector(".stages");
+
+  // スクロール差分の計算とスクロール量の更新
+  deltaScrollLeft = stages.scrollLeft - scrollLeftBeforeScroll;
+  scrollLeftBeforeScroll = stages.scrollLeft;
+
+  if (!dragging) return null;
+
+  // スクロールの差分だけ動かす
+  left = parseInt(dragging.style.left);
+  dragging.style.left = left + deltaScrollLeft + "px";
+
+  droppables.forEach((ele) => {
+    ele.addEventListener("mouseup", dropDown);
+    ele.addEventListener("touchend", dropDown);
+  });
+
+  //マウスクリック・タッチがされなくなったとき発火
+  dragging.addEventListener("mouseup", mouseUp, false);
+  dragging.addEventListener("touchend", mouseUp, false);
 }
 
 function dropDown(event){
@@ -137,10 +164,12 @@ function dropDown(event){
   mouseUp(event);
 }
 
+
 function mouseUp(event){
 
   const dragging = document.querySelector(".dragging");
-  const droppables = document.querySelectorAll(".droppable")
+  const droppables = document.querySelectorAll(".droppable");
+  const stages = document.querySelector(".stages");
 
   if(dragging){
     dragging.removeAttribute("style");
@@ -151,6 +180,7 @@ function mouseUp(event){
 
   document.body.removeEventListener("mousemove", mouseMove, false);
   document.body.removeEventListener("touchmove", mouseMove, false);
+  stages.removeEventListener("scroll", mouseScroll, false);
 
   document.body.removeEventListener("mouseleave", mouseUp, false);
   document.body.removeEventListener("touchleave", mouseUp, false);
@@ -178,9 +208,11 @@ function getCookie(name) {
 window.addEventListener("load", dragAndDrop);
 
 //  DOM構造が変化したとき、再び EventListenerを埋め込む
-const observer = new MutationObserver(documentMutation);
-const config = { attributes: true, childList: true, subtree: true };
-observer.observe(document, config);
-function documentMutation(mutationsList, observer){
-  dragAndDrop()
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const observer = new MutationObserver(documentMutation);
+  const config = { attributes: true, childList: true, subtree: true };
+  observer.observe(document, config);
+  function documentMutation(mutationsList, observer){
+    dragAndDrop();
+  }
+});
