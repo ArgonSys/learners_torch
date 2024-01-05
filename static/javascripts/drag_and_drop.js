@@ -17,11 +17,20 @@ function dragAndDrop(){
 
 
 function mouseDown(event){
-  //  draggingオブジェクトの取得、初期位置からtop, left設定
-  const dragging = this.closest(".draggable");
-  dragging.style.top = dragging.offsetTop + "px";
-  dragging.style.left = dragging.offsetLeft + "px";
+  //  draggingオブジェクトのクローニング
+  const draggingFrom = this.closest(".draggable");
+  const dragging = draggingFrom.cloneNode(true);
+
+  //  draggingFromオブジェクトを透過処理
+  draggingFrom.classList.add("draggingFrom");
+  draggingFrom.setAttribute("style", "opacity: 0.5;");
+
+  //  初期位置からtop, left設定し挿入
+  dragging.style.top = draggingFrom.offsetTop + "px";
+  dragging.style.left = draggingFrom.offsetLeft + "px";
   dragging.classList.add("dragging");
+  draggingFrom.after(dragging);
+
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
@@ -105,7 +114,7 @@ function dropDown(event){
   // order が小さい要素に対する swap 時の補正
   if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
   // 補正後の2つの order が等しいなら return
-  if (destinationOrder == dragging.getAttribute("order")) return null;
+  if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
 
   const data = JSON.stringify({
     "source-id": dragging.getAttribute("stage-id"),
@@ -167,9 +176,12 @@ function dropDown(event){
 
 function mouseUp(event){
 
+  const draggingFrom = document.querySelector(".draggingFrom");
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
   const stages = document.querySelector(".stages");
+
+  draggingFrom.remove();
 
   if(dragging){
     dragging.removeAttribute("style");
