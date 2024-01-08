@@ -5,6 +5,8 @@
 {% block extendhead %}
 {% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
 <script> const stageSwapURL = "{% url 'stages:swap' %}" </script>
+<script src="{% static 'javascripts/utils.js' %}"></script>
+<script src="{% static 'javascripts/slide_out.js' %}"></script>
 <script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
 <script src="{% static 'javascripts/horizontal_scroll.js' %}"></script>
 {% endblock %}
@@ -21,14 +23,14 @@
     </div>
   </div>
   <div class="stages__inner horizontal-scroll">
-    <div class="pending-stage"></div>
+    <div class="pending-stage horizontal-fixed"></div>
     <div class="stage-wrapper">
       <div class="stage-drop droppable" order="0"></div>
     </div>
     {% for stage in stages %}
       {% include "stages/_stage.html" %}
     {% endfor %}
-    <div class="done-stage"></div>
+    <div class="done-stage horizontal-fixed"></div>
   </div>
 </div>
 {% endblock %}
