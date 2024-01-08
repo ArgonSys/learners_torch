@@ -77,7 +77,7 @@ WSGI_APPLICATION = "learners_torch.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
+DATABASES_AVAILABLE = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
         "NAME": "learners_torch_" + environ.get("APP_ENV", ""),
@@ -85,8 +85,20 @@ DATABASES = {
         "PASSWORD": environ.get("MYSQL_PASSWORD", ""),
         "HOST": environ.get("MYSQL_HOST", ""),
         "PORT": environ.get("MYSQL_PORT", ""),
-    }
+    },
+    "product": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "learners_torch_" + environ.get("APP_ENV", ""),
+        "USER": environ.get("POSTGRESQL_USER", ""),
+        "PASSWORD": environ.get("POSTGRESQL_PASSWORD", ""),
+        "HOST": environ.get("POSTGRESQL_HOST", ""),
+        "PORT": environ.get("POSTGRESQL_PORT", ""),
+    },
 }
+
+database = environ.get("DJANGO_DATABASE", "default")
+
+DATABASES = {"default": DATABASES_AVAILABLE[database]}
 
 
 AUTH_USER_MODEL = "users.User"
@@ -113,6 +125,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+SUPERUSER_NAME = environ.get("SUPERUSER_NAME")
+SUPERUSER_EMAIL = environ.get("SUPERUSER_EMAIL")
+SUPERUSER_PASSWORD = environ.get("SUPERUSER_PASSWORD")
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
