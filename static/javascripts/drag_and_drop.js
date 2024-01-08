@@ -21,6 +21,7 @@ function mouseDown(event){
   //  draggingオブジェクトのクローニング
   const draggingFrom = this.closest(".draggable");
   const dragging = draggingFrom.cloneNode(true);
+  const stages = document.querySelector(".stages__inner");
 
   //  draggingFromオブジェクトを透過処理
   draggingFrom.classList.add("draggingFrom");

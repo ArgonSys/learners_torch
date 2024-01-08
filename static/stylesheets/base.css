@@ -17,7 +17,8 @@ a {
 header,
 .header-spacer {
   width: 100%;
-  height: 100px;
+  height: 10vh;
+  min-height: 80px;
 }
 
 header {
@@ -41,6 +42,9 @@ header {
 }
 
 .header__activate {
+  width: 200px;
+  height: 50px;
+  background-color: azure;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -63,7 +67,7 @@ header {
 }
 
 .header__user {
-  padding: 20px 0;
+  padding: 10% 0;
 }
 
 .header__user .icon {
@@ -112,6 +116,39 @@ header {
   align-items: center;
   padding: 40px 0;
   overflow-x: scroll;
+  overflow-y: hidden;
+}
+
+.pending-stage,
+.done-stage {
+  height: 300px;
+  width: 300px;
+  background-color: blue;
+  position: absolute;
+  left: 50%;
+  flex-shrink: 0;
+  z-index: 1500;
+}
+
+.pending-stage {
+  transform: translate(-50%, -80%);
+  top: 0;
+}
+
+.done-stage {
+  transform: translate(-50%, 80%);
+  bottom: 0;
+}
+
+.pending-stage:hover,
+.done-stage:hover {
+  animation: slideout 0.3s ease-in-out forwards;
+}
+
+@keyframes slideout {
+  100% {
+    transform: translate(-50%, 0);
+  }
 }
 
 .stage-wrapper {

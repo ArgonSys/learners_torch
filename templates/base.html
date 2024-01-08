@@ -16,7 +16,7 @@
       </div>
       {% if user.is_authenticated %}
         <div class="header__activate">
-          <a href="#" class="btn">タスクをアクティブにする</a>
+          <a href="#" class="btn">最近のタスク</a>
         </div>
         <div class="header__right">
           <div class="menu">
@@ -31,8 +31,7 @@
             </form>
           </div>
           <div class="header__user">
-            <img src="{% static 'images/dummy_icon.png' %}" class="icon">
-            <div class="username">{{user.username}}</div>
+            <img src="{% static 'images/dummy_icon.png' %}" alt={{ user.username }} class="icon">
           </div>
         </div>
       {% else %}

@@ -21,12 +21,14 @@
     </div>
   </div>
   <div class="stages__inner horizontal-scroll">
+    <div class="pending-stage"></div>
     <div class="stage-wrapper">
       <div class="stage-drop droppable" order="0"></div>
     </div>
     {% for stage in stages %}
       {% include "stages/_stage.html" %}
     {% endfor %}
+    <div class="done-stage"></div>
   </div>
 </div>
 {% endblock %}
