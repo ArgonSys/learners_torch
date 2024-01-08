@@ -23,14 +23,18 @@
     </div>
   </div>
   <div class="stages__inner horizontal-scroll">
-    <div class="pending-stage horizontal-fixed"></div>
+    <div class="pending-stage horizontal-fixed slideout-wrapper slideout">
+      <div class="slideout-handle slideout">Pending</div>
+    </div>
     <div class="stage-wrapper">
       <div class="stage-drop droppable" order="0"></div>
     </div>
     {% for stage in stages %}
       {% include "stages/_stage.html" %}
     {% endfor %}
-    <div class="done-stage horizontal-fixed"></div>
+    <div class="done-stage horizontal-fixed slideout-wrapper slideout">
+      <div class="slideout-handle slideout">Done</div>
+    </div>
   </div>
 </div>
 {% endblock %}

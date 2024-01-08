@@ -1,3 +1,4 @@
+
 a {
   color: #000;
   text-decoration: none;
@@ -13,11 +14,15 @@ a {
   cursor: pointer;
 }
 
+body {
+  width: 100vw;
+  height: 100vh;
+}
 
 header,
 .header-spacer {
   width: 100%;
-  height: 10vh;
+  height: 10%;
   min-height: 80px;
 }
 
@@ -26,6 +31,19 @@ header {
   position: fixed;
   z-index: 10000;
   display: flex;
+}
+
+main {
+  width: 100%;
+  height: calc(90% - 50px);
+}
+
+footer {
+  width: 100%;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: end;
 }
 
 .header__leading {
@@ -100,30 +118,42 @@ header {
 }
 
 .stages {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items : center;
   padding: 0 10px 0;
 }
 
+.stages__header {
+  width: 100%;
+  height: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
 .stages__inner {
   width: 100%;
-  height: 600px;
+  height: 100%;
   background-color: aqua;
   position: relative;
   display: flex;
   align-items: center;
-  padding: 40px 0;
+  padding: 20px 0;
   overflow-x: scroll;
   overflow-y: hidden;
+}
+
+.stages__inner::-webkit-scrollbar {
+  display: none;
 }
 
 .pending-stage,
 .done-stage {
   height: 150px;
   width: 80vw;
-  background-color: blue;
+  background-color: bisque;
   position: absolute;
   left: 50%;
   flex-shrink: 0;
@@ -132,17 +162,49 @@ header {
 
 .pending-stage {
   border-radius: 0 0 20px 20px;
-  transform: translate(-50%, -80%);
+  transform: translate(-50%, -100%);
   top: 0;
+  position: absolute;
+  box-shadow: 10px 10px 10px gray;
 }
 
 .done-stage {
   border-radius: 20px 20px 0 0;
-  transform: translate(-50%, 80%);
+  transform: translate(-50%, 100%);
   bottom: 0;
+  box-shadow: 10px -10px 10px gray;
 }
 
-.slideout {
+.slideout-handle {
+  width: 20%;
+  min-width: 7em;
+  max-width: 150px;
+  height: 30px;
+  background-color: bisque;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pending-stage .slideout-handle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 10px 10px 10px gray;
+}
+
+.done-stage .slideout-handle {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -100%);
+  border-radius: 10px 10px 0 0;
+  box-shadow: 10px -10px 10px gray;
+}
+
+.sliding-out {
   animation: slideout 0.1s ease-in-out forwards;
 }
 
@@ -153,7 +215,7 @@ header {
 }
 
 .stage-wrapper {
-  height: 500px;
+  height: 100%;
   flex-shrink: 0;
   display: flex;
 }
@@ -163,7 +225,6 @@ header {
   background-color: bisque;
   padding: 20px;
   border-radius: 15px;
-  box-shadow: 10px 10px 10px gray;
 }
 
 .stage-drop {
