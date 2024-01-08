@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from os import environ
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -86,14 +87,7 @@ DATABASES_AVAILABLE = {
         "HOST": environ.get("MYSQL_HOST", ""),
         "PORT": environ.get("MYSQL_PORT", ""),
     },
-    "product": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "learners_torch_" + environ.get("APP_ENV", ""),
-        "USER": environ.get("POSTGRESQL_USER", ""),
-        "PASSWORD": environ.get("POSTGRESQL_PASSWORD", ""),
-        "HOST": environ.get("POSTGRESQL_HOST", ""),
-        "PORT": environ.get("POSTGRESQL_PORT", ""),
-    },
+    "product": {dj_database_url.config(default=environ.get("DATABASE_URL"))},
 }
 
 database = environ.get("DJANGO_DATABASE", "default")
