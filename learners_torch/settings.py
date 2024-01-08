@@ -87,7 +87,7 @@ DATABASES_AVAILABLE = {
         "HOST": environ.get("MYSQL_HOST", ""),
         "PORT": environ.get("MYSQL_PORT", ""),
     },
-    "product": {dj_database_url.config(default=environ.get("DATABASE_URL"))},
+    "product": dj_database_url.config(default=environ.get("DATABASE_URL")),
 }
 
 database = environ.get("DJANGO_DATABASE", "default")
