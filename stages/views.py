@@ -23,7 +23,7 @@ class StageCreateView(View):
         if form.is_valid:
             stage = form.save(commit=False)
             stage.plan = plan
-            stage.order = plan.stage_set.count() + 1
+            stage.order = plan.stage_set.filter(order__gt=0).count() + 1
             stage.save()
             return redirect("plans:show", plan_pk=plan_pk)
         context = {"form": form}
