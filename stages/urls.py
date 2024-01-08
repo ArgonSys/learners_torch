@@ -1,6 +1,11 @@
 from django.urls import path
 
-from .views import StageCreateView, StageUpdateView, StageDeleteView, StageSwapView
+from .views import (
+    StageCreateView,
+    StageUpdateView,
+    StageDeleteView,
+    StageSwapView,
+)
 
 
 app_name = "stages"

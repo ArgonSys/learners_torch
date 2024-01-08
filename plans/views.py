@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpRequest, HttpResponseForbidden
 
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Plan
 from .forms import PlanForm
+
+from stages.utils import initialize_stages
 
 
 class PlansShowView(LoginRequiredMixin, View):
@@ -37,7 +39,8 @@ class PlansCreateView(LoginRequiredMixin, View):
             plan = form.save(commit=False)
             plan.owner = request.user
             plan.save()
-            return redirect("top")
+            initialize_stages(plan.pk)
+            return redirect("plans:show", plan_pk=plan.pk)
         context = {"form": form}
         return render(request, "plans/new.html", context)
 
