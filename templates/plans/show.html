@@ -4,21 +4,23 @@
 
 {% block extendhead %}
 {% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
-<script> const swapURL = "{% url 'stages:swap' %}" </script>
+<script> const stageSwapURL = "{% url 'stages:swap' %}" </script>
 <script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
 <script src="{% static 'javascripts/horizontal_scroll.js' %}"></script>
 {% endblock %}
 
 
 {% block main %}
-<div class="plans">
-  {% include "plans/_plan.html"%}
-</div>
-<div class="stages-wrapper">
-  <div class="stage-new">
-    <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
+<div class="stages">
+  <div class="stages__header">
+    <div class="plan-name">
+      {{ plan.name }}
+    </div>
+    <div class="stage-new">
+      <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
+    </div>
   </div>
-  <div class="stages horizontal-scroll" id="stages">
+  <div class="stages__inner horizontal-scroll">
     <div class="stage-wrapper">
       <div class="stage-drop droppable" order="0"></div>
     </div>

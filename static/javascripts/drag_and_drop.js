@@ -5,7 +5,7 @@ let scrollLeftBeforeScroll = 0;
 function dragAndDrop(){
 
   const dragHandles = document.querySelectorAll(".drag-handle");
-  const stages = document.querySelector(".stages");
+  const stages = document.querySelector(".stages__inner");
 
   //  スクロール量の更新
   stages.addEventListener("scrollend", mouseScroll);
@@ -51,7 +51,7 @@ function mouseMove(event){
 
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
-  const stages = document.querySelector(".stages");
+  const stages = document.querySelector(".stages__inner");
   if (!dragging) return null;
 
   // ドラッギングに伴うページスクロールを抑制
@@ -81,7 +81,7 @@ function mouseScroll(event){
 
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
-  const stages = document.querySelector(".stages");
+  const stages = document.querySelector(".stages__inner");
 
   // スクロール差分の計算とスクロール量の更新
   deltaScrollLeft = stages.scrollLeft - scrollLeftBeforeScroll;
@@ -128,8 +128,8 @@ function dropDown(event){
     "destination-order": destinationOrder,
   });
 
-  //  const swapURL = "{% url 'stages:swap' %}"  (stages/show.html)
-  XHR.open("post", swapURL, true);
+  //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
+  XHR.open("post", stageSwapURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
   XHR.setRequestHeader("content-type", "application/json");

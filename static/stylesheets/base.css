@@ -95,7 +95,7 @@ header {
   justify-content: space-between;
 }
 
-.stages-wrapper {
+.stages {
   display: flex;
   flex-direction: column;
   align-items : center;
@@ -103,7 +103,7 @@ header {
 }
 
 
-.stages {
+.stages__inner {
   width: 100%;
   height: 600px;
   background-color: aqua;
