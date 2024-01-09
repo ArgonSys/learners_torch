@@ -3,15 +3,13 @@
 
 let relMouseX;
 let relMouseY;
-let scrollLeftBeforeScroll = 0;
+let scrollLeftAtMouseDown;
+
 
 function dragAndDrop(){
 
   const dragHandles = document.querySelectorAll(".drag-handle");
-  const stages = document.querySelector(".stages__inner");
-
-  //  スクロール量の更新
-  stages.addEventListener("scrollend", mouseScroll);
+  const scrollArea = document.querySelector(".stages__scroll-area");
 
   dragHandles.forEach((dragHandle) => {
     dragHandle.addEventListener("mousedown", mouseDown);
@@ -24,23 +22,25 @@ function mouseDown(event){
   //  draggingオブジェクトのクローニング
   const draggingFrom = this.closest(".draggable");
   const dragging = draggingFrom.cloneNode(true);
-  const stages = document.querySelector(".stages__inner");
+  const scrollArea = document.querySelector(".stages__scroll-area");
 
   //  draggingFromオブジェクトを透過処理
   draggingFrom.classList.add("draggingFrom");
 
-  //  初期位置からtop, left設定し挿入
+  // //  初期位置からtop, left設定し挿入
   dragging.style.top = draggingFrom.offsetTop + "px";
-  dragging.style.left = draggingFrom.offsetLeft + "px";
+  dragging.style.left = draggingFrom.offsetLeft - parseInt(scrollArea.scrollLeft) + "px";
   dragging.classList.add("dragging");
   draggingFrom.after(dragging);
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
+  // スクロール量の更新
+  scrollLeftAtMouseDown = parseInt(scrollArea.scrollLeft)
 
   //  マウスとの位置関係を保持
-  relMouseX = event.pageX + stages.scrollLeft - dragging.offsetLeft;
+  relMouseX = event.pageX + scrollArea.scrollLeft - dragging.offsetLeft;
   relMouseY = event.pageY - dragging.offsetTop;
 
   document.body.addEventListener("mouseup", mouseUp);
@@ -55,7 +55,7 @@ function mouseMove(event){
 
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
-  const stages = document.querySelector(".stages__inner");
+  const scrollArea = document.querySelector(".stages__scroll-area");
   if (!dragging) return null;
 
   // ドラッギングに伴うページスクロールを抑制
@@ -65,7 +65,7 @@ function mouseMove(event){
 
   // 要素とクリック・タッチ位置の関係を維持しながら動かす
   dragging.style.top = event.pageY - relMouseY + "px";
-  dragging.style.left = event.pageX - relMouseX + stages.scrollLeft + "px";
+  dragging.style.left = event.pageX - relMouseX + scrollLeftAtMouseDown + "px";
 
 
   droppables.forEach((droppable) => {
@@ -81,28 +81,6 @@ function mouseMove(event){
   document.body.addEventListener("touchleave", mouseUp);
 }
 
-function mouseScroll(event){
-
-  const dragging = document.querySelector(".dragging");
-  const droppables = document.querySelectorAll(".droppable");
-  const stages = document.querySelector(".stages__inner");
-
-  // スクロール差分の計算とスクロール量の更新
-  deltaScrollLeft = stages.scrollLeft - scrollLeftBeforeScroll;
-  scrollLeftBeforeScroll = stages.scrollLeft;
-
-  if (!dragging) return null;
-
-  // スクロールの差分だけ動かす
-  left = parseInt(dragging.style.left);
-  dragging.style.left = left + deltaScrollLeft + "px";
-
-  droppables.forEach((droppable) => {
-    rect = droppable.getBoundingClientRect();
-    setTouchendEventListener(droppable, event.clientX, event.clientY, rect);
-    droppable.addEventListener("mouseup", dropDown);
-  });
-}
 
 function dropDown(event){
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
