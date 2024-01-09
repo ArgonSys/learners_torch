@@ -8,54 +8,31 @@ function slideOut() {
 
 function slideCursorMove(event) {
   const stages = document.querySelector(".stages__inner");
-  const slideOutHandles = document.querySelectorAll(".slideout-handle");
+  const handles = document.querySelectorAll(".slideout-handle");
+  let inHandles = false;
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousemove"? event: event.changedTouches[0];
 
-  slideOutHandles.forEach((ele) => {
-    const handleRect = ele.getBoundingClientRect();
-    const wrapperRect = ele.closest(".slideout-wrapper").getBoundingClientRect();
-    if (isCursorInRect(event.clientX, event.clientY, handleRect) ||
-          isCursorInRect(event.clientX, event.clientY, wrapperRect)) {
-      setSlidingOutClass(ele);
-    } else {
-      removeSlidingOutClass(ele);
+  handles.forEach((ele) => {
+    const rect = ele.getBoundingClientRect();
+    if(isCursorInRect(event.clientX, event.clientY, rect)) {
+      inHandles = true;
+      ele.closest(".slideout").classList.add("sliding-out");
     }
   });
 
-  stages.addEventListener("mouseleave",(event) => {
-    slideOutHandles.forEach((ele) => {
-      removeSlidingOutClass(ele);
-    });
-  });
-  stages.addEventListener("touchleave",(event) => {
-    slideOutHandles.forEach((ele) => {
-      removeSlidingOutClass(ele);
-    });
-  });
+  if(!inHandles) removeSlidingOutClasses();
+
+  stages.addEventListener("mouseleave", removeSlidingOutClasses);
+  stages.addEventListener("touchleave", removeSlidingOutClasses);
 }
 
-
-// 自身もしくは先祖要素のslideout-wrapperクラスにsliding-outを付与
-function setSlidingOutClass(ele) {
-  if (ele.classList.contains(".slideout-wrapper")){
-    ele.classList.add("sliding-out");
-  }
-  if (ele.closest(".slideout-wrapper")) {
-    ele.closest(".slideout-wrapper").classList.add("sliding-out");
-  }
-}
-
-
-// 自身もしくは先祖要素のslideout-wrapperクラスからsliding-outを削除
-function removeSlidingOutClass(ele) {
-  if (ele.classList.contains(".slideout-wrapper")){
-    ele.classList.remove("sliding-out");
-  }
-  if (ele.closest(".slideout-wrapper")) {
-      ele.closest(".slideout-wrapper").classList.remove("sliding-out");
-  }
+function removeSlidingOutClasses() {
+  const slidingOuts = document.querySelectorAll(".sliding-out");
+  slidingOuts.forEach((ele) => {
+    ele.closest(".slideout").classList.remove("sliding-out");
+  });
 }
 
 

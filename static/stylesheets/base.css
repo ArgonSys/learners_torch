@@ -150,10 +150,6 @@ footer {
   overflow-x: scroll;
 }
 
-.stages__scroll-area::-webkit-scrollbar {
-  display: none;
-}
-
 .pending-stage,
 .done-stage {
   height: 150px;
@@ -161,8 +157,13 @@ footer {
   background-color: bisque;
   position: absolute;
   left: 50%;
-  flex-shrink: 0;
   z-index: 1500;
+}
+
+.stages__scroll-area::-webkit-scrollbar,
+.pending-stage::-webkit-scrollbar,
+.done-stage::-webkit-scrollbar {
+  display: none;
 }
 
 .pending-stage {
@@ -180,7 +181,7 @@ footer {
   box-shadow: 0 -5px 10px gray;
 }
 
-.slideout-handle {
+.slideout .slideout-handle {
   width: 20%;
   min-width: 7em;
   max-width: 150px;
@@ -263,6 +264,10 @@ footer {
   overflow-wrap: break-word;
 }
 
+.stage__tasks {
+
+}
+
 .stage__handle {
   width: 10%;
   padding-top: 10%;
@@ -270,6 +275,52 @@ footer {
   border-radius: 50%;
   margin: 0 auto 30px;
 }
+
+.tasks {
+
+}
+
+.task-wrapper {
+
+}
+
+.task {
+  aspect-ratio: 5 / 1;
+  width: 200px;
+  background-color: azure;
+  display: flex;
+}
+
+.task__handle {
+  aspect-ratio: 1 / 1;
+  height: 100%;
+  background-color: chartreuse;
+}
+
+.task__header {
+  height: 100%;
+  padding: 0 10px;
+}
+
+.task__name {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.task__menu {
+
+}
+
+.task__description {
+
+}
+
+.task-drop {
+
+}
+
+
 
 .drag-handle {
   cursor: grab;
@@ -295,4 +346,8 @@ footer {
 
 .dragging-over {
   background-color: blue;
+}
+
+.hidden {
+  display: none;
 }

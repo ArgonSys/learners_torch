@@ -26,13 +26,13 @@
     </div>
   </div>
   <div class="stages__inner">
-    <div class="pending-stage slideout-wrapper slideout">
+    <div class="pending-stage slideout slideout-handle">
       <div class="tasks">
         {% for task in pending.task_set.all %}
           {% include "tasks/_task.html" %}
         {% endfor %}
       </div>
-      <div class="slideout-handle slideout">Pending</div>
+      <div class="slideout-handle">Pending</div>
     </div>
     <div class="stages__scroll-area horizontal-scroll">
       <div class="stage-wrapper">
@@ -42,8 +42,8 @@
         {% include "stages/_stage.html" %}
       {% endfor %}
     </div>
-    <div class="done-stage slideout-wrapper slideout">
-      <div class="slideout-handle slideout">Done</div>
+    <div class="done-stage slideout slideout-handle">
+      <div class="slideout-handle">Done</div>
       {% for task in done.task_set.all %}
         {% include "tasks/_task.html" %}
       {% endfor %}

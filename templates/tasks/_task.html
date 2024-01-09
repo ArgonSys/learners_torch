@@ -1,9 +1,9 @@
 <div class="task-wrapper draggable"  task-id="{{ task.pk }}" order="{{ task.order }}">
   <div class="task">
-    <div class="drag-handle"></div>
+    <div class="task__handle drag-handle"></div>
     <div class="task__header">
       <div class="task__name">{{ task.name }}</div>
-      <div class="task__menu">
+      <div class="task__menu hidden">
         <a href="{% url 'tasks:edit' task.pk %}" class="btn">編集</a>
         <form action="{% url 'tasks:delete' task.pk %}" method="post" class="delete">
           {% csrf_token %}
