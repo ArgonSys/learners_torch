@@ -27,6 +27,7 @@ urlpatterns = [
     path("users/", include("users.urls")),
     path("plans/", include("plans.urls")),
     path("stages/", include("stages.urls")),
+    path("tasks/", include("tasks.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()
