@@ -21,9 +21,17 @@
     <div class="stage-new">
       <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
     </div>
+    <div class="task-new">
+      <a href="{% url 'tasks:new' plan.pk %}" class="btn">タスク作成</a>
+    </div>
   </div>
   <div class="stages__inner">
     <div class="pending-stage slideout-wrapper slideout">
+      <div class="tasks">
+        {% for task in pending.task_set.all %}
+          {% include "tasks/_task.html" %}
+        {% endfor %}
+      </div>
       <div class="slideout-handle slideout">Pending</div>
     </div>
     <div class="stages__scroll-area horizontal-scroll">
@@ -36,6 +44,9 @@
     </div>
     <div class="done-stage slideout-wrapper slideout">
       <div class="slideout-handle slideout">Done</div>
+      {% for task in done.task_set.all %}
+        {% include "tasks/_task.html" %}
+      {% endfor %}
     </div>
   </div>
 </div>

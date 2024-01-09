@@ -12,6 +12,11 @@
       </div>
     </div>
     <div class="stage__description">{{ stage.description }}</div>
+    <div class="stage__tasks">
+      {% for task in stage.task_set.all %}
+        {% include "tasks/_task.html" %}
+      {% endfor %}
+    </div>
   </div>
   <div class="stage-drop droppable" stage-id="{{ stage.pk }}" order="{{ stage.order }}"></div>
 </div>

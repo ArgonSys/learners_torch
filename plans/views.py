@@ -16,7 +16,9 @@ class PlansShowView(LoginRequiredMixin, View):
         if request.user != plan.owner and request.user not in plan.permittees.all():
             return HttpResponseForbidden("このプランを閲覧することは禁止されています。")
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
-        context = {"plan": plan, "stages": stages}
+        pending = plan.stage_set.get(order=-2)
+        done = plan.stage_set.get(order=-1)
+        context = {"plan": plan, "stages": stages, "pending": pending, "done": done}
         return render(request, "plans/show.html", context)
 
 
