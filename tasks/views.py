@@ -95,31 +95,39 @@ class TaskSwapView(View):
                     data[task.stage.pk] = dict()
                 data[task.stage.pk] |= {task.pk: task.order}
             print(data)
+
         else:
+            print(f"destination_order:{destination_order}")
+
             source_tasks = source_stage.task_set.filter(order__gte=source.order)
             destination_tasks = destination_stage.task_set.filter(
                 order__lte=destination_order
             )
+            print(f"source_tasks:{source_tasks}")
+            print(f"destination_tasks:{destination_tasks}")
 
             data = dict()
+            for task in destination_tasks:
+                task.order += 1
+                print(f"task:{task.pk} {task.stage.pk} {task.order}")
+                task.save()
+
+                if task.stage.pk not in data:
+                    data[task.stage.pk] = dict()
+                data[task.stage.pk] |= {task.pk: task.order}
+
             for task in source_tasks:
                 if task == source:
                     task.stage = destination_stage
                     task.order = destination_order
                 else:
                     task.order -= 1
+                print(f"task:{task.pk} {task.stage.pk} {task.order}")
                 task.save()
 
                 if task.stage.pk not in data:
                     data[task.stage.pk] = dict()
                 data[task.stage.pk] |= {task.pk: task.order}
-
-            for task in destination_tasks:
-                task.order += 1
-                task.save()
-
-                if task.stage.pk not in data:
-                    data[task.stage.pk] = dict()
-                data[task.stage.pk] |= {task.pk: task.order}
+            print(data)
 
         return JsonResponse(data)

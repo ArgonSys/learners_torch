@@ -108,12 +108,8 @@ function dropDown(event){
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
   let destinationOrder = Number(draggingOver.getAttribute("order"));
+  console.log(`default:${destinationOrder}`)
 
-
-  // order が小さい要素に対する swap 時の補正
-  if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
-  // 補正後の2つの order が等しいなら return
-  if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
 
   //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
   //  const taskSwapURL = "{% url 'tasks:swap' %}"  (stages/show.html)
@@ -121,6 +117,10 @@ function dropDown(event){
   let data;
 
   if (draggingGroup == "stage") {
+    // order が小さい要素に対する swap 時の補正
+    if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
+    if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
+
     data = JSON.stringify({
       "source-id": dragging.getAttribute("stage-id"),
       "destination-order": destinationOrder,
@@ -128,6 +128,15 @@ function dropDown(event){
     swapURL = stageSwapURL;
 
   } else if (draggingGroup == "task") {
+    // destinationOrderの補正
+    if (dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id")) {
+      if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
+      if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
+    } else {
+      destinationOrder += 1;
+    }
+    console.log(`calibrated:${destinationOrder}`)
+
     data = JSON.stringify({
       "stage-id": draggingOver.getAttribute("stage-id"),
       "source-id": dragging.getAttribute("task-id"),
@@ -136,7 +145,7 @@ function dropDown(event){
     swapURL = taskSwapURL;
 
   } else {
-    console.log("dragging");
+    console.log("Invalid draggingGroup");
     return null;
   }
 
