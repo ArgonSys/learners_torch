@@ -23,6 +23,17 @@ function slideCursorMove(event) {
       removeSlidingOutClass(ele);
     }
   });
+
+  stages.addEventListener("mouseleave",(event) => {
+    slideOutHandles.forEach((ele) => {
+      removeSlidingOutClass(ele);
+    });
+  });
+  stages.addEventListener("touchleave",(event) => {
+    slideOutHandles.forEach((ele) => {
+      removeSlidingOutClass(ele);
+    });
+  });
 }
 
 
