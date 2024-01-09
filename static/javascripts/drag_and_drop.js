@@ -25,7 +25,7 @@ function mouseDown(event){
   const scrollArea = document.querySelector(".stages__scroll-area");
 
   //  draggingFromオブジェクトを透過処理
-  draggingFrom.classList.add("draggingFrom");
+  draggingFrom.classList.add("dragging-from");
 
   // //  初期位置からtop, left設定し挿入
   dragging.style.top = draggingFrom.offsetTop + "px";
@@ -86,7 +86,7 @@ function dropDown(event){
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
 
   //  ドラッグ元の要素を消し、ドラッグ中の要素からdraggingクラスを取り除く
-  const draggingFrom = document.querySelector(".draggingFrom");
+  const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
 
@@ -166,7 +166,7 @@ function dropDown(event){
 function mouseUp(event){
 
   const droppables = document.querySelectorAll(".droppable");
-  const draggingFromAll = document.querySelectorAll(".draggingFrom");
+  const draggingFromAll = document.querySelectorAll(".dragging-from");
   const draggingAll = document.querySelectorAll(".dragging");
   const draggingOverAll = document.querySelectorAll(".dragging-over");
 
