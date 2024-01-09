@@ -29,6 +29,9 @@
   <div class="stages__inner">
     <div class="pending-stage slideout slideout-handle">
       <div class="tasks">
+        <div class="task-wrapper">
+          <div class="task-drop droppable" drop-group="task" stage-id="{{ pending.pk }}" order="0"></div>
+        </div>
         {% for task in pending.task_set.all|dictsort:"order" %}
           {% include "tasks/_task.html" %}
         {% endfor %}
@@ -45,9 +48,14 @@
     </div>
     <div class="done-stage slideout slideout-handle">
       <div class="slideout-handle">Done🎉</div>
-      {% for task in done.task_set.all|dictsort:"order" %}
-        {% include "tasks/_task.html" %}
-      {% endfor %}
+      <div class="tasks">
+        <div class="task-wrapper">
+          <div class="task-drop droppable" drop-group="task" stage-id="{{ done.pk }}" order="0"></div>
+        </div>
+        {% for task in done.task_set.all|dictsort:"order" %}
+          {% include "tasks/_task.html" %}
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

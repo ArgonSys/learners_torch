@@ -13,7 +13,10 @@
     </div>
     <div class="stage__description">{{ stage.description }}</div>
     <div class="stage__tasks">
-      {% for task in stage.task_set|dictsort:"order" %}
+      <div class="task-wrapper">
+        <div class="task-drop droppable" drop-group="task" stage-id="{{ stage.pk }}" order="0"></div>
+      </div>
+      {% for task in stage.task_set.all|dictsort:"order" %}
         {% include "tasks/_task.html" %}
       {% endfor %}
     </div>
