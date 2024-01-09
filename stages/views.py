@@ -87,7 +87,7 @@ class StageSwapView(View):
             # 移動元に移動先の order を代入する
             if stage == source:
                 stage.order = destination_order
-            # stages の order をスライドさせる
+            # その他の stage の order をスライドさせる
             else:
                 stage.order += slide
             stage.save()
