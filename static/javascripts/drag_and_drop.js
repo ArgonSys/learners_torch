@@ -145,14 +145,6 @@ function dropDown(event){
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
   XHR.setRequestHeader("content-type", "application/json");
   XHR.send(data);
-
-  // top, left削除
-  dragging.removeAttribute("style");
-  dragging.classList.remove("dragging");
-
-  draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", dragging.outerHTML);
-  dragging.remove();
-
   XHR.onload = () => {
     if (XHR.status != 200) {
       alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
@@ -164,11 +156,20 @@ function dropDown(event){
       applySwappedStageOrders(swappedOrders);
     }
     else if (draggingGroup == "task") {
+      dragging.removeAttribute("stage-id");
+      dragging.setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
+
       applySwappedTaskOrders(swappedOrders);
     }
-
-
   }
+
+  // top, left削除
+  dragging.removeAttribute("style");
+  dragging.classList.remove("dragging");
+
+  draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", dragging.outerHTML);
+  dragging.remove();
+
   //  eventlistenerの削除
   mouseUp();
 }
