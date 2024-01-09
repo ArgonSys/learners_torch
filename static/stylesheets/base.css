@@ -150,6 +150,10 @@ footer {
   overflow-x: scroll;
 }
 
+.stages__scroll-area::-webkit-scrollbar {
+  display: none;
+}
+
 .pending-stage,
 .done-stage {
   height: 150px;
@@ -158,12 +162,6 @@ footer {
   position: absolute;
   left: 50%;
   z-index: 1500;
-}
-
-.stages__scroll-area::-webkit-scrollbar,
-.pending-stage::-webkit-scrollbar,
-.done-stage::-webkit-scrollbar {
-  display: none;
 }
 
 .pending-stage {
@@ -276,9 +274,21 @@ footer {
   margin: 0 auto 30px;
 }
 
-.tasks {
-
+.pending-stage .tasks,
+.done-stage .tasks {
+  width: 100%;
+  height: 100%;
+  padding: 20px 20px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  overflow-y: scroll;
 }
+
+.pending-stage .tasks::-webkit-scrollbar,
+.done-stage .tasks::-webkit-scrollbar {
+  display: none;
+}
+
 
 .task-wrapper {
 
@@ -317,7 +327,8 @@ footer {
 }
 
 .task-drop {
-
+  width: 200px;
+  height: 5px;
 }
 
 
