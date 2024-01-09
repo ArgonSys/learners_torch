@@ -9,7 +9,6 @@ let scrollLeftAtMouseDown;
 function dragAndDrop(){
 
   const dragHandles = document.querySelectorAll(".drag-handle");
-  const scrollArea = document.querySelector(".stages__scroll-area");
 
   dragHandles.forEach((dragHandle) => {
     dragHandle.addEventListener("mousedown", mouseDown);
@@ -55,7 +54,7 @@ function mouseMove(event){
 
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
-  const scrollArea = document.querySelector(".stages__scroll-area");
+
   if (!dragging) return null;
 
   // ドラッギングに伴うページスクロールを抑制
@@ -69,10 +68,18 @@ function mouseMove(event){
 
 
   droppables.forEach((droppable) => {
+    if (dragging.getAttribute("drag-group") != droppable.getAttribute("drop-group")) return null;
     //  droppable要素の中にタッチドラッギングしてドロップしたら発火
     rect = droppable.getBoundingClientRect();
-    setTouchendEventListener(droppable, event.clientX, event.clientY, rect);
-    droppable.addEventListener("mouseup", dropDown);
+    if(isCursorInRect(event.clientX, event.clientY, rect)) {
+      droppable.classList.add("dragging-over");
+      document.addEventListener("touchend", dropDown);
+      droppable.addEventListener("mouseup", dropDown);
+    } else {
+      droppable.classList.remove("dragging-over");
+      document.body.removeEventListener("touchend", dropDown);
+      droppable.removeEventListener("mouseup", dropDown);
+    }
   });
 
 
@@ -84,16 +91,19 @@ function mouseMove(event){
 
 function dropDown(event){
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
-
   //  ドラッグ元の要素を消し、ドラッグ中の要素からdraggingクラスを取り除く
   const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
+  const draggingGroup = dragging.getAttribute("drag-group");
 
   draggingFrom.remove();
   dragging.classList.remove("dragging");
 
-  if(!draggingOver) return null;
+  if(!draggingOver) {
+    mouseUp();
+    return null;
+  }
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
@@ -105,13 +115,32 @@ function dropDown(event){
   // 補正後の2つの order が等しいなら return
   if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
 
-  const data = JSON.stringify({
-    "source-id": dragging.getAttribute("stage-id"),
-    "destination-order": destinationOrder,
-  });
-
   //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
-  XHR.open("post", stageSwapURL, true);
+  //  const taskSwapURL = "{% url 'tasks:swap' %}"  (stages/show.html)
+  let swapURL;
+  let data;
+
+  if (draggingGroup == "stage") {
+    data = JSON.stringify({
+      "source-id": dragging.getAttribute("stage-id"),
+      "destination-order": destinationOrder,
+    });
+    swapURL = stageSwapURL;
+
+  } else if (draggingGroup == "task") {
+    data = JSON.stringify({
+      "stage-id": draggingOver.getAttribute("stage-id"),
+      "source-id": dragging.getAttribute("task-id"),
+      "destination-order": destinationOrder,
+    });
+    swapURL = taskSwapURL;
+
+  } else {
+    console.log("dragging");
+    return null;
+  }
+
+  XHR.open("post", swapURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
   XHR.setRequestHeader("content-type", "application/json");
@@ -121,8 +150,7 @@ function dropDown(event){
   dragging.removeAttribute("style");
   dragging.classList.remove("dragging");
 
-  // droppableの後に挿入し、元の要素を削除する
-  draggingOver.closest(".stage-wrapper").insertAdjacentHTML("afterend", dragging.outerHTML);
+  draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", dragging.outerHTML);
   dragging.remove();
 
   XHR.onload = () => {
@@ -132,31 +160,14 @@ function dropDown(event){
     }
 
     const swappedOrders = XHR.response
-    const draggables = document.getElementsByClassName("stage-wrapper draggable");
-    const droppables = document.getElementsByClassName("stage-drop droppable");
-
-    // order 属性の修正
-    for (var pk in swappedOrders) {
-      // draggableクラス
-      for (var index=0; index < draggables.length; index++) {
-        const draggable = draggables[index];
-        if (draggable.getAttribute("stage-id") == pk) {
-          draggable.removeAttribute("order");
-          draggable.setAttribute("order", swappedOrders[pk]);
-          break;
-        }
-      }
-
-      // droppableクラス
-      for (var index=0; index < droppables.length; index++) {
-        const droppable = droppables[index];
-        if (droppable.getAttribute("stage-id") == pk) {
-          droppable.removeAttribute("order");
-          droppable.setAttribute("order", swappedOrders[pk]);
-          break;
-        }
-      }
+    if (draggingGroup == "stage") {
+      applySwappedStageOrders(swappedOrders);
     }
+    else if (draggingGroup == "task") {
+      applySwappedTaskOrders(swappedOrders);
+    }
+
+
   }
   //  eventlistenerの削除
   mouseUp();
@@ -212,7 +223,69 @@ function setTouchendEventListener(ele, cursorX, cursorY, rect){
   } else {
     ele.classList.remove("dragging-over");
     document.body.addEventListener("touchend", mouseUp);
-    document.body.addEventListener("touchend", dropDown);
+    document.body.removeEventListener("touchend", dropDown);
+  }
+}
+
+function applySwappedStageOrders(swappedOrders) {
+  const draggables = document.getElementsByClassName("stage-wrapper draggable");
+  const droppables = document.getElementsByClassName("stage-drop droppable");
+
+  // order 属性の修正
+  for (var pk in swappedOrders) {
+    // draggableクラス
+    for (var index=0; index < draggables.length; index++) {
+      const draggable = draggables[index];
+      if (draggable.getAttribute("stage-id") == pk) {
+        draggable.removeAttribute("order");
+        draggable.setAttribute("order", swappedOrders[pk]);
+        break;
+      }
+    }
+
+    // droppableクラス
+    for (var index=0; index < droppables.length; index++) {
+      const droppable = droppables[index];
+      if (droppable.getAttribute("stage-id") == pk) {
+        droppable.removeAttribute("order");
+        droppable.setAttribute("order", swappedOrders[pk]);
+        break;
+      }
+    }
+  }
+}
+
+
+function applySwappedTaskOrders(swappedOrders) {
+  const draggables = document.getElementsByClassName("task-wrapper draggable");
+  const droppables = document.getElementsByClassName("task-drop droppable");
+
+  console.log(swappedOrders);
+  // order 属性の修正
+  for (var stagePk in swappedOrders) {
+    for (var taskPk in swappedOrders[stagePk]) {
+      // draggableクラス
+      for (var index=0; index < draggables.length; index++) {
+        const draggable = draggables[index];
+        if (draggable.getAttribute("stage-id") == stagePk &&
+              draggable.getAttribute("task-id") == taskPk) {
+          draggable.removeAttribute("order");
+          draggable.setAttribute("order", swappedOrders[stagePk][taskPk]);
+          break;
+        }
+      }
+
+      // droppableクラス
+      for (var index=0; index < droppables.length; index++) {
+        const droppable = droppables[index];
+        if (droppable.getAttribute("stage-id") == stagePk &&
+              droppable.getAttribute("task-id") == taskPk) {
+          droppable.removeAttribute("order");
+          droppable.setAttribute("order", swappedOrders[stagePk][taskPk]);
+          break;
+        }
+      }
+    }
   }
 }
 

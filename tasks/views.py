@@ -60,33 +60,66 @@ class TaskDeleteView(View):
         return redirect("plans:show", plan_pk=plan.pk)
 
 
-# class TaskSwapView(View):
-#     @transaction.atomic
-#     def post(self, request):
-#         data = json.loads(request.body)
-#         source = get_object_or_404(Task, pk=data["source-id"])
-#         plan = source.plan
-#         destination_order = int(data["destination-order"])
+class TaskSwapView(View):
+    @transaction.atomic
+    def post(self, request):
+        data = json.loads(request.body)
+        destination_stage = get_object_or_404(Stage, pk=data["stage-id"])
+        source = get_object_or_404(Task, pk=data["source-id"])
+        source_stage = source.stage
+        destination_order = int(data["destination-order"])
 
-#         # 移動先が移動元より小さい order を持つとき、負の方向にスライド
-#         if source.order < destination_order:
-#             slide = -1
-#             tasks = plan.task_set.filter(order__range=(source.order, destination_order))
+        if destination_stage == source_stage:
+            # 移動先が移動元より小さい order を持つとき、負の方向にスライド
+            if source.order < destination_order:
+                slide = -1
+                tasks = source_stage.task_set.filter(
+                    order__range=(source.order, destination_order)
+                )
 
-#         # 移動先が移動元より大きい order を持つとき、正の方向にスライド
-#         elif source.order > destination_order:
-#             slide = 1
-#             tasks = plan.task_set.filter(order__range=(destination_order, source.order))
+            # 移動先が移動元より大きい order を持つとき、正の方向にスライド
+            elif source.order > destination_order:
+                slide = 1
+                tasks = source_stage.task_set.filter(
+                    order__range=(destination_order, source.order)
+                )
+            data = dict()
+            for task in tasks:
+                if task == source:
+                    task.order = destination_order
+                else:
+                    task.order += slide
+                task.save()
+                print(task, task.order)
+                if task.stage.pk not in data:
+                    data[task.stage.pk] = dict()
+                data[task.stage.pk] |= {task.pk: task.order}
+            print(data)
+        else:
+            source_tasks = source_stage.task_set.filter(order__gte=source.order)
+            destination_tasks = destination_stage.task_set.filter(
+                order__lte=destination_order
+            )
 
-#         data = dict()
-#         for task in tasks:
-#             # 移動元に移動先の order を代入する
-#             if task == source:
-#                 task.order = destination_order
-#             # その他の task の order をスライドさせる
-#             else:
-#                 task.order += slide
-#             task.save()
-#             data[task.pk] = task.order
+            data = dict()
+            for task in source_tasks:
+                if task == source:
+                    task.stage = destination_stage
+                    task.order = destination_order
+                else:
+                    task.order -= 1
+                task.save()
 
-#         return JsonResponse(data)
+                if task.stage.pk not in data:
+                    data[task.stage.pk] = dict()
+                data[task.stage.pk] |= {task.pk: task.order}
+
+            for task in destination_tasks:
+                task.order += 1
+                task.save()
+
+                if task.stage.pk not in data:
+                    data[task.stage.pk] = dict()
+                data[task.stage.pk] |= {task.pk: task.order}
+
+        return JsonResponse(data)

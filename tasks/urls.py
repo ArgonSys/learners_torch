@@ -4,7 +4,7 @@ from .views import (
     TaskCreateView,
     TaskUpdateView,
     TaskDeleteView,
-    # TaskSwapView,
+    TaskSwapView,
 )
 
 
@@ -14,5 +14,5 @@ urlpatterns = [
     path("<int:plan_pk>/new", TaskCreateView.as_view(), name="new"),
     path("<int:task_pk>/edit", TaskUpdateView.as_view(), name="edit"),
     path("<int:task_pk>/delete", TaskDeleteView.as_view(), name="delete"),
-    # path("swap", TaskSwapView.as_view(), name="swap"),
+    path("swap", TaskSwapView.as_view(), name="swap"),
 ]
