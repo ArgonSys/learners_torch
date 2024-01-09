@@ -22,17 +22,19 @@
       <a href="{% url 'stages:new' plan.pk %}" class="btn">ステージ作成</a>
     </div>
   </div>
-  <div class="stages__inner horizontal-scroll">
-    <div class="pending-stage horizontal-fixed slideout-wrapper slideout">
+  <div class="stages__inner">
+    <div class="pending-stage slideout-wrapper slideout">
       <div class="slideout-handle slideout">Pending</div>
     </div>
-    <div class="stage-wrapper">
-      <div class="stage-drop droppable" order="0"></div>
+    <div class="stages__scroll-area horizontal-scroll">
+      <div class="stage-wrapper">
+        <div class="stage-drop droppable" order="0"></div>
+      </div>
+      {% for stage in stages %}
+        {% include "stages/_stage.html" %}
+      {% endfor %}
     </div>
-    {% for stage in stages %}
-      {% include "stages/_stage.html" %}
-    {% endfor %}
-    <div class="done-stage horizontal-fixed slideout-wrapper slideout">
+    <div class="done-stage slideout-wrapper slideout">
       <div class="slideout-handle slideout">Done</div>
     </div>
   </div>
