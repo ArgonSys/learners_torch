@@ -1,4 +1,4 @@
-<div class="task-wrapper draggable"  task-id="{{ task.pk }}" order="{{ task.order }}">
+<div class="task-wrapper draggable" drag-group="task" stage-id="{{ task.stage.pk }}" task-id="{{ task.pk }}" order="{{ task.order }}">
   <div class="task">
     <div class="task__handle drag-handle"></div>
     <div class="task__header">
@@ -13,5 +13,5 @@
     </div>
     <div class="task__description">{{ task.description }}</div>
   </div>
-  <div class="task-drop droppable" task-id="{{ task.pk }}" order="{{ task.order }}"></div>
+  <div class="task-drop droppable" drop-group="task" stage-id="{{ task.stage.pk }}" task-id="{{ task.pk }}" order="{{ task.order }}"></div>
 </div>

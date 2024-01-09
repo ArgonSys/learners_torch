@@ -1,4 +1,4 @@
-<div class="stage-wrapper draggable"  stage-id="{{ stage.pk }}" order="{{ stage.order }}">
+<div class="stage-wrapper draggable" drag-group="stage" stage-id="{{ stage.pk }}" order="{{ stage.order }}">
   <div class="stage">
     <div class="stage__handle drag-handle"></div>
     <div class="stage__header">
@@ -13,10 +13,10 @@
     </div>
     <div class="stage__description">{{ stage.description }}</div>
     <div class="stage__tasks">
-      {% for task in stage.task_set.all %}
+      {% for task in stage.task_set|dictsort:"order" %}
         {% include "tasks/_task.html" %}
       {% endfor %}
     </div>
   </div>
-  <div class="stage-drop droppable" stage-id="{{ stage.pk }}" order="{{ stage.order }}"></div>
+  <div class="stage-drop droppable" drop-group="stage" stage-id="{{ stage.pk }}" order="{{ stage.order }}"></div>
 </div>

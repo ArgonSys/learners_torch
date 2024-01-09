@@ -4,7 +4,8 @@
 
 {% block extendhead %}
 {% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
-<script> const stageSwapURL = "{% url 'stages:swap' %}" </script>
+<script> const stageSwapURL = "{% url 'stages:swap' %}"; </script>
+<script> const taskSwapURL = "{% url 'tasks:swap' %}"; </script>
 <script src="{% static 'javascripts/utils.js' %}"></script>
 <script src="{% static 'javascripts/slide_out.js' %}"></script>
 <script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
@@ -28,7 +29,7 @@
   <div class="stages__inner">
     <div class="pending-stage slideout slideout-handle">
       <div class="tasks">
-        {% for task in pending.task_set.all %}
+        {% for task in pending.task_set.all|dictsort:"order" %}
           {% include "tasks/_task.html" %}
         {% endfor %}
       </div>
@@ -36,7 +37,7 @@
     </div>
     <div class="stages__scroll-area horizontal-scroll">
       <div class="stage-wrapper">
-        <div class="stage-drop droppable" order="0"></div>
+        <div class="stage-drop droppable" drop-group="stage" order="0"></div>
       </div>
       {% for stage in stages %}
         {% include "stages/_stage.html" %}
@@ -44,7 +45,7 @@
     </div>
     <div class="done-stage slideout slideout-handle">
       <div class="slideout-handle">Done🎉</div>
-      {% for task in done.task_set.all %}
+      {% for task in done.task_set.all|dictsort:"order" %}
         {% include "tasks/_task.html" %}
       {% endfor %}
     </div>
