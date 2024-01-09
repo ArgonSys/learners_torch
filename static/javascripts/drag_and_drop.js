@@ -32,6 +32,7 @@ function mouseDown(event){
   dragging.classList.add("dragging");
   draggingFrom.after(dragging);
 
+
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
@@ -66,21 +67,30 @@ function mouseMove(event){
   dragging.style.top = event.pageY - relMouseY + "px";
   dragging.style.left = event.pageX - relMouseX + scrollLeftAtMouseDown + "px";
 
-
+  let inDroppable = false;
   droppables.forEach((droppable) => {
     if (dragging.getAttribute("drag-group") != droppable.getAttribute("drop-group")) return null;
     //  droppable要素の中にタッチドラッギングしてドロップしたら発火
     rect = droppable.getBoundingClientRect();
     if(isCursorInRect(event.clientX, event.clientY, rect)) {
+      inDroppable = true;
       droppable.classList.add("dragging-over");
-      document.addEventListener("touchend", dropDown);
-      droppable.addEventListener("mouseup", dropDown);
-    } else {
-      droppable.classList.remove("dragging-over");
-      document.body.removeEventListener("touchend", dropDown);
-      droppable.removeEventListener("mouseup", dropDown);
+      return;
     }
   });
+  if (inDroppable) {
+    document.body.removeEventListener("mouseup", mouseUp);
+    document.body.removeEventListener("touchend", mouseUp);
+    document.body.addEventListener("mouseup", dropDown);
+    document.body.addEventListener("touchend", dropDown);
+  } else {
+    const draggingOver = document.querySelector(".dragging-over");
+    if(draggingOver) draggingOver.classList.remove("dragging-over");
+    document.body.addEventListener("mouseup", mouseUp);
+    document.body.addEventListener("touchend", mouseUp);
+    document.body.removeEventListener("mouseup", dropDown);
+    document.body.removeEventListener("touchend", dropDown);
+  }
 
 
   //  カーソルが body から外れたとき発火
@@ -89,7 +99,9 @@ function mouseMove(event){
 }
 
 
+
 function dropDown(event){
+  console.log("dropdown");
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
   //  ドラッグ元の要素を消し、ドラッグ中の要素からdraggingクラスを取り除く
   const draggingFrom = document.querySelector(".dragging-from");
@@ -185,7 +197,7 @@ function dropDown(event){
 
 
 function mouseUp(event){
-
+console.log("mouseup");
   const droppables = document.querySelectorAll(".droppable");
   const draggingFromAll = document.querySelectorAll(".dragging-from");
   const draggingAll = document.querySelectorAll(".dragging");
@@ -210,32 +222,15 @@ function mouseUp(event){
     });
   }
 
-  document.body.removeEventListener("mousemove", mouseMove);
-  document.body.removeEventListener("touchmove", mouseMove);
-
   document.body.removeEventListener("mouseup", mouseUp);
   document.body.removeEventListener("touchend", mouseUp);
   document.body.removeEventListener("mouseleave", mouseUp);
   document.body.removeEventListener("touchleave", mouseUp);
-
+  document.body.removeEventListener("mouseup", dropDown);
   document.body.removeEventListener("touchend", dropDown);
-  droppables.forEach((droppable) => {
-    droppable.removeEventListener("mouseup", dropDown);
-  });
+
 }
 
-
-function setTouchendEventListener(ele, cursorX, cursorY, rect){
-  if ( isCursorInRect(cursorX, cursorY, rect) ){
-    ele.classList.add("dragging-over");
-    document.body.removeEventListener("touchend", mouseUp);
-    document.body.addEventListener("touchend", dropDown);
-  } else {
-    ele.classList.remove("dragging-over");
-    document.body.addEventListener("touchend", mouseUp);
-    document.body.removeEventListener("touchend", dropDown);
-  }
-}
 
 function applySwappedStageOrders(swappedOrders) {
   const draggables = document.getElementsByClassName("stage-wrapper draggable");
