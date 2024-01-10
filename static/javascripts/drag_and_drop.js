@@ -1,6 +1,8 @@
 // isCursorInRect, getCookie from "./utils";
 
 
+let draggingX;
+let draggingY;
 let relMouseX;
 let relMouseY;
 let scrollLeftAtMouseDown;
@@ -23,17 +25,19 @@ function mouseDown(event){
   const dragAnchor = document.querySelector(".drag-anchor");
   const scrollArea = dragAnchor.parentNode.querySelector(".scroll-area");
 
+  [draggingX, draggingY] = setElementXYFromBase(draggingFrom, dragAnchor.parentNode);
+
   //  draggingオブジェクトのクローニング
   draggingFrom.classList.add("dragging-from");
-  dragging.style.top = draggingFrom.offsetTop + "px";
-  dragging.style.left = draggingFrom.offsetLeft - parseInt(scrollArea.scrollLeft) + "px";
+  dragging.style.top = draggingY + "px";
+  dragging.style.left = draggingX + "px";
   dragging.classList.add("dragging");
   dragAnchor.after(dragging);
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
-  scrollLeftAtMouseDown = parseInt(scrollArea.scrollLeft)
+  scrollLeftAtMouseDown = parseInt(scrollArea.scrollLeft);
 
   //  マウスとの位置関係を保持
   relMouseX = event.pageX + scrollArea.scrollLeft - dragging.offsetLeft;
@@ -146,6 +150,14 @@ function mouseUp(event){
 }
 
 
+function setElementXYFromBase(ele, baseEle) {
+  if(!baseEle.contains(ele)) return console.log("baseEle doesn't contain childEle");
+  let sumX = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
+  let sumY = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
+  return [sumX, sumY];
+}
+
+
 function sendXHRAboutStageSwap() {
   const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
@@ -217,7 +229,6 @@ function applySwappedStageOrders(swappedOrders) {
     }
   }
 }
-
 
 
 function sendXHRAboutTaskSwap() {
