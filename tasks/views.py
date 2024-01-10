@@ -66,21 +66,20 @@ class TaskSwapView(View):
         data = json.loads(request.body)
         destination_stage = get_object_or_404(Stage, pk=data["stage-id"])
         source = get_object_or_404(Task, pk=data["source-id"])
-        source_stage = source.stage
         destination_order = int(data["destination-order"])
 
-        if destination_stage == source_stage:
+        if destination_stage == source.stage:
             # 移動先が移動元より小さい order を持つとき、負の方向にスライド
             if source.order < destination_order:
                 slide = -1
-                tasks = source_stage.task_set.filter(
+                tasks = source.stage.task_set.filter(
                     order__range=(source.order, destination_order)
                 )
 
             # 移動先が移動元より大きい order を持つとき、正の方向にスライド
             elif source.order > destination_order:
                 slide = 1
-                tasks = source_stage.task_set.filter(
+                tasks = source.stage.task_set.filter(
                     order__range=(destination_order, source.order)
                 )
             data = dict()
@@ -98,10 +97,11 @@ class TaskSwapView(View):
 
         else:
             print(f"destination_order:{destination_order}")
-
-            source_tasks = source_stage.task_set.filter(order__gte=source.order)
+            # source.stage の source.order より大きい order を -1
+            # destination_stage の destination_order より大きい order を +1
+            source_tasks = source.stage.task_set.filter(order__gte=source.order)
             destination_tasks = destination_stage.task_set.filter(
-                order__lte=destination_order
+                order__gte=destination_order
             )
             print(f"source_tasks:{source_tasks}")
             print(f"destination_tasks:{destination_tasks}")
