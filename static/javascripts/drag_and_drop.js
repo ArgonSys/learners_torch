@@ -18,25 +18,21 @@ function dragAndDrop(){
 
 
 function mouseDown(event){
-  //  draggingオブジェクトのクローニング
   const draggingFrom = this.closest(".draggable");
   const dragging = draggingFrom.cloneNode(true);
-  const scrollArea = document.querySelector(".stages__scroll-area");
+  const dragAnchor = document.querySelector(".drag-anchor");
+  const scrollArea = dragAnchor.parentNode.querySelector(".scroll-area");
 
-  //  draggingFromオブジェクトを透過処理
+  //  draggingオブジェクトのクローニング
   draggingFrom.classList.add("dragging-from");
-
-  // //  初期位置からtop, left設定し挿入
   dragging.style.top = draggingFrom.offsetTop + "px";
   dragging.style.left = draggingFrom.offsetLeft - parseInt(scrollArea.scrollLeft) + "px";
   dragging.classList.add("dragging");
-  draggingFrom.after(dragging);
-
+  dragAnchor.after(dragging);
 
   // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousedown"? event: event.changedTouches[0];
 
-  // スクロール量の更新
   scrollLeftAtMouseDown = parseInt(scrollArea.scrollLeft)
 
   //  マウスとの位置関係を保持
@@ -45,7 +41,6 @@ function mouseDown(event){
 
   document.body.addEventListener("mouseup", mouseUp);
   document.body.addEventListener("touchend", mouseUp);
-
   document.body.addEventListener("mousemove", mouseMove);
   document.body.addEventListener("touchmove", mouseMove, {passive: false});
 }
@@ -60,24 +55,25 @@ function mouseMove(event){
 
   // ドラッギングに伴うページスクロールを抑制
   event.preventDefault();
-  // タッチイベントとマウスイベントの差異を吸収
   event = event.type == "mousemove"? event: event.changedTouches[0];
 
   // 要素とクリック・タッチ位置の関係を維持しながら動かす
   dragging.style.top = event.pageY - relMouseY + "px";
   dragging.style.left = event.pageX - relMouseX + scrollLeftAtMouseDown + "px";
 
+  //  droppable 要素上にカーソルがあるときに dropDown イベントハンドラへのイベントリスナを追加
   let inDroppable = false;
   droppables.forEach((droppable) => {
     if (dragging.getAttribute("drag-group") != droppable.getAttribute("drop-group")) return null;
-    //  droppable要素の中にタッチドラッギングしてドロップしたら発火
     rect = droppable.getBoundingClientRect();
+
     if(isCursorInRect(event.clientX, event.clientY, rect)) {
       inDroppable = true;
       droppable.classList.add("dragging-over");
       return;
     }
   });
+
   if (inDroppable) {
     document.body.removeEventListener("mouseup", mouseUp);
     document.body.removeEventListener("touchend", mouseUp);
@@ -91,7 +87,6 @@ function mouseMove(event){
     document.body.removeEventListener("mouseup", dropDown);
     document.body.removeEventListener("touchend", dropDown);
   }
-
 
   //  カーソルが body から外れたとき発火
   document.body.addEventListener("mouseleave", mouseUp);
@@ -108,9 +103,6 @@ function dropDown(event){
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
-
-  draggingFrom.remove();
-  dragging.classList.remove("dragging");
 
   if(!draggingOver) {
     mouseUp();
@@ -142,6 +134,8 @@ function dropDown(event){
   } else if (draggingGroup == "task") {
     // destinationOrderの補正
     if (dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id")) {
+console.log("samestage");
+
       if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
       if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
     } else {
@@ -160,7 +154,7 @@ function dropDown(event){
     console.log("Invalid draggingGroup");
     return null;
   }
-
+console.log("XHRopen");
   XHR.open("post", swapURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
@@ -182,15 +176,13 @@ function dropDown(event){
 
       applySwappedTaskOrders(swappedOrders);
     }
+
+    dragging.remove();
+    draggingFrom.classList.remove("dragging-from");
+
+    draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
+    draggingFrom.remove();
   }
-
-  // top, left削除
-  dragging.removeAttribute("style");
-  dragging.classList.remove("dragging");
-
-  draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", dragging.outerHTML);
-  dragging.remove();
-
   //  eventlistenerの削除
   mouseUp();
 }
@@ -198,21 +190,22 @@ function dropDown(event){
 
 function mouseUp(event){
 console.log("mouseup");
-  const droppables = document.querySelectorAll(".droppable");
+  // クラスやイベントリスナなどのリセット
   const draggingFromAll = document.querySelectorAll(".dragging-from");
   const draggingAll = document.querySelectorAll(".dragging");
   const draggingOverAll = document.querySelectorAll(".dragging-over");
 
   if(draggingFromAll){
+      console.log("there draggingFrom");
     draggingFromAll.forEach( (draggingFrom) => {
-      draggingFrom.remove();
+      draggingFrom.classList.remove("dragging-from");
     });
   }
 
   if(draggingAll){
+    console.log("there dragging");
     draggingAll.forEach( (dragging) => {
-      dragging.removeAttribute("style");
-      dragging.classList.remove("dragging");
+      dragging.remove();
     });
   }
 
@@ -228,7 +221,6 @@ console.log("mouseup");
   document.body.removeEventListener("touchleave", mouseUp);
   document.body.removeEventListener("mouseup", dropDown);
   document.body.removeEventListener("touchend", dropDown);
-
 }
 
 

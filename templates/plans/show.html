@@ -27,6 +27,8 @@
     </div>
   </div>
   <div class="stages__inner">
+    <div class="drag-anchor"></div>
+    {% comment %} dragging 要素の挿入位置、drag-anchor は scroll-area と同じ階層に置く {% endcomment %}
     <div class="pending-stage slideout slideout-handle">
       <div class="tasks">
         <div class="task-wrapper">
@@ -38,7 +40,7 @@
       </div>
       <div class="slideout-handle">Pending</div>
     </div>
-    <div class="stages__scroll-area horizontal-scroll">
+    <div class="scroll-area horizontal-scroll">
       <div class="stage-wrapper">
         <div class="stage-drop droppable" drop-group="stage" order="0"></div>
       </div>
