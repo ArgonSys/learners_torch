@@ -96,7 +96,6 @@ function mouseMove(event){
 
 
 function dropDown(event){
-  console.log("dropdown");
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
   //  ドラッグ元の要素を消し、ドラッグ中の要素からdraggingクラスを取り除く
   const dragging = document.querySelector(".dragging");
@@ -115,21 +114,18 @@ function dropDown(event){
 
 
 function mouseUp(event){
-console.log("mouseup");
   // クラスやイベントリスナなどのリセット
   const draggingFromAll = document.querySelectorAll(".dragging-from");
   const draggingAll = document.querySelectorAll(".dragging");
   const draggingOverAll = document.querySelectorAll(".dragging-over");
 
   if(draggingFromAll){
-      console.log("there draggingFrom");
     draggingFromAll.forEach( (draggingFrom) => {
       draggingFrom.classList.remove("dragging-from");
     });
   }
 
   if(draggingAll){
-    console.log("there dragging");
     draggingAll.forEach( (dragging) => {
       dragging.remove();
     });
@@ -151,7 +147,6 @@ console.log("mouseup");
 
 
 function sendXHRAboutStageSwap() {
-  console.log("sendStageXHR");
   const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
@@ -161,7 +156,6 @@ function sendXHRAboutStageSwap() {
   const csrftoken = getCookie("csrftoken");
 
   let destinationOrder = Number(draggingOver.getAttribute("order"));
-  console.log(`default:${destinationOrder}`);
 
   // order が小さい要素に対する swap 時の補正
   if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
@@ -172,7 +166,6 @@ function sendXHRAboutStageSwap() {
     "destination-order": destinationOrder,
   });
 
-  console.log("XHRopen");
   //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
   XHR.open("post", stageSwapURL, true);
   XHR.responseType = "json";
@@ -228,7 +221,6 @@ function applySwappedStageOrders(swappedOrders) {
 
 
 function sendXHRAboutTaskSwap() {
-  console.log("sendTaskXHR");
   const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
@@ -243,9 +235,8 @@ function sendXHRAboutTaskSwap() {
   // destinationOrderの補正
   isSameStage = dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id");
   if (isSameStage) {
-    console.log("samestage");
     if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
-    if (destinationOrder == dragging.getAttribute("order")){console.log("sameorder");return mouseUp();}
+    if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
   } else {
     destinationOrder += 1;
   }
@@ -257,7 +248,6 @@ function sendXHRAboutTaskSwap() {
     "destination-order": destinationOrder,
   });
 
-  console.log("XHRopen");
   //  const taskSwapURL = "{% url 'tasks:swap' %}"  (stages/show.html)
   XHR.open("post", taskSwapURL, true);
   XHR.responseType = "json";
@@ -294,7 +284,6 @@ function applySwappedTaskOrders(swappedOrders) {
   const draggables = document.getElementsByClassName("task-wrapper draggable");
   const droppables = document.getElementsByClassName("task-drop droppable");
 
-  console.log(swappedOrders);
   // order 属性の修正
   for (var stagePk in swappedOrders) {
     for (var taskPk in swappedOrders[stagePk]) {
