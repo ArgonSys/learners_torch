@@ -99,90 +99,16 @@ function dropDown(event){
   console.log("dropdown");
   ////  ドラッグした要素の入れ替えとViewへのデータ送信
   //  ドラッグ元の要素を消し、ドラッグ中の要素からdraggingクラスを取り除く
-  const draggingFrom = document.querySelector(".dragging-from");
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
 
-  if(!draggingOver) {
-    mouseUp();
-    return null;
-  }
+  if(!draggingOver) return mouseUp();
 
-  const XHR = new XMLHttpRequest();
-  const csrftoken = getCookie("csrftoken");
-  let destinationOrder = Number(draggingOver.getAttribute("order"));
-  console.log(`default:${destinationOrder}`)
+  if(draggingGroup == "stage") sendXHRAboutStageSwap();
+  else if(draggingGroup == "task") sendXHRAboutTaskSwap();
+  else return console.log("ERROR: Invalid draggingGroup");
 
-
-  //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
-  //  const taskSwapURL = "{% url 'tasks:swap' %}"  (stages/show.html)
-  let swapURL;
-  let data;
-
-  if (draggingGroup == "stage") {
-    // order が小さい要素に対する swap 時の補正
-    if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
-    if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
-
-    data = JSON.stringify({
-      "source-id": dragging.getAttribute("stage-id"),
-      "destination-order": destinationOrder,
-    });
-    swapURL = stageSwapURL;
-
-  } else if (draggingGroup == "task") {
-    // destinationOrderの補正
-    if (dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id")) {
-console.log("samestage");
-
-      if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
-      if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
-    } else {
-      destinationOrder += 1;
-    }
-    console.log(`calibrated:${destinationOrder}`)
-
-    data = JSON.stringify({
-      "stage-id": draggingOver.getAttribute("stage-id"),
-      "source-id": dragging.getAttribute("task-id"),
-      "destination-order": destinationOrder,
-    });
-    swapURL = taskSwapURL;
-
-  } else {
-    console.log("Invalid draggingGroup");
-    return null;
-  }
-console.log("XHRopen");
-  XHR.open("post", swapURL, true);
-  XHR.responseType = "json";
-  XHR.setRequestHeader("X-CSRFToken", csrftoken);
-  XHR.setRequestHeader("content-type", "application/json");
-  XHR.send(data);
-  XHR.onload = () => {
-    if (XHR.status != 200) {
-      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
-      return null;
-    }
-
-    const swappedOrders = XHR.response
-    if (draggingGroup == "stage") {
-      applySwappedStageOrders(swappedOrders);
-    }
-    else if (draggingGroup == "task") {
-      dragging.removeAttribute("stage-id");
-      dragging.setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
-
-      applySwappedTaskOrders(swappedOrders);
-    }
-
-    dragging.remove();
-    draggingFrom.classList.remove("dragging-from");
-
-    draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
-    draggingFrom.remove();
-  }
   //  eventlistenerの削除
   mouseUp();
 }
@@ -224,6 +150,53 @@ console.log("mouseup");
 }
 
 
+function sendXHRAboutStageSwap() {
+  console.log("sendStageXHR");
+  const draggingFrom = document.querySelector(".dragging-from");
+  const dragging = document.querySelector(".dragging");
+  const draggingOver = document.querySelector(".dragging-over");
+  const draggingGroup = dragging.getAttribute("drag-group");
+
+  const XHR = new XMLHttpRequest();
+  const csrftoken = getCookie("csrftoken");
+
+  let destinationOrder = Number(draggingOver.getAttribute("order"));
+  console.log(`default:${destinationOrder}`);
+
+  // order が小さい要素に対する swap 時の補正
+  if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
+  if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
+
+  const data = JSON.stringify({
+    "source-id": dragging.getAttribute("stage-id"),
+    "destination-order": destinationOrder,
+  });
+
+  console.log("XHRopen");
+  //  const stageSwapURL = "{% url 'stages:swap' %}"  (stages/show.html)
+  XHR.open("post", stageSwapURL, true);
+  XHR.responseType = "json";
+  XHR.setRequestHeader("X-CSRFToken", csrftoken);
+  XHR.setRequestHeader("content-type", "application/json");
+  XHR.send(data);
+  XHR.onload = () => {
+    if (XHR.status != 200) {
+      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+      return null;
+    }
+
+    // order に変更のある stage の更新
+    const swappedOrders = XHR.response
+    applySwappedStageOrders(swappedOrders);
+
+    dragging.remove();
+    draggingFrom.classList.remove("dragging-from");
+    draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
+    draggingFrom.remove();
+  }
+}
+
+
 function applySwappedStageOrders(swappedOrders) {
   const draggables = document.getElementsByClassName("stage-wrapper draggable");
   const droppables = document.getElementsByClassName("stage-drop droppable");
@@ -249,6 +222,70 @@ function applySwappedStageOrders(swappedOrders) {
         break;
       }
     }
+  }
+}
+
+
+
+function sendXHRAboutTaskSwap() {
+  console.log("sendTaskXHR");
+  const draggingFrom = document.querySelector(".dragging-from");
+  const dragging = document.querySelector(".dragging");
+  const draggingOver = document.querySelector(".dragging-over");
+  const draggingGroup = dragging.getAttribute("drag-group");
+
+  const XHR = new XMLHttpRequest();
+  const csrftoken = getCookie("csrftoken");
+
+  let destinationOrder = Number(draggingOver.getAttribute("order"));
+  console.log(`default:${destinationOrder}`);
+
+  // destinationOrderの補正
+  isSameStage = dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id");
+  if (isSameStage) {
+    console.log("samestage");
+    if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
+    if (destinationOrder == dragging.getAttribute("order")){console.log("sameorder");return mouseUp();}
+  } else {
+    destinationOrder += 1;
+  }
+  console.log(`calibrated:${destinationOrder}`)
+
+  const data = JSON.stringify({
+    "stage-id": draggingOver.getAttribute("stage-id"),
+    "source-id": dragging.getAttribute("task-id"),
+    "destination-order": destinationOrder,
+  });
+
+  console.log("XHRopen");
+  //  const taskSwapURL = "{% url 'tasks:swap' %}"  (stages/show.html)
+  XHR.open("post", taskSwapURL, true);
+  XHR.responseType = "json";
+  XHR.setRequestHeader("X-CSRFToken", csrftoken);
+  XHR.setRequestHeader("content-type", "application/json");
+  XHR.send(data);
+  XHR.onload = () => {
+    if (XHR.status != 200) {
+      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+      return null;
+    }
+
+    // order に変更のある task の更新
+    const swappedOrders = XHR.response
+    applySwappedTaskOrders(swappedOrders);
+
+    // draggingFrom と droppable の stage-id を更新
+    draggingFrom.removeAttribute("stage-id");
+    draggingFrom.querySelector(".droppable").removeAttribute("stage-id");
+    draggingFrom.setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
+    draggingFrom.querySelector(".droppable").setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
+
+
+    // draggingFrom の挿入
+    dragging.remove();
+    draggingFrom.classList.remove("dragging-from");
+    draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
+    draggingFrom.remove();
   }
 }
 
