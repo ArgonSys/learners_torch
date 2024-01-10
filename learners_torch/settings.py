@@ -27,7 +27,7 @@ SECRET_KEY = environ.get("DJANGO_SECRET_KEY", "")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = environ.get("DJANGO_DEBUG", "").lower() == "true"
 
-ALLOWED_HOSTS = ["127.0.0.1", "learners-torch.onrender.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "learners-torch.onrender.com"]
 
 
 # Application definition
