@@ -271,22 +271,23 @@ function sendXHRAboutTaskSwap() {
       return null;
     }
 
-    // order に変更のある task の更新
-    const swappedOrders = XHR.response
-    applySwappedTaskOrders(swappedOrders);
-
     // draggingFrom と droppable の stage-id を更新
     draggingFrom.removeAttribute("stage-id");
     draggingFrom.querySelector(".droppable").removeAttribute("stage-id");
     draggingFrom.setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
     draggingFrom.querySelector(".droppable").setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
 
-
     // draggingFrom の挿入
     dragging.remove();
     draggingFrom.classList.remove("dragging-from");
     draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
     draggingFrom.remove();
+
+    // order に変更のある task の更新
+    const swappedOrders = XHR.response
+    applySwappedTaskOrders(swappedOrders);
+
+
   }
 }
 
@@ -298,11 +299,13 @@ function applySwappedTaskOrders(swappedOrders) {
   // order 属性の修正
   for (var stagePk in swappedOrders) {
     for (var taskPk in swappedOrders[stagePk]) {
+      console.log(stagePk, taskPk);
       // draggableクラス
       for (var index=0; index < draggables.length; index++) {
         const draggable = draggables[index];
         if (draggable.getAttribute("stage-id") == stagePk &&
               draggable.getAttribute("task-id") == taskPk) {
+          console.log(draggable.querySelector(".task__name").innerHTML, draggable.getAttribute("stage-id"), draggable.getAttribute("order"));
           draggable.removeAttribute("order");
           draggable.setAttribute("order", swappedOrders[stagePk][taskPk]);
           break;
@@ -314,6 +317,7 @@ function applySwappedTaskOrders(swappedOrders) {
         const droppable = droppables[index];
         if (droppable.getAttribute("stage-id") == stagePk &&
               droppable.getAttribute("task-id") == taskPk) {
+          console.log(droppable.parentElement.querySelector(".task__name").innerHTML, droppable.getAttribute("stage-id"), droppable.getAttribute("order"));
           droppable.removeAttribute("order");
           droppable.setAttribute("order", swappedOrders[stagePk][taskPk]);
           break;
