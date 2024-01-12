@@ -31,12 +31,14 @@
     {% comment %} dragging 要素の挿入位置、drag-anchor は scroll-area と同じ階層に置く {% endcomment %}
     <div class="pending-stage slideout slideout-handle">
       <div class="tasks">
-        <div class="task-wrapper">
-          <div class="task-drop droppable" drop-group="task" stage-id="{{ pending.pk }}" order="0"></div>
+        <div class="tasks__inner">
+          <div class="task-wrapper">
+            <div class="task-drop droppable" drop-group="task" stage-id="{{ pending.pk }}" order="0"></div>
+          </div>
+          {% for task in pending.task_set.all|dictsort:"order" %}
+            {% include "tasks/_task.html" %}
+          {% endfor %}
         </div>
-        {% for task in pending.task_set.all|dictsort:"order" %}
-          {% include "tasks/_task.html" %}
-        {% endfor %}
       </div>
       <div class="slideout-handle">Pending</div>
     </div>

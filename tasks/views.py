@@ -109,7 +109,7 @@ class TaskSwapView(View):
             data = dict()
             for task in destination_tasks:
                 task.order += 1
-                print(f"task:{task.pk} {task.stage.pk} {task.order}")
+                print(f"{task.name} {task.pk} {task.stage.pk} {task.order}")
                 task.save()
 
                 if task.stage.pk not in data:
@@ -122,7 +122,7 @@ class TaskSwapView(View):
                     task.order = destination_order
                 else:
                     task.order -= 1
-                print(f"task:{task.pk} {task.stage.pk} {task.order}")
+                print(f"{task.name} {task.pk} {task.stage.pk} {task.order}")
                 task.save()
 
                 if task.stage.pk not in data:
