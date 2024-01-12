@@ -10,6 +10,7 @@
 <script src="{% static 'javascripts/slide_out.js' %}"></script>
 <script src="{% static 'javascripts/drag_and_drop.js' %}"></script>
 <script src="{% static 'javascripts/horizontal_scroll.js' %}"></script>
+<script src="{% static 'javascripts/vertical_scroll.js' %}"></script>
 {% endblock %}
 
 
@@ -30,7 +31,7 @@
     <div class="drag-anchor"></div>
     {% comment %} dragging 要素の挿入位置、drag-anchor は scroll-area と同じ階層に置く {% endcomment %}
     <div class="pending-stage slideout slideout-handle">
-      <div class="tasks">
+      <div class="tasks  vertical-scroll horizontal-fixed">
         <div class="task-wrapper">
           <div class="task-drop droppable" drop-group="task" stage-id="{{ pending.pk }}" order="0"></div>
         </div>
@@ -52,7 +53,7 @@
     </div>
     <div class="done-stage slideout slideout-handle">
       <div class="slideout-handle">Done🎉</div>
-      <div class="tasks">
+      <div class="tasks  vertical-scroll horizontal-fixed">
         <div class="task-wrapper">
           <div class="task-drop droppable" drop-group="task" stage-id="{{ done.pk }}" order="0"></div>
         </div>
