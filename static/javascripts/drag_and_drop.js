@@ -280,7 +280,11 @@ function sendXHRAboutTaskSwap() {
     // draggingFrom の挿入
     dragging.remove();
     draggingFrom.classList.remove("dragging-from");
-    draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
+    if(draggingOver.getAttribute("order") == 0){
+      draggingOver.closest(`.${draggingGroup}s`).querySelector(`.${draggingGroup}s__inner`).insertAdjacentHTML("afterbegin", draggingFrom.outerHTML);
+    } else {
+      draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
+    }
     draggingFrom.remove();
 
     // order に変更のある task の更新

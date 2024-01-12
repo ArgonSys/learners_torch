@@ -12,13 +12,15 @@
       </div>
     </div>
     <div class="stage__description">{{ stage.description }}</div>
-    <div class="stage__tasks">
+    <div class="tasks">
       <div class="task-wrapper">
         <div class="task-drop droppable" drop-group="task" stage-id="{{ stage.pk }}" order="0"></div>
       </div>
-      {% for task in stage.task_set.all|dictsort:"order" %}
-        {% include "tasks/_task.html" %}
-      {% endfor %}
+      <div class="tasks__inner">
+        {% for task in stage.task_set.all|dictsort:"order" %}
+          {% include "tasks/_task.html" %}
+        {% endfor %}
+      </div>
     </div>
   </div>
   <div class="stage-drop droppable" drop-group="stage" stage-id="{{ stage.pk }}" order="{{ stage.order }}"></div>
