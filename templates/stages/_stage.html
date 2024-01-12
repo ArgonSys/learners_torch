@@ -2,8 +2,11 @@
   <div class="stage">
     <div class="stage__handle drag-handle"></div>
     <div class="stage__header">
-      <div class="stage__name">{{ stage.name }}</div>
-      <div class="stage__menu">
+      <div class="stage__left-menu">
+        <div class="stage__name">{{ stage.name }}</div>
+        <div class="stage__description">{{ stage.description }}</div>
+      </div>
+      <div class="stage__right-menu">
         <a href="{% url 'stages:edit' plan.pk stage.pk %}" class="btn">編集</a>
         <form action="{% url 'stages:delete' plan.pk stage.pk %}" method="post" class="delete">
           {% csrf_token %}
@@ -11,7 +14,6 @@
         </form>
       </div>
     </div>
-    <div class="stage__description">{{ stage.description }}</div>
     <div class="tasks">
       <div class="task-wrapper">
         <div class="task-drop droppable" drop-group="task" stage-id="{{ stage.pk }}" order="0"></div>

@@ -246,23 +246,29 @@ footer {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 20px;
+}
+
+.stage__left-menu {
+  width: calc(100% - 2em);
 }
 
 .stage__name {
-  width: calc(100% - 2em);
-  overflow-wrap: break-word;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.stage__menu {
+.stage__description {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stage__right-menu {
   width: 2em;
 }
 
 
-.stage__description {
-  width: 100%;
-  overflow-wrap: break-word;
-}
 
 .stage__tasks {
 
@@ -284,7 +290,10 @@ footer {
   overflow-y: scroll;
 }
 
-
+.pending-stage .tasks::-webkit-scrollbar,
+.done-stage .tasks::-webkit-scrollbar {
+  display: none;
+}
 
 .pending-stage .tasks__inner,
 .done-stage .tasks__inner {
@@ -315,8 +324,12 @@ footer {
   aspect-ratio: 5 / 1;
   width: 200px;
   background-color: azure;
-  margin: 10px 0;
   display: flex;
+}
+
+.pending-stage .task,
+.done-stage .task {
+  margin: 10px 0;
 }
 
 .task__handle {
@@ -348,8 +361,8 @@ footer {
   width: 200px;
   height: 3px;
   background-clip: padding-box;
-  border-top: 15px solid rgba(0, 0, 0, 0);
-  border-bottom: 15px solid rgba(0, 0, 0, 0);
+  border-top: 5px solid rgba(0, 0, 0, 0);
+  border-bottom: 5px solid rgba(0, 0, 0, 0);
 }
 
 .slideout .task-drop.droppable {
