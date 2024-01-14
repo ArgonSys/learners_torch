@@ -119,16 +119,10 @@ footer {
 }
 
 .stages,
-#stages-loader {
+.stages-loader {
   /* 100vh - header - footer */
   width: 100%;
   height: calc(100vh - min(10vh, 80px) - 30px);
-}
-
-#stages-loader {
-  background-color: #000;
-  position: absolute;
-  z-index: 5000;
 }
 
 .stages {
@@ -443,8 +437,4 @@ footer {
 
 .dragging-over {
   background-color: blue;
-}
-
-.hidden {
-  display: none;
 }

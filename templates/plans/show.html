@@ -3,6 +3,7 @@
 
 
 {% block extendhead %}
+<link rel="stylesheet" href="{% static 'stylesheets/loader.css' %}">
 {% comment %} drag_and_drop.jsに対するurlの受け渡し {% endcomment %}
 <script> const stageSwapURL = "{% url 'stages:swap' %}"; </script>
 <script> const taskSwapURL = "{% url 'tasks:swap' %}"; </script>
@@ -15,7 +16,9 @@
 
 
 {% block main %}
-<div class="hidden" id="stages-loader"></div>
+<div class="stages-loader hidden">
+  {% include "_loader.html" %}
+</div>
 <div class="stages">
   <div class="stages__header">
     <div class="plan-name">

@@ -120,7 +120,7 @@ function dropDown(event){
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
-  const stagesLoader = document.querySelector("#stages-loader");
+  const stagesLoader = document.querySelector(".stages-loader");
 
   if(!draggingOver) return mouseUp();
 
@@ -180,7 +180,7 @@ function sendXHRAboutStageSwap() {
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
-  const stagesLoader = document.querySelector("#stages-loader");
+  const stagesLoader = document.querySelector(".stages-loader");
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
@@ -261,7 +261,7 @@ function sendXHRAboutTaskSwap() {
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
-  const stagesLoader = document.querySelector("#stages-loader");
+  const stagesLoader = document.querySelector(".stages-loader");
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
