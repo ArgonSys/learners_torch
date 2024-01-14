@@ -3,7 +3,7 @@
       <a href="{% url 'plans:show' plan.pk %}" class="plan__name btn">{{ plan.name }}</a>
       <div class="plan__menu">
         <a href="{% url 'plans:edit' plan.pk %}" class="btn">編集</a>
-        <form action="{% url 'plans:delete' plan.pk %}" method="post" class="delete">
+        <form action="{% url 'plans:delete' plan.pk %}" delete-group="plan" delete-name="{{ plan.name }}" method="post" class="delete">
           {% csrf_token %}
           <button type="submit" class="delete-btn like-a">削除</a>
         </form>
