@@ -2,7 +2,9 @@
   <div class="task">
     <div class="task__handle drag-handle"></div>
     <div class="task__header">
-      <a href="#" class="task__name btn">{{ task.name }}</a>
+      <div class="task__name">
+        <a href="#" class="btn">{{ task.name }}</a>
+      </div>
       <div class="task__menu">
         <a href="{% url 'tasks:edit' task.pk %}" class="btn">編集</a>
         <form action="{% url 'tasks:delete' task.pk %}" method="post" class="delete">
