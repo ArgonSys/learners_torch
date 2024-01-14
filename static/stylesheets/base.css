@@ -238,11 +238,12 @@ footer {
 }
 
 .stage-drop.droppable {
-  width: 3px;
+  width: 30px;
   height: 100%;
   flex-shrink: 0;
   background-clip: padding-box;
-  border: 15px solid rgba(0, 0, 0, 0);
+  border-left: calc(28px / 2) solid rgba(0, 0, 0, 0);
+  border-right: calc(28px / 2) solid rgba(0, 0, 0, 0);
 }
 
 .stage__header {
