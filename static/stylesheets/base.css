@@ -375,9 +375,9 @@ footer {
   align-items: end;
 }
 
-.task__header:hover {
-  display: flex;
-  justify-content: space-between;
+.task__name:hover {
+  color: blue;
+  text-decoration: underline;
 }
 
 .task__description {
