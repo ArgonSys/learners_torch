@@ -1,5 +1,7 @@
 function slideOut() {
   const stages = document.querySelector(".stages__inner");
+  const pending = document.querySelector(".pending-stage");
+  if(pending.querySelector(".task")) pending.classList.add("sliding-out");
 
   stages.addEventListener("touchmove", slideCursorMove);
   stages.addEventListener("mousemove", slideCursorMove);
