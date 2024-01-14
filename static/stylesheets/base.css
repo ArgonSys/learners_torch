@@ -118,10 +118,20 @@ footer {
   justify-content: space-between;
 }
 
+.stages,
+#stages-loader {
+  /* 100vh - header - footer */
+  width: 100%;
+  height: calc(100vh - min(10vh, 80px) - 30px);
+}
+
+#stages-loader {
+  background-color: #000;
+  position: absolute;
+  z-index: 5000;
+}
 
 .stages {
-  /* 100vh - header - footer */
-  height: calc(100vh - min(10vh, 80px) - 30px);
   display: flex;
   flex-direction: column;
   align-items : center;
@@ -144,8 +154,8 @@ footer {
 }
 
 .stages .scroll-area {
-  width: calc(100% - 0px);
-  height: calc(100% - 40px);
+  width: 100%;
+  height: 100%;
   background-image: url(../images/texture_00003.jpg);
   display: flex;
   align-items: center;
@@ -271,8 +281,6 @@ footer {
 .stage__right-menu {
   width: 2em;
 }
-
-
 
 .stage__tasks {
 

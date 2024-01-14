@@ -120,12 +120,13 @@ function dropDown(event){
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
+  const stagesLoader = document.querySelector("#stages-loader");
 
   if(!draggingOver) return mouseUp();
 
   if(draggingGroup == "stage") sendXHRAboutStageSwap();
   else if(draggingGroup == "task") sendXHRAboutTaskSwap();
-  else return console.log("ERROR: Invalid draggingGroup");
+  else console.log("ERROR: Invalid draggingGroup");
 
   //  eventlistenerの削除
   mouseUp();
@@ -179,6 +180,7 @@ function sendXHRAboutStageSwap() {
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
+  const stagesLoader = document.querySelector("#stages-loader");
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
@@ -188,6 +190,9 @@ function sendXHRAboutStageSwap() {
   // order が小さい要素に対する swap 時の補正
   if (destinationOrder < dragging.getAttribute("order")) destinationOrder += 1;
   if (destinationOrder == dragging.getAttribute("order")) return mouseUp();
+
+  // ロード画面の表示
+  stagesLoader.classList.remove("hidden");
 
   const data = JSON.stringify({
     "source-id": dragging.getAttribute("stage-id"),
@@ -210,10 +215,14 @@ function sendXHRAboutStageSwap() {
     const swappedOrders = XHR.response
     applySwappedStageOrders(swappedOrders);
 
+    // draggingの削除、draggingFromの挿入
     dragging.remove();
     draggingFrom.classList.remove("dragging-from");
     draggingOver.closest(`.${draggingGroup}-wrapper`).insertAdjacentHTML("afterend", draggingFrom.outerHTML);
     draggingFrom.remove();
+
+    // ロード画面の非表示
+    stagesLoader.classList.add("hidden");
   }
 }
 
@@ -252,6 +261,7 @@ function sendXHRAboutTaskSwap() {
   const dragging = document.querySelector(".dragging");
   const draggingOver = document.querySelector(".dragging-over");
   const draggingGroup = dragging.getAttribute("drag-group");
+  const stagesLoader = document.querySelector("#stages-loader");
 
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
@@ -266,6 +276,9 @@ function sendXHRAboutTaskSwap() {
   } else {
     destinationOrder += 1;
   }
+
+  // ロード画面の表示
+  stagesLoader.classList.remove("hidden");
 
   const data = JSON.stringify({
     "stage-id": draggingOver.getAttribute("stage-id"),
@@ -291,6 +304,10 @@ function sendXHRAboutTaskSwap() {
     draggingFrom.setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
     draggingFrom.querySelector(".droppable").setAttribute("stage-id", draggingOver.getAttribute("stage-id"));
 
+    // order に変更のある task の更新
+    const swappedOrders = XHR.response
+    applySwappedTaskOrders(swappedOrders);
+
     // draggingFrom の挿入
     dragging.remove();
     draggingFrom.classList.remove("dragging-from");
@@ -301,11 +318,8 @@ function sendXHRAboutTaskSwap() {
     }
     draggingFrom.remove();
 
-    // order に変更のある task の更新
-    const swappedOrders = XHR.response
-    applySwappedTaskOrders(swappedOrders);
-
-
+    // ロード画面の非表示
+    stagesLoader.classList.add("hidden");
   }
 }
 
