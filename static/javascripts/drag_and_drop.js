@@ -54,6 +54,8 @@ function mouseMove(event){
 
   const dragging = document.querySelector(".dragging");
   const droppables = document.querySelectorAll(".droppable");
+  const overlaps = document.querySelectorAll(".overlap");
+
 
   if (!dragging) return null;
 
@@ -71,13 +73,26 @@ function mouseMove(event){
     if (dragging.getAttribute("drag-group") != droppable.getAttribute("drop-group")) return null;
     rect = droppable.getBoundingClientRect();
 
-    if(isCursorInRect(event.clientX, event.clientY, rect)) {
+    // overlapがない、カーソルが overlap に乗っていない、droppable が overlap に含まれる場合に dragging-over を付与
+    let isContainedOverlap = false;
+    let isCursorInOverlap = false;
+
+    overlaps.forEach((overlap) => {
+      const overlapRect = overlap.getBoundingClientRect();
+
+      if(isCursorInRect(event.clientX, event.clientY, overlapRect)) isCursorInOverlap = true;
+      if(overlap.contains(droppable)) isContainedOverlap = true;
+    });
+
+    if((!overlaps || !isCursorInOverlap || isContainedOverlap)
+        && isCursorInRect(event.clientX, event.clientY, rect)) {
       inDroppable = true;
       droppable.classList.add("dragging-over");
       return;
     }
   });
 
+  // inDroppable によるイベントリスナの切替
   if (inDroppable) {
     document.body.removeEventListener("mouseup", mouseUp);
     document.body.removeEventListener("touchend", mouseUp);
@@ -152,6 +167,7 @@ function mouseUp(event){
 
 function setElementXYFromBase(ele, baseEle) {
   if(!baseEle.contains(ele)) return console.log("baseEle doesn't contain childEle");
+
   let x = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
   let y = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
   return [x, y];
@@ -241,7 +257,6 @@ function sendXHRAboutTaskSwap() {
   const csrftoken = getCookie("csrftoken");
 
   let destinationOrder = Number(draggingOver.getAttribute("order"));
-  console.log(`default:${destinationOrder}`);
 
   // destinationOrderの補正
   isSameStage = dragging.getAttribute("stage-id") == draggingOver.getAttribute("stage-id");
@@ -251,7 +266,6 @@ function sendXHRAboutTaskSwap() {
   } else {
     destinationOrder += 1;
   }
-  console.log(`calibrated:${destinationOrder}`)
 
   const data = JSON.stringify({
     "stage-id": draggingOver.getAttribute("stage-id"),
@@ -303,13 +317,11 @@ function applySwappedTaskOrders(swappedOrders) {
   // order 属性の修正
   for (var stagePk in swappedOrders) {
     for (var taskPk in swappedOrders[stagePk]) {
-      console.log(stagePk, taskPk);
       // draggableクラス
       for (var index=0; index < draggables.length; index++) {
         const draggable = draggables[index];
         if (draggable.getAttribute("stage-id") == stagePk &&
               draggable.getAttribute("task-id") == taskPk) {
-          console.log(draggable.querySelector(".task__name").innerHTML, draggable.getAttribute("stage-id"), draggable.getAttribute("order"));
           draggable.removeAttribute("order");
           draggable.setAttribute("order", swappedOrders[stagePk][taskPk]);
           break;
@@ -321,7 +333,6 @@ function applySwappedTaskOrders(swappedOrders) {
         const droppable = droppables[index];
         if (droppable.getAttribute("stage-id") == stagePk &&
               droppable.getAttribute("task-id") == taskPk) {
-          console.log(droppable.parentElement.querySelector(".task__name").innerHTML, droppable.getAttribute("stage-id"), droppable.getAttribute("order"));
           droppable.removeAttribute("order");
           droppable.setAttribute("order", swappedOrders[stagePk][taskPk]);
           break;
