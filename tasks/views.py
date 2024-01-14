@@ -53,9 +53,17 @@ class TaskUpdateView(View):
 class TaskDeleteView(View):
     def post(self, request, task_pk):
         task = get_object_or_404(Task, pk=task_pk)
-        plan = task.stage.plan
+        stage = task.stage
+        plan = stage.plan
         if request.user != plan.owner:
             return HttpResponseForbidden("このステージを削除することは禁止されています。")
+
+        # task orderの修正
+        tasks = stage.task_set.filter(order__gt=task.order)
+        for ts in tasks:
+            ts.order -= 1
+            ts.save()
+
         task.delete()
         return redirect("plans:show", plan_pk=plan.pk)
 

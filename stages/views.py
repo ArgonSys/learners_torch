@@ -54,9 +54,12 @@ class StageDeleteView(View):
     def post(self, request, plan_pk, stage_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
         stage = get_object_or_404(Stage, pk=stage_pk)
+
         # plan非所有者による削除とpending, doneステージの削除を禁止
         if request.user != plan.owner or stage.order < 0:
             return HttpResponseForbidden("このステージを削除することは禁止されています。")
+
+        # pendingステージへtaskを移動
         tasks = stage.task_set.all()
         for task in tasks:
             pending = plan.stage_set.get(order=-2)
@@ -64,6 +67,13 @@ class StageDeleteView(View):
             print(task.name, task.stage)
             task.order = pending.task_set.count() + 1
             task.save()
+
+        # stage orderの修正
+        stages = plan.stage_set.filter(order__gt=stage.order)
+        for st in stages:
+            st.order -= 1
+            st.save()
+
         stage.delete()
         return redirect("plans:show", plan_pk=plan_pk)
 
