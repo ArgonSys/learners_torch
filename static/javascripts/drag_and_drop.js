@@ -25,7 +25,7 @@ function mouseDown(event){
   const dragAnchor = document.querySelector(".drag-anchor");
   const scrollArea = dragAnchor.parentNode.querySelector(".scroll-area");
 
-  [draggingX, draggingY] = setElementXYFromBase(draggingFrom, dragAnchor.parentNode);
+  [draggingX, draggingY] = setElementXYFromBase(this, dragAnchor.parentNode);
 
   //  draggingオブジェクトのクローニング
   draggingFrom.classList.add("dragging-from");
@@ -152,9 +152,9 @@ function mouseUp(event){
 
 function setElementXYFromBase(ele, baseEle) {
   if(!baseEle.contains(ele)) return console.log("baseEle doesn't contain childEle");
-  let sumX = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
-  let sumY = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
-  return [sumX, sumY];
+  let x = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
+  let y = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
+  return [x, y];
 }
 
 
@@ -332,7 +332,7 @@ function applySwappedTaskOrders(swappedOrders) {
 }
 
 
-window.addEventListener("load", dragAndDrop);
+window.addEventListener("DOMContentLoaded", dragAndDrop);
 
 //  DOM構造が変化したとき、再び EventListenerを埋め込む
 document.addEventListener("DOMContentLoaded", () => {
