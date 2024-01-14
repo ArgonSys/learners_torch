@@ -25,7 +25,7 @@ function mouseDown(event){
   const dragAnchor = document.querySelector(".drag-anchor");
   const scrollArea = dragAnchor.parentNode.querySelector(".scroll-area");
 
-  [draggingX, draggingY] = setElementXYFromBase(this, dragAnchor.parentNode);
+  [draggingX, draggingY] = setElementXYFromBase(this.parentNode, dragAnchor.parentNode);
 
   //  draggingオブジェクトのクローニング
   draggingFrom.classList.add("dragging-from");
