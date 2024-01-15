@@ -14,3 +14,12 @@ function getCookie(name) {
 function isCursorInRect(cursorX, cursorY, rect) {
   return cursorX >= rect.left && cursorX <= rect.right && cursorY >= rect.top && cursorY <= rect.bottom
 }
+
+
+function setElementXYFromBase(ele, baseEle) {
+  if(!baseEle.contains(ele)) return console.log("baseEle doesn't contain childEle");
+
+  let x = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
+  let y = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
+  return [x, y];
+}

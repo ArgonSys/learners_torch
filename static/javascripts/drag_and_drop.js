@@ -1,4 +1,4 @@
-// isCursorInRect, getCookie from "./utils";
+// setElementXYFromBase, isCursorInRect, getCookie from "./utils";
 
 
 let draggingX;
@@ -163,15 +163,6 @@ function mouseUp(event){
   document.body.removeEventListener("touchleave", mouseUp);
   document.body.removeEventListener("mouseup", dropDown);
   document.body.removeEventListener("touchend", dropDown);
-}
-
-
-function setElementXYFromBase(ele, baseEle) {
-  if(!baseEle.contains(ele)) return console.log("baseEle doesn't contain childEle");
-
-  let x = parseInt(ele.getBoundingClientRect().left) - parseInt(baseEle.getBoundingClientRect().left);
-  let y = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
-  return [x, y];
 }
 
 
