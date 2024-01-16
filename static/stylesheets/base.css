@@ -287,16 +287,20 @@ footer {
 
 .stage__name {
   width: 100%;
-  height: 1.2em;
+  height: 20px;
+  margin-bottom: 10px;
+  font-size: 18px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .stage__description {
   width: 100%;
-  height: 1.2em;
+  height: 3.2em;
   text-overflow: ellipsis;
   overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
 }
 
 
@@ -407,14 +411,8 @@ footer {
 
 .task__menu {
   width: 100%;
-  display: none;
-}
-
-.task__menu:hover,
-.task__name:hover + .task__menu {
   display: flex;
-  flex-direction: column;
-  align-items: end;
+  justify-content: end;
 }
 
 .task__description {
@@ -423,9 +421,10 @@ footer {
   background-color: inherit;
 }
 
-.show-description {
+.popup-description {
   display: block;
   width: 200px;
+  height: auto;
   background-color: white;
   border: 1px solid #000;
   position: absolute;
@@ -433,7 +432,6 @@ footer {
   z-index: 5000;
   color: #000;
   overflow-wrap: break-word;
-
 }
 
 .stage .task-drop.droppable {
