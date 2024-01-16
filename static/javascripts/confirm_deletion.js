@@ -7,7 +7,7 @@ function confirmDeletion() {
 
 function clickDeleteBtn (event) {
   event.preventDefault();
-  const deleteForm = this.closest("form.delete");
+  const deleteForm = this.closest("form");
   const contentType = deleteForm.getAttribute("delete-group");
   const contentName = deleteForm.getAttribute("delete-name");
   const msg = `本当に削除しますか？\n${contentType}: ${contentName}`
