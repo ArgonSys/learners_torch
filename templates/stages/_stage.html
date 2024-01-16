@@ -11,7 +11,10 @@
       </div>
       <div class="stage__lower-menu">
         <div class="stage__name">{{ stage.name }}</div>
-        <div class="description stage__description">{{ stage.description }}</div>
+        <div class="stage__description">
+          {{ stage.description|safe }}
+          <div class="popup hidden">{{ stage.description|safe }}</div>
+        </div>
       </div>
     </div>
     <div class="tasks vertical-scroll horizontal-fixed">

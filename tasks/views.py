@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
 from django.db import transaction
+from learners_torch.utils import replace_newline_to_br
 
 from .models import Task
 from .forms import TaskForm
@@ -24,6 +25,7 @@ class TaskCreateView(View):
         form = TaskForm(request.POST)
         if form.is_valid:
             task = form.save(commit=False)
+            task.description = replace_newline_to_br(task.description)
             task.stage = pending_stage
             task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
             task.save()
@@ -44,6 +46,7 @@ class TaskUpdateView(View):
         form = TaskForm(request.POST, instance=task)
         if form.is_valid:
             task = form.save(commit=False)
+            task.description = replace_newline_to_br(task.description)
             task.save()
             return redirect("plans:show", plan_pk=task.stage.plan.pk)
         context = {"form": form, "task_pk": task_pk}
