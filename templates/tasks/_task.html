@@ -7,7 +7,7 @@
       </div>
       <div class="task__menu">
         <a href="{% url 'tasks:edit' task.pk %}" class="btn">{% include "_icon_pencil_square.html" %}</a>
-        <form action="{% url 'tasks:delete' task.pk %}" delete-group="task" delete-name="{{ task.name }}" method="post" class="delete">
+        <form action="{% url 'tasks:delete' task.pk %}" delete-group="task" delete-name="{{ task.name }}" method="post" class="btn">
           {% csrf_token %}
           <button type="submit" class="delete-btn like-a">{% include "_icon_trash.html" %}</a>
         </form>
