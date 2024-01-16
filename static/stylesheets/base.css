@@ -304,6 +304,27 @@ footer {
 }
 
 
+.stage__description > .popup {
+  width: 300px;
+  height: 300px;
+  max-width: 300px;
+  max-height: 300px;
+  padding: 10px;
+  background-color: white;
+  /* border: 1px solid #000; */
+  position: absolute;
+  bottom: 0;
+  transform: translate(0, -10%);
+  z-index: 1002;
+  color: #000;
+  overflow: scroll;
+}
+
+.stage__description:hover > .popup,
+.stage__description > .popup:hover {
+  display: block;
+}
+
 .stage__tasks {
 
 }
@@ -419,19 +440,6 @@ footer {
   display: none;
   width: 100%;
   background-color: inherit;
-}
-
-.popup-description {
-  display: block;
-  width: 200px;
-  height: auto;
-  background-color: white;
-  border: 1px solid #000;
-  position: absolute;
-  transform: translate(calc(100% + 10px), 0);
-  z-index: 5000;
-  color: #000;
-  overflow-wrap: break-word;
 }
 
 .stage .task-drop.droppable {
