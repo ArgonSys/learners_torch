@@ -1,3 +1,5 @@
+{% load filters %}
+
 <div class="stage-wrapper draggable" drag-group="stage" stage-id="{{ stage.pk }}" order="{{ stage.order }}">
   <div class="stage">
     <div class="stage__handle drag-handle"></div>
@@ -12,8 +14,11 @@
       <div class="stage__lower-menu">
         <div class="stage__name">{{ stage.name }}</div>
         <div class="stage__description">
-          {{ stage.description|linebreaks }}
-          <div class="popup hidden">{{ stage.description|linebreaks }}</div>
+          {{ stage.description|linebreaksbr }}
+          {% comment %} css の stage__description の -webkit-line-clamp の値を参照のこと {% endcomment %}
+          {% if stage.description|linebreaksbr|split:"<br>"|length > 3 %}
+            <div class="popup hidden">{{ stage.description|linebreaksbr }}</div>
+          {% endif %}
         </div>
       </div>
     </div>
