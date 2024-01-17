@@ -18,7 +18,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from . import settings
 from plans.views import PlansIndexView
 
 urlpatterns = [
@@ -28,6 +27,7 @@ urlpatterns = [
     path("plans/", include("plans.urls")),
     path("stages/", include("stages.urls")),
     path("tasks/", include("tasks.urls")),
+    path("times/", include("time_logs.urls")),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

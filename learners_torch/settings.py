@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "plans.apps.PlansConfig",
     "stages.apps.StagesConfig",
     "tasks.apps.TasksConfig",
+    "time_logs.apps.TimeLogsConfig",
 ]
 
 MIDDLEWARE = [
