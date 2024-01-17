@@ -39,7 +39,6 @@ class PlansCreateView(LoginRequiredMixin, View):
         form = PlanForm(request.POST)
         if form.is_valid:
             plan = form.save(commit=False)
-            plan.description = replace_newline_to_br(plan.description)
             plan.owner = request.user
             plan.save()
             initialize_stages(plan.pk)
@@ -66,7 +65,6 @@ class PlansUpdateView(LoginRequiredMixin, View):
         form = PlanForm(request.POST, instance=plan)
         if form.is_valid:
             plan = form.save(commit=False)
-            plan.description = replace_newline_to_br(plan.description)
             plan.owner = request.user
             plan.save()
             return redirect("plans:show", plan_pk=plan.pk)
