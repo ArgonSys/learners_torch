@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="timers-wrapper">
+  <div class="timers">
+    <div class="timers__header">
+      <div class="task-name">タスク名</div>
+      <div class="stage-name">inステージ名</div>
+    </div>
+    <div class="timers__area">
+      <div class="timer main">
+        <div class="timer-main__inner">
+          <div class="heading">メインタイマー</div>
+          <div class="remain-time"></div>
+          <div class="entire-time"></div>
+        </div>
+        {% include "time_logs/_timer_pi.html" %}
+      </div>
+      <div class="timer sub">
+        <div class="timer-sub__inner">
+          <div class="heading">サブタイマー</div>
+          <div class="remain-time"></div>
+          <div class="entire-time">/
+            <input type="text" maxlength="3" class="hour">:<input type="text" maxlength="2" class="minute">:<input type="text" maxlength="2" class="second">
+          </div>
+        </div>
+        {% include "time_logs/_timer_pi.html" %}
+      </div>
+      <div class="timer-btns">
+        <button type="button" class="timer-btn">{% include "_icon_play.html" %}</button>
+        <button type="button" class="reset-btn">{% include "_icon_arrow_clockwise.html" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
