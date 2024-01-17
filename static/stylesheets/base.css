@@ -514,7 +514,7 @@ footer {
   position: relative;
 }
 
-.timer.main {
+.timer-main {
   height: 70%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;
@@ -535,7 +535,7 @@ footer {
   position: absolute;
 }
 
-.timer.sub {
+.timer-sub {
   height: 50%;
   aspect-ratio: 1 / 1;
   border-radius: 50%;

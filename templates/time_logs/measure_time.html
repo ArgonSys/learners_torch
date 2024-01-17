@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extendhead %}
+<script src="{% static 'javascripts/timer.js' %}"></script>
+{% endblock %}
 
 {% block main %}
 <div class="timers-wrapper">
@@ -8,7 +13,7 @@
       <div class="stage-name">inステージ名</div>
     </div>
     <div class="timers__area">
-      <div class="timer main">
+      <div class="timer-main">
         <div class="timer-main__inner">
           <div class="heading">メインタイマー</div>
           <div class="remain-time"></div>
@@ -16,7 +21,7 @@
         </div>
         {% include "time_logs/_timer_pi.html" %}
       </div>
-      <div class="timer sub">
+      <div class="timer-sub">
         <div class="timer-sub__inner">
           <div class="heading">サブタイマー</div>
           <div class="remain-time"></div>
