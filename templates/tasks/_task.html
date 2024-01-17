@@ -14,7 +14,7 @@
       </div>
     </div>
     {% if task.description %}
-      <div class="description task__description">{{ task.description }}</div>
+      <div class="description task__description">{{ task.description|linebreaks }}</div>
     {% endif %}
   </div>
   <div class="task-drop droppable" drop-group="task" stage-id="{{ task.stage.pk }}" task-id="{{ task.pk }}" order="{{ task.order }}"></div>

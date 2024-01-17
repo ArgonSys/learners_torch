@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
 from django.db import transaction
-from learners_torch.utils import replace_newline_to_br
 
 from .models import Stage
 from .forms import StageForm
@@ -23,7 +22,6 @@ class StageCreateView(View):
         form = StageForm(request.POST)
         if form.is_valid:
             stage = form.save(commit=False)
-            stage.description = replace_newline_to_br(stage.description)
             stage.plan = plan
             stage.order = plan.stage_set.filter(order__gt=0).count() + 1
             stage.save()
@@ -44,7 +42,6 @@ class StageUpdateView(View):
         form = StageForm(request.POST, instance=stage)
         if form.is_valid:
             stage = form.save(commit=False)
-            stage.description = replace_newline_to_br(stage.description)
             stage.plan = get_object_or_404(Plan, pk=plan_pk)
             stage.save()
             return redirect("plans:show", plan_pk=plan_pk)

@@ -7,7 +7,6 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Plan
 from .forms import PlanForm
 
-from learners_torch.utils import replace_newline_to_br
 from stages.utils import initialize_stages
 
 

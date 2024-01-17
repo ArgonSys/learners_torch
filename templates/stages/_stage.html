@@ -12,8 +12,8 @@
       <div class="stage__lower-menu">
         <div class="stage__name">{{ stage.name }}</div>
         <div class="stage__description">
-          {{ stage.description|safe }}
-          <div class="popup hidden">{{ stage.description|safe }}</div>
+          {{ stage.description|linebreaks }}
+          <div class="popup hidden">{{ stage.description|linebreaks }}</div>
         </div>
       </div>
     </div>
