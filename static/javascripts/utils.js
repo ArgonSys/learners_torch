@@ -24,24 +24,31 @@ function setElementXYFromBase(ele, baseEle) {
   return [x, y];
 }
 
-function formatMsec(msec, useCeilForSec) {
+function formatMsec(msec) {
   const MSEC_PER_HOUR = 3600000;
   const MSEC_PER_MINUTE = 60000;
   const MSEC_PER_SECOND = 1000;
   const MIN_LENGTH = 2;
 
-  let hour = Math.floor( msec / MSEC_PER_HOUR ).toString();
+  let hour = Math.floor( msec / MSEC_PER_HOUR );
   msec = msec % MSEC_PER_HOUR;
-
-  let min = Math.floor( msec / MSEC_PER_MINUTE ).toString();
+  let min = Math.floor( msec / MSEC_PER_MINUTE );
   msec = msec % MSEC_PER_MINUTE;
+  let sec = Math.round( msec / MSEC_PER_SECOND );
 
-  let sec;
-  if(useCeilForSec){
-    sec = Math.ceil( msec / MSEC_PER_SECOND ).toString();
-  } else {
-    sec = Math.floor( msec / MSEC_PER_SECOND ).toString();
+  if(sec === MSEC_PER_MINUTE / MSEC_PER_SECOND){
+    sec = 0;
+    min += 1;
   }
+
+  if(min === MSEC_PER_HOUR / MSEC_PER_MINUTE){
+     min = 0;
+     hour += 1;
+  }
+
+  hour = hour.toString();
+  min = min.toString();
+  sec = sec.toString();
 
   hour = `${(hour.length < MIN_LENGTH)? "0".repeat(MIN_LENGTH - hour.length): ""}${hour}`;
   min = `${(min.length < MIN_LENGTH)? "0".repeat(MIN_LENGTH - min.length): ""}${min}`;
