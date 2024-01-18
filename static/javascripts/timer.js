@@ -7,10 +7,9 @@ const DERAY_TIME = 10; //ms
 let viewW, viewH, r, incl;
 
 let currentTheta = 2*Math.PI * remainTime / planedTime;
-const DELTA_THETA = 2 * Math.PI * DERAY_TIME / planedTime;
 
 let countdownID, countupID;
-let startedTime;
+let startedTime, lastTime;
 let currentRemainTime = remainTime;
 
 
@@ -23,55 +22,116 @@ function timer() {
   const resetBtn = document.querySelector(".resetBtn");
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
   setTimerCirclePath(mainTimerPi, currentTheta);
+
+
+  timerBtn.addEventListener("click", startCountDown);
+}
+
+
+function startCountDown(event){
   startedTime = Date.now();
+  lastTime = Date.now();
+  console.log(iconStopHTML);
+  this.innerHTML = iconStopHTML;
+  this.removeEventListener("click", startCountDown);
+  this.addEventListener("click", stopCountDown);
   countdownID = setInterval(countdown, DERAY_TIME);
+  lastTime = Date.now();
+}
+
+
+function stopCountDown(event){
+  console.log(iconStopHTML);
+  this.innerHTML = iconPlayHTML;
+
+  this.removeEventListener("click", stopCountDown);
+  this.addEventListener("click", startCountDown);
+
+  clearInterval(countdownID);
 }
 
 
 function countdown() {
+  const timerBtn = document.querySelector(".timer-btn");
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
-  const mainTimerRemainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
 
   loopCount++;
   console.log(loopCount, currentTheta);
-  setTimerCirclePath(mainTimerPi, currentTheta);
-  currentRemainTime -= DERAY_TIME;
-  mainTimerRemainTimeArea.innerHTML = formatMsec((currentRemainTime > 0)? currentRemainTime: 0, true);
 
-  currentTheta -= DELTA_THETA;
+  const currentTime = Date.now();
+  const deltaTime = currentTime - lastTime;
+  const deltaTheta = 2*Math.PI * deltaTime/planedTime;
+  lastTime = Date.now();
+
+  currentRemainTime -= deltaTime;
+  remainTimeArea.innerHTML = formatMsec((currentRemainTime > 0)? currentRemainTime: 0, true);
+
+  currentTheta -= deltaTheta;
+  setTimerCirclePath(mainTimerPi, currentTheta);
+
+
+
   if(currentTheta <= 0) {
     clearInterval(countdownID);
-    currentTheta = 0;
+    currentTheta = 0 - currentTheta;
 
     mainTimerPi.classList.add("h-reverse");
     mainTimerPi.querySelectorAll("path").forEach((ele) => {
       ele.setAttribute("style", "opacity:0.5;");
       ele.setAttribute("stroke", "red");
     });
-    mainTimerRemainTimeArea.setAttribute("style", "color:red;")
+    remainTimeArea.setAttribute("style", "color:red;")
+
+    timerBtn.removeEventListener("click", stopCountDown);
+    timerBtn.addEventListener("click", stopCountUp);
+
     countupID = setInterval(countup, DERAY_TIME);
   }
 }
 
+
+function startCountUp(event){
+  lastTime = Date.now();
+  this.innerHTML = iconStopHTML;
+  this.removeEventListener("click", startCountUp);
+  this.addEventListener("click", stopCountUp);
+  countupID = setInterval(countup, DERAY_TIME);
+  lastTime = Date.now();
+}
+
+
+function stopCountUp(event){
+  this.innerHTML = iconPlayHTML;
+  this.removeEventListener("click", stopCountUp);
+  this.addEventListener("click", startCountUp);
+  clearInterval(countupID);
+}
+
+
 function countup() {
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
-  const mainTimerRemainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
   loopCount++;
   console.log(loopCount, currentTheta);
+
+  const deltaTime = Date.now() - lastTime;
+  const deltaTheta = 2*Math.PI * deltaTime/planedTime;
+  lastTime = Date.now();
+
+  currentRemainTime += deltaTime;
+  remainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
+
+  currentTheta += deltaTheta;
   setTimerCirclePath(mainTimerPi, currentTheta);
 
-  currentRemainTime += DERAY_TIME;
-  mainTimerRemainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
 
-  currentTheta += DELTA_THETA;
   if(currentTheta >= 2 * Math.PI) {
-    const pathes = mainTimerPi.querySelectorAll("path");
-    if(pathes.length < 4) pathes.forEach((ele) => {
-      const clone = ele.cloneNode(true);
-      clone.classList.remove("active");
-      mainTimerPi.insertAdjacentElement("beforeend", clone);
+    const pathes = mainTimerPi.querySelectorAll("path.hidden");
+    if(pathes) pathes.forEach((ele) => {
+      ele.classList.remove("hidden");
     });
-    currentTheta = 0;
+    currentTheta = currentTheta - 2 * Math.PI;
   }
 }
 

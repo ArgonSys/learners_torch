@@ -6,6 +6,8 @@
 {% block extendhead %}
 <script>const planedTime = {{ planed_time }};</script>
 <script>const remainTime = {{ remain_time }};</script>
+<script>const iconPlayHTML = `{% include "_icon_play.html" %}`;</script>
+<script>const iconStopHTML = `{% include "_icon_stop_fill.html" %}`;</script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}
 
