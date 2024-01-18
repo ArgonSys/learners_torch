@@ -6,7 +6,8 @@ const DERAY_TIME = 10; //ms
 
 let viewW, viewH, r, incl;
 
-let currentTheta = 2*Math.PI * remainTime / planedTime;
+const initialTheta = 2*Math.PI * remainTime / planedTime;
+let currentTheta = initialTheta;
 
 let countdownID, countupID;
 let startedTime, lastTime;
@@ -77,12 +78,7 @@ function countdown() {
     countdownID = null;
     currentTheta = 0 - currentTheta;
 
-    mainTimerPi.classList.add("h-reverse");
-    mainTimerPi.querySelectorAll("path").forEach((ele) => {
-      ele.setAttribute("style", "opacity:0.5;");
-      ele.setAttribute("stroke", "red");
-    });
-    remainTimeArea.setAttribute("style", "color:red;")
+    setCountupApparence()
 
     timerBtn.removeEventListener("click", stopCountDown);
     timerBtn.addEventListener("click", stopCountUp);
@@ -90,7 +86,6 @@ function countdown() {
     countupID = setInterval(countup, DERAY_TIME);
   }
 }
-
 
 function startCountUp(event){
   lastTime = Date.now();
@@ -147,6 +142,7 @@ function resetCount(event){
       lastTime = Date.now();
       return;
     }
+
   } else if(countupID) {
     clearInterval(countupID);
     if(!confirm("タイマーをリセットしますか？")){
@@ -154,13 +150,33 @@ function resetCount(event){
       lastTime = Date.now();
       return;
     }
+
   } else {
     // タイマーが動作していない場合、レコードの削除を伴う
     if(!confirm("直前の記録を消去しますか？")) return;
+
   }
 
+  countdownID = null;
+  countupID = null;
+
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
   const timerBtn = document.querySelector(".timer-btn");
+
+  currentTheta = initialTheta;
+  setTimerCirclePath(mainTimerPi, currentTheta);
+
+  currentRemainTime = remainTime;
+  remainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
+
   timerBtn.innerHTML = iconStartHTML;
+  timerBtn.removeEventListener("click", stopCountUp);
+  timerBtn.removeEventListener("click", stopCountDown);
+  timerBtn.removeEventListener("click", startCountUp);
+  timerBtn.addEventListener("click", startCountDown);
+
+  removeCountupApparence();
 }
 
 
@@ -190,6 +206,38 @@ function setTimerCirclePath(timerPi, theta) {
 
   overHalf.setAttribute("d", overHalfD.join(" "));
   underHalf.setAttribute("d", underHalfD.join(" "));
+}
+
+
+function setCountupApparence() {
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+  const pathes = mainTimerPi.querySelectorAll("path");
+
+  mainTimerPi.classList.add("h-reverse");
+  pathes.forEach((ele) => {
+    ele.setAttribute("style", "opacity:0.5;");
+    ele.setAttribute("stroke", "red");
+  });
+
+  remainTimeArea.setAttribute("style", "color:red;")
+}
+
+
+function removeCountupApparence() {
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+  const pathes = mainTimerPi.querySelectorAll("path");
+
+  mainTimerPi.classList.remove("h-reverse");
+  pathes.forEach((ele) => {
+    ele.removeAttribute("style");
+    ele.setAttribute("stroke", "#6fdb6f");
+
+    if(!ele.classList.contains("active")) ele.classList.add("hidden");
+  });
+
+  remainTimeArea.removeAttribute("style");
 }
 
 
