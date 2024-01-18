@@ -1,12 +1,15 @@
-import json
+import math
+
 from django.shortcuts import render
-from django.http import JsonResponse
 from django.views import View
 
 
 class MeasureTimeView(View):
     def get(self, request):
-        context = {"planedTime": 100000, "remainTime": 100000}
+        planed_time = 10000
+        remain_time = 10000
+
+        context = {"planed_time": planed_time, "remain_time": remain_time}
         return render(request, "time_logs/measure_time.html", context)
 
     def post(self, request):

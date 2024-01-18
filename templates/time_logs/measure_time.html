@@ -1,9 +1,11 @@
 {% extends "base.html" %}
+
 {% load static %}
+{% load time_logs_extras %}
 
 {% block extendhead %}
-<script>const planedTime = {{ planedTime }};</script>
-<script>const remainTime = {{ remainTime }};</script>
+<script>const planedTime = {{ planed_time }};</script>
+<script>const remainTime = {{ remain_time }};</script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}
 
@@ -17,9 +19,8 @@
     <div class="timers__area">
       <div class="timer-main">
         <div class="timer-main__inner">
-          <div class="heading">メインタイマー</div>
-          <div class="remain-time"></div>
-          <div class="entire-time"></div>
+          <div class="remain-time">{{ remain_time|format_msec }}</div>
+          <div class="entire-time">/ {{ planed_time|format_msec }}</div>
         </div>
         {% include "time_logs/_timer_pi.html" %}
       </div>

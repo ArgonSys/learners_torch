@@ -23,3 +23,29 @@ function setElementXYFromBase(ele, baseEle) {
   let y = parseInt(ele.getBoundingClientRect().top) - parseInt(baseEle.getBoundingClientRect().top);
   return [x, y];
 }
+
+function formatMsec(msec, useCeilForSec) {
+  const MSEC_PER_HOUR = 3600000;
+  const MSEC_PER_MINUTE = 60000;
+  const MSEC_PER_SECOND = 1000;
+  const MIN_LENGTH = 2;
+
+  let hour = Math.floor( msec / MSEC_PER_HOUR ).toString();
+  msec = msec % MSEC_PER_HOUR;
+
+  let min = Math.floor( msec / MSEC_PER_MINUTE ).toString();
+  msec = msec % MSEC_PER_MINUTE;
+
+  let sec;
+  if(useCeilForSec){
+    sec = Math.ceil( msec / MSEC_PER_SECOND ).toString();
+  } else {
+    sec = Math.floor( msec / MSEC_PER_SECOND ).toString();
+  }
+
+  hour = `${(hour.length < MIN_LENGTH)? "0".repeat(MIN_LENGTH - hour.length): ""}${hour}`;
+  min = `${(min.length < MIN_LENGTH)? "0".repeat(MIN_LENGTH - min.length): ""}${min}`;
+  sec = `${(sec.length < MIN_LENGTH)? "0".repeat(MIN_LENGTH - sec.length): ""}${sec}`;
+
+  return `${hour}:${min}:${sec}`;
+}

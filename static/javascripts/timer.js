@@ -2,17 +2,19 @@
 const UNDER_HALF = 0;
 const CLOCK_WISE = 1;
 
-const DERAY_TIME = 100; //ms
+const DERAY_TIME = 10; //ms
 
 let viewW, viewH, r, incl;
 
 let currentTheta = 2*Math.PI * remainTime / planedTime;
 const DELTA_THETA = 2 * Math.PI * DERAY_TIME / planedTime;
 
-let countdownID;
+let countdownID, countupID;
 let startedTime;
+let currentRemainTime = remainTime;
 
-let loopCount=0;
+
+let loopCount = 0;
 
 
 function timer() {
@@ -20,7 +22,7 @@ function timer() {
   const timerBtn = document.querySelector(".timer-btn");
   const resetBtn = document.querySelector(".resetBtn");
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
-
+  setTimerCirclePath(mainTimerPi, currentTheta);
   startedTime = Date.now();
   countdownID = setInterval(countdown, DERAY_TIME);
 }
@@ -28,13 +30,50 @@ function timer() {
 
 function countdown() {
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const mainTimerRemainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+
   loopCount++;
   console.log(loopCount, currentTheta);
   setTimerCirclePath(mainTimerPi, currentTheta);
-  if(currentTheta <= 0) clearInterval(countdownID);
+  currentRemainTime -= DERAY_TIME;
+  mainTimerRemainTimeArea.innerHTML = formatMsec((currentRemainTime > 0)? currentRemainTime: 0, true);
+
   currentTheta -= DELTA_THETA;
+  if(currentTheta <= 0) {
+    clearInterval(countdownID);
+    currentTheta = 0;
+
+    mainTimerPi.classList.add("h-reverse");
+    mainTimerPi.querySelectorAll("path").forEach((ele) => {
+      ele.setAttribute("style", "opacity:0.5;");
+      ele.setAttribute("stroke", "red");
+    });
+    mainTimerRemainTimeArea.setAttribute("style", "color:red;")
+    countupID = setInterval(countup, DERAY_TIME);
+  }
 }
 
+function countup() {
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const mainTimerRemainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
+  loopCount++;
+  console.log(loopCount, currentTheta);
+  setTimerCirclePath(mainTimerPi, currentTheta);
+
+  currentRemainTime += DERAY_TIME;
+  mainTimerRemainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
+
+  currentTheta += DELTA_THETA;
+  if(currentTheta >= 2 * Math.PI) {
+    const pathes = mainTimerPi.querySelectorAll("path");
+    if(pathes.length < 4) pathes.forEach((ele) => {
+      const clone = ele.cloneNode(true);
+      clone.classList.remove("active");
+      mainTimerPi.insertAdjacentElement("beforeend", clone);
+    });
+    currentTheta = 0;
+  }
+}
 
 function setTimerCirclePath(timerPi, theta) {
   // 2つの円弧を組み合わせ、正円も対応できるようにする

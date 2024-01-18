@@ -1,3 +1,7 @@
 .hidden {
   display: none;
 }
+
+.h-reverse {
+  transform: scale(-1, 1);
+}
