@@ -2,6 +2,8 @@
 {% load static %}
 
 {% block extendhead %}
+<script>const planedTime = {{ planedTime }};</script>
+<script>const remainTime = {{ remainTime }};</script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}
 
