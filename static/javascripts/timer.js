@@ -1,95 +1,79 @@
 const VIEW_WIDTH = 100;
 const VIEW_HEIGHT = 100;
 const R = 40;
-const INCLINATION = 0;
+const NO_INCLINATION = 0;
+const UNDER_HALF = 0;
 const OVER_HALF = 1;
 const CLOCK_WISE = 1;
+const REVERSE_CLOCK_WISE = 0;
 
 
 const DERAY_TIME = 100; //ms
 const T = 10000; //ms
-const REMAIN_T = 8000; //ms
+const REMAIN_T = 10000; //ms
 const IS_OVER_HALF_AT_STARTED = (REMAIN_T > T/2)? 1: 0;
 // IS_OVER_HALF_AT_STARTED == 1の時に引きすぎる分を補正
-const THETA_AT_STARTED = Math.PI/2 - 2*Math.PI * REMAIN_T/T + IS_OVER_HALF_AT_STARTED * Math.PI
+const THETA_AT_STARTED = 2*Math.PI * REMAIN_T/T;
 const ENDX_AT_STARTED = VIEW_WIDTH/2 - (IS_OVER_HALF_AT_STARTED? 1: -1) * R * Math.cos(THETA_AT_STARTED);
 const ENDY_AT_STARTED = VIEW_HEIGHT/2 + (IS_OVER_HALF_AT_STARTED? 1: -1) * R * Math.sin(THETA_AT_STARTED);
 
 const DELTA_THETA = 2 * Math.PI * DERAY_TIME / T;
+
+let currentTheta = THETA_AT_STARTED;
 let countdownID;
-let currentTime;
+let startedTime;
 
 let loopCount=0;
+
 
 function timer() {
   const timerBtn = document.querySelector(".timer-btn");
   const resetBtn = document.querySelector(".resetBtn");
-  const mainTimerCircle = document.querySelector(".timer-main .timer-circle");
-  const subTimerCircle = document.querySelector(".timer-sub .timer-circle");
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
 
-  setTimerCirclePath(mainTimerCircle);
+  setTimerCirclePath(mainTimerPi, THETA_AT_STARTED);
 
-  currentTime = Date.now()
+  startedTime = Date.now();
   countdownID = setInterval(countdown, DERAY_TIME);
 }
 
-function setTimerCirclePath(circlePath) {
+
+function setTimerCirclePath(timerPi, theta, view_width=VIEW_WIDTH, view_height= VIEW_HEIGHT ,r=R, inclination=NO_INCLINATION) {
+  // 2つの円弧を組み合わせ、正円も対応できるようにする
+  const overHalf = timerPi.querySelector(".overhalf-circle");
+  const underHalf = timerPi.querySelector(".underhalf-circle");
+
+  // overHalfTheta, underHalfTheta は閉区間[-π/2, π/2] に含まれる
+  const overHalfTheta = Math.min(Math.max(3/2*Math.PI - theta, -Math.PI/2), Math.PI/2);
+  const underHalfTheta = Math.min(Math.max(1/2*Math.PI - theta, -Math.PI/2), Math.PI/2);
+
+  // overHalf: endX = VIEW_WIDTH/2 - RcosΘ, endY = VIEW_HEIGHT/2 + RsinΘ
+  // underHalf: endX = VIEW_WIDTH/2 + RcosΘ, endY = VIEW_HEIGHT/2 - RsinΘ
+  const [overHalfEndX, overHalfEndY] = [view_width/2 - r*Math.cos(overHalfTheta), view_height/2 + r*Math.sin(overHalfTheta)];
+  const [underHalfEndX, underHalfEndY] = [view_width/2 + r*Math.cos(underHalfTheta), view_height/2 - r*Math.sin(underHalfTheta)];
+
   // d = M startX startY A R R inclination isOverHalf isClockWise endX endY
-  const d = ["M", `${VIEW_WIDTH/2}`, `${VIEW_HEIGHT/2 - R}`,
-             "A", `${R}`, `${R}`, `${INCLINATION}`, `${OVER_HALF}`,
-             `${CLOCK_WISE}`, `${ENDX_AT_STARTED-0.00001}`, `${ENDY_AT_STARTED}`];
-  circlePath.setAttribute("d", d.join(" "));
+  const overHalfD = ["M", `${view_width/2}`, `${view_height/2 + r}`,
+                     "A", `${r}`, `${r}`, `${inclination}`, `${UNDER_HALF}`,
+                     `${CLOCK_WISE}`, `${overHalfEndX}`, `${overHalfEndY}`];
+
+  const underHalfD = ["M", `${view_width/2}`, `${view_height/2 - r}`,
+                      "A", `${r}`, `${r}`, `${inclination}`, `${UNDER_HALF}`,
+                      `${CLOCK_WISE}`, `${underHalfEndX}`, `${underHalfEndY}`];
+
+  overHalf.setAttribute("d", overHalfD.join(" "));
+  underHalf.setAttribute("d", underHalfD.join(" "));
 }
+
 
 function countdown() {
   loopCount++;
-  const mainTimerCircle = document.querySelector(".timer-main .timer-circle");
-  // 円弧の終点を取得する
-  // isOverHalf = 1: endX = VIEW_WIDTH/2 - RcosΘ, endY = VIEW_HEIGHT/2 + RsinΘ
-  // isOverHalf = 0: endX = VIEW_WIDTH/2 + RcosΘ, endY = VIEW_HEIGHT/2 - RsinΘ
-
-  let pathList = mainTimerCircle.getAttribute("d").split(" ");
-  let isOverHalf = pathList[7];
-  let endX = pathList[9];
-  let endY = pathList[10];
-
-  let theta = Math.atan((VIEW_HEIGHT/2 - endY) / (endX - VIEW_WIDTH/2));
-  theta += DELTA_THETA;
-
-  if (isOverHalf === "1") {
-    [endX, endY] = [VIEW_WIDTH/2 - R * Math.cos(theta), VIEW_HEIGHT/2 + R * Math.sin(theta)]
-
-    // thetaが pi/2 を上回ったらisOverHalfを変更し、
-    // thetaを pi/2 から上回った分だけ進める
-    if (theta >= Math.PI/2) {
-      console.log(loopCount, theta);
-
-      theta =  -Math.PI/2 + (theta - Math.PI/2);
-      isOverHalf = 0;
-      [endX, endY] = [VIEW_WIDTH/2 + R * Math.cos(theta), VIEW_HEIGHT/2 - R * Math.sin(theta)]
-    }
-
-  } else {
-    [endX, endY] = [VIEW_WIDTH/2 + R * Math.cos(theta), VIEW_HEIGHT/2 - R * Math.sin(theta)]
-
-    // thetaが -pi/2 を下回ったらthetaを -pi/2 にする
-    if (theta >= Math.PI/2) {
-      isOverHalf = 1;
-      theta = -Math.PI/2;
-      [endX, endY] = [VIEW_WIDTH/2 - R * Math.cos(theta) - 0.01, VIEW_HEIGHT/2 + R * Math.sin(theta)]
-      // clearInterval(countdownID)
-    }
-
-  }
-
-
-  pathList[7] = isOverHalf;
-  pathList[9] = endX;
-  pathList[10] = endY;
-
-  mainTimerCircle.setAttribute("d", pathList.join(" "));
+  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  console.log(loopCount, currentTheta);
+  setTimerCirclePath(mainTimerPi, currentTheta);
+  if(currentTheta <= 0) clearInterval(countdownID);
+  currentTheta -= DELTA_THETA;
 }
-
 
 
 window.addEventListener("load", timer);
