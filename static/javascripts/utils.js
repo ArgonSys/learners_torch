@@ -24,7 +24,7 @@ function setElementXYFromBase(ele, baseEle) {
   return [x, y];
 }
 
-function formatMsec(msec) {
+function formatMsec(msec, useCeilForSec) {
   const MSEC_PER_HOUR = 3600000;
   const MSEC_PER_MINUTE = 60000;
   const MSEC_PER_SECOND = 1000;
@@ -34,7 +34,9 @@ function formatMsec(msec) {
   msec = msec % MSEC_PER_HOUR;
   let min = Math.floor( msec / MSEC_PER_MINUTE );
   msec = msec % MSEC_PER_MINUTE;
-  let sec = Math.round( msec / MSEC_PER_SECOND );
+  let sec;
+  if(useCeilForSec) sec = Math.ceil( msec / MSEC_PER_SECOND );
+  else sec = Math.floor( msec / MSEC_PER_SECOND );
 
   if(sec === MSEC_PER_MINUTE / MSEC_PER_SECOND){
     sec = 0;
