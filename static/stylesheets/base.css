@@ -597,6 +597,9 @@ footer {
 .timer-btn svg {
   width: 80%;
   height: 80%;
+}
+
+.bi-start {
   transform: translate(5%, 0);
 }
 
