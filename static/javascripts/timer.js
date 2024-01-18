@@ -140,17 +140,27 @@ function countup() {
 
 function resetCount(event){
   // タイマーが動作している場合、タイマーの停止をし、confirm が false だったら再起動する
-  if(!confirm("タイマーをリセットしますか？")){
-    // countdownID = setInterval(countdown, DERAY_TIME);
-    // countupID = setInterval(countup, DERAY_TIME);
-    return;
+  if(countdownID){
+    clearInterval(countdownID);
+    if(!confirm("タイマーをリセットしますか？")){
+      countdownID = setInterval(countdown, DERAY_TIME);
+      lastTime = Date.now();
+      return;
+    }
+  } else if(countupID) {
+    clearInterval(countupID);
+    if(!confirm("タイマーをリセットしますか？")){
+      countupID = setInterval(countup, DERAY_TIME);
+      lastTime = Date.now();
+      return;
+    }
+  } else {
+    // タイマーが動作していない場合、レコードの削除を伴う
+    if(!confirm("直前の記録を消去しますか？")) return;
   }
 
-  // タイマーが動作していない場合、レコードの削除を伴う
-  if(!confirm("直前の記録を消去しますか？")) return;
   const timerBtn = document.querySelector(".timer-btn");
   timerBtn.innerHTML = iconStartHTML;
-
 }
 
 
