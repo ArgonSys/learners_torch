@@ -6,8 +6,8 @@
 {% block extendhead %}
 <script>const planedTime = {{ planed_time }};</script>
 <script>const remainTime = {{ remain_time }};</script>
-<script>const iconPlayHTML = `{% include "_icon_play.html" %}`;</script>
-<script>const iconStopHTML = `{% include "_icon_stop_fill.html" %}`;</script>
+<script>const iconStartHTML = `{% include "_icon_start.html" %}`;</script>
+<script>const iconStopHTML = `{% include "_icon_stop.html" %}`;</script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}
 
@@ -27,7 +27,7 @@
         {% include "time_logs/_timer_pi.html" %}
       </div>
       <div class="timer-btns">
-        <button type="button" class="timer-btn">{% include "_icon_play.html" %}</button>
+        <button type="button" class="timer-btn">{% include "_icon_start.html" %}</button>
         <button type="button" class="reset-btn">{% include "_icon_arrow_clockwise.html" %}</button>
       </div>
     </div>

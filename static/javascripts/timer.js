@@ -1,4 +1,4 @@
-// remainTime, planedTime from measure_time.html
+// remainTime, planedTime, iconStartHTML, iconStopHTML from measure_time.html
 const UNDER_HALF = 0;
 const CLOCK_WISE = 1;
 
@@ -31,7 +31,6 @@ function timer() {
 function startCountDown(event){
   startedTime = Date.now();
   lastTime = Date.now();
-  console.log(iconStopHTML);
   this.innerHTML = iconStopHTML;
   this.removeEventListener("click", startCountDown);
   this.addEventListener("click", stopCountDown);
@@ -41,8 +40,7 @@ function startCountDown(event){
 
 
 function stopCountDown(event){
-  console.log(iconStopHTML);
-  this.innerHTML = iconPlayHTML;
+  this.innerHTML = iconStartHTML;
 
   this.removeEventListener("click", stopCountDown);
   this.addEventListener("click", startCountDown);
@@ -102,7 +100,7 @@ function startCountUp(event){
 
 
 function stopCountUp(event){
-  this.innerHTML = iconPlayHTML;
+  this.innerHTML = iconStartHTML;
   this.removeEventListener("click", stopCountUp);
   this.addEventListener("click", startCountUp);
   clearInterval(countupID);
