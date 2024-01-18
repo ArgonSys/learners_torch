@@ -19,12 +19,13 @@ let loopCount = 0;
 function timer() {
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
   const timerBtn = document.querySelector(".timer-btn");
-  const resetBtn = document.querySelector(".resetBtn");
+  const resetBtn = document.querySelector(".reset-btn");
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
   setTimerCirclePath(mainTimerPi, currentTheta);
 
 
   timerBtn.addEventListener("click", startCountDown);
+  resetBtn.addEventListener("click", resetCount);
 }
 
 
@@ -46,6 +47,7 @@ function stopCountDown(event){
   this.addEventListener("click", startCountDown);
 
   clearInterval(countdownID);
+  countdownID = null;
 }
 
 
@@ -72,6 +74,7 @@ function countdown() {
 
   if(currentTheta <= 0) {
     clearInterval(countdownID);
+    countdownID = null;
     currentTheta = 0 - currentTheta;
 
     mainTimerPi.classList.add("h-reverse");
@@ -104,6 +107,7 @@ function stopCountUp(event){
   this.removeEventListener("click", stopCountUp);
   this.addEventListener("click", startCountUp);
   clearInterval(countupID);
+  countupID = null;
 }
 
 
@@ -132,6 +136,24 @@ function countup() {
     currentTheta = currentTheta - 2 * Math.PI;
   }
 }
+
+
+function resetCount(event){
+  // タイマーが動作している場合、タイマーの停止をし、confirm が false だったら再起動する
+  if(!confirm("タイマーをリセットしますか？")){
+    // countdownID = setInterval(countdown, DERAY_TIME);
+    // countupID = setInterval(countup, DERAY_TIME);
+    return;
+  }
+
+  // タイマーが動作していない場合、レコードの削除を伴う
+  if(!confirm("直前の記録を消去しますか？")) return;
+  const timerBtn = document.querySelector(".timer-btn");
+  timerBtn.innerHTML = iconStartHTML;
+
+}
+
+
 
 function setTimerCirclePath(timerPi, theta) {
   // 2つの円弧を組み合わせ、正円も対応できるようにする
