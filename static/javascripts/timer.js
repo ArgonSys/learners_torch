@@ -183,8 +183,8 @@ function resetCount(event){
 
 function setTimerCirclePath(timerPi, theta) {
   // 2つの円弧を組み合わせ、正円も対応できるようにする
-  const overHalf = timerPi.querySelector(".overhalf-circle");
-  const underHalf = timerPi.querySelector(".underhalf-circle");
+  const overHalf = timerPi.querySelector(".active.overhalf-circle");
+  const underHalf = timerPi.querySelector(".active.underhalf-circle");
 
   // overHalfTheta, underHalfTheta は閉区間[-π/2, π/2] に含まれる
   const overHalfTheta = Math.min(Math.max(3/2*Math.PI - theta, -Math.PI/2), Math.PI/2);
