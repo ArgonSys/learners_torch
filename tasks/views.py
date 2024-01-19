@@ -3,19 +3,21 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
 from django.db import transaction
+from django import forms
 
 from .models import Task
 from .forms import TaskForm
 
 from plans.models import Plan
 from stages.models import Stage
+from time_logs.forms import TimeForm
 
 
 class TaskCreateView(View):
     def get(self, request, plan_pk):
-        get_object_or_404(Plan, pk=plan_pk)
-        form = TaskForm
-        context = {"form": form, "plan_pk": plan_pk}
+        plan = get_object_or_404(Plan, pk=plan_pk)
+        time_forms = forms.formset_factory(TimeForm, extra=plan.stage_set.count())
+        context = {"task_form": TaskForm, "time_forms": time_forms, "plan_pk": plan_pk}
         return render(request, "tasks/new.html", context)
 
     def post(self, request, plan_pk):

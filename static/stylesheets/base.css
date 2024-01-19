@@ -483,6 +483,29 @@ footer {
   background-color: blue;
 }
 
+.task-form {
+  width: 100vw;
+  /* 100vh - header - footer */
+  height: calc(100vh - min(10vh, 80px) - 30px);
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inputs-wrapper {
+  display:flex;
+  justify-content: space-around;
+}
+
+.task-input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+
 .timers-wrapper {
   width: 100%;
   /* 100vh - header - footer */

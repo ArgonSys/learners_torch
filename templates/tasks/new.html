@@ -2,9 +2,18 @@
 
 
 {% block main %}
-<form method="post">
+<form method="post" class="task-form">
   {% csrf_token %}
-  {{ form }}
-  <input type="submit" value="作成">
+  <div class="inputs-wrapper">
+    <div class="task-input">
+      {{ task_form }}
+      <input type="submit" value="作成">
+    </div>
+    <div class="time-inputs">
+      {% for time_form in time_forms %}
+        {{ time_form }}
+      {% endfor %}
+    </div>
+  </div>
 </form>
 {% endblock %}
