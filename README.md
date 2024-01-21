@@ -87,7 +87,7 @@ stage: ForeignKey
 | id                  | bigint   | PRI | PRIMARY_KEY      |
 | stage_id            | bigint   | MUL | FOREIGN_KEY      |
 | task_id             | bigint   | MUL | FOREIGN_KEY      |
-| planed_time         | datetime |     | NOT NULL         |
+| planed_time         | bigint   |     | NOT NULL         |
 | date_created        | datetime |     | NOT NULL         |
 | date_updated        | datetime |     | NOT NULL         |
 
@@ -103,7 +103,7 @@ task: ForeignKey
 | id                  | bigint   | PRI | PRIMARY_KEY      |
 | time_log_id         | bigint   | MUL | FOREIGN_KEY      |
 | date_started        | datetime |     | NOT NULL         |
-| actual_time         | bigint |     | NOT NULL         |
+| actual_time         | bigint   |     | NOT NULL         |
 
 ### アソシエーション
 time_log: ForeignKey

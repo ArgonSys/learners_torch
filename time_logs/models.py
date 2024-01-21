@@ -10,9 +10,7 @@ class TimeLog(models.Model):
     task = models.ForeignKey(
         "tasks.Task", verbose_name=_("task"), on_delete=models.CASCADE
     )
-    planed_time = models.DateTimeField(
-        _("planed time"), auto_now=False, auto_now_add=False
-    )
+    planed_time = models.DurationField(_("planed time"))
     date_created = models.DateTimeField(_("created time"), auto_now_add=True)
     date_updated = models.DateTimeField(_("updated time"), auto_now=True)
 
@@ -30,7 +28,6 @@ class ActualTime(models.Model):
         _("started time"), auto_now=False, auto_now_add=False
     )
     actual_time = models.DurationField(_("actual time"))
-    date_measured = models.DateTimeField(_("measured time"), auto_now_add=False)
 
     class Meta:
         db_table = "actual_times"
