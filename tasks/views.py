@@ -10,27 +10,52 @@ from .forms import TaskForm
 
 from plans.models import Plan
 from stages.models import Stage
+from time_logs.models import TimeLog
 from time_logs.forms import TimeForm
 
 
 class TaskCreateView(View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        time_forms = forms.formset_factory(TimeForm, extra=plan.stage_set.count())
-        context = {"task_form": TaskForm, "time_forms": time_forms, "plan_pk": plan_pk}
+        task_form = TaskForm()
+        time_formset = forms.inlineformset_factory(
+            Task,
+            TimeLog,
+            fields=("planed_time",),
+            extra=plan.stage_set.count(),
+            can_delete=False,
+        )
+        context = {
+            "task_form": task_form,
+            "time_formset": time_formset,
+            "plan_pk": plan_pk,
+        }
         return render(request, "tasks/new.html", context)
 
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
         pending_stage = plan.stage_set.get(order=-2)
-        form = TaskForm(request.POST)
-        if form.is_valid:
-            task = form.save(commit=False)
-            task.stage = pending_stage
-            task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
-            task.save()
-            return redirect("plans:show", plan_pk=plan_pk)
-        context = {"form": form}
+        task_form = TaskForm(request.POST)
+        if task_form.is_valid:
+            task = task_form.save(commit=False)
+            time_formset = forms.inlineformset_factory(
+                Task,
+                TimeLog,
+                fields=("planed_time",),
+                extra=plan.stage_set.count(),
+                can_delete=False,
+            )(request.POST)
+            if time_formset.is_valid:
+                task.stage = pending_stage
+                task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
+                task.save()
+                time_formset.save()
+                return redirect("plans:show", plan_pk=plan_pk)
+        context = {
+            "task_form": task_form,
+            "time_formset": time_formset,
+            "plan_pk": plan_pk,
+        }
         return render(request, "tasks/new.html", context)
 
 

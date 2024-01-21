@@ -10,9 +10,13 @@
       <input type="submit" value="作成">
     </div>
     <div class="time-inputs">
-      {% for time_form in time_forms %}
-        {{ time_form }}
-      {% endfor %}
+      {% with hours=""|center:1000 %}
+        <select>
+          {% for x in hours %}
+            <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
+          {% endfor %}
+        </select>
+      {% endwith %}
     </div>
   </div>
 </form>
