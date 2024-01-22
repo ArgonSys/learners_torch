@@ -4,7 +4,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
 from django.db import transaction
-from django import forms
 
 from .models import Task
 from .forms import TaskForm
@@ -31,6 +30,7 @@ class TaskCreateView(View):
         }
         return render(request, "tasks/new.html", context)
 
+    @transaction.atomic
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
@@ -53,13 +53,16 @@ class TaskCreateView(View):
 
             times = params["times"]
             for i in range(len(times)):
+                # 時間が設定されていないものを保存しないように
+                if times[i] == 0:
+                    continue
+
                 time_log = TimeLog()
                 time_log.planed_time = datetime.timedelta(seconds=times[i])
                 time_log.task = task
                 time_log.stage = get_object_or_404(
                     Stage, pk=params.getlist("stage-ids[]")[i]
                 )
-                print("after stage404")
                 time_log.save()
             return redirect("plans:show", plan_pk=plan_pk)
 
