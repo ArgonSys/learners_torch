@@ -1,16 +1,16 @@
 <div class="time-imput">
   {% with hours=""|center:1000 range=""|center:60 %}
-    <select>
+    <select name="hour">
       {% for _ in hours %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 100 %}0{% endif %}{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select> :
-    <select>
+    <select name="minute">
       {% for _ in range %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select> :
-    <select>
+    <select name="second">
       {% for _ in range %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
