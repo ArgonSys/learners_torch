@@ -1,4 +1,5 @@
 import json
+import datetime
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
@@ -20,50 +21,53 @@ import pdb
 class TaskCreateView(View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
+        stages = plan.stage_set.filter(order__gt=0)
         task_form = TaskForm()
-        # time_formset = forms.inlineformset_factory(
-        #     Task,
-        #     TimeLog,
-        #     fields=("planed_time",),
-        #     extra=plan.stage_set.filter(order__gt=0).count(),
-        #     can_delete=False,
-        # )
         time_form = TimeForm()
         context = {
             "task_form": task_form,
-            # "time_formset": time_formset,
             "time_form": time_form,
-            "plan_pk": plan_pk,
+            "stages": stages,
         }
         return render(request, "tasks/new.html", context)
 
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
+        stages = plan.stage_set.filter(order__gt=0)
         pending_stage = plan.stage_set.get(order=-2)
         params = request.POST.copy()
-        if "planed_time" not in params:
-            form = HourMinuteSecondForm(params)
-            if form.is_valid():
-                cleaned = form.clean()
-                params["planed_time"] = cleaned["time"]
+        if "planed_times" not in params:
+            times = convert_times(
+                params.getlist("hours[]"),
+                params.getlist("minutes[]"),
+                params.getlist("seconds[]"),
+            )
+            params["times"] = times
 
         task_form = TaskForm(params)
-        planned_time_form = TimeForm(params)
-        if task_form.is_valid() and planned_time_form.is_valid():
+        if task_form.is_valid():
             task = task_form.save(commit=False)
-            planned_time = planned_time_form.save(commit=False)
             task.stage = pending_stage
             task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
             task.save()
-            planned_time.task = task
-            planned_time.stage = plan.stage_set.filter(order__gt=0).first()
-            planned_time.save()
+
+            times = params["times"]
+            for i in range(len(times)):
+                time_log = TimeLog()
+                time_log.planed_time = datetime.timedelta(seconds=times[i])
+                time_log.task = task
+                time_log.stage = get_object_or_404(
+                    Stage, pk=params.getlist("stage-ids[]")[i]
+                )
+                print("after stage404")
+                time_log.save()
             return redirect("plans:show", plan_pk=plan_pk)
+
+        time_form = TimeForm()
         context = {
             "task_form": task_form,
-            # "time_formset": time_formset,
-            "time_form": planned_time_form,
-            "plan_pk": plan_pk,
+            "time_form": time_form,
+            "stages": stages,
         }
         return render(request, "tasks/new.html", context)
 
@@ -175,3 +179,22 @@ class TaskSwapView(View):
             print(data)
 
         return JsonResponse(data)
+
+
+def convert_times(hours, minutes, seconds):
+    """hours, minutes, secondsをtimes配列に変換(単位は秒)
+
+    Args:
+        hours (list): 時間
+        minutes (list): 分
+        seconds (list): 秒
+
+    Returns:
+        list: 秒に直した配列
+    """
+    times = []
+    for i in range(len(hours)):
+        time = int(hours[i]) * 3600 + int(minutes[i]) * 60 + int(seconds[i])
+        times.append(time)
+
+    return times

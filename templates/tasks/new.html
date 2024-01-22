@@ -10,9 +10,9 @@
       <input type="submit" value="作成">
     </div>
     <div class="time-inputs">
-      {% comment %}{% for time_form in time_formset %}{% endcomment %}
-{% include "time_logs/_time_form.html" %}
-      {% comment %} {% endfor %} {% endcomment %}
+      {% for stage in stages %}
+        {% include "time_logs/_time_form.html" %}
+      {% endfor %}
     </div>
   </div>
 </form>

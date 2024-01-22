@@ -1,19 +1,20 @@
 <div class="time-imput">
   {% with hours=""|center:1000 range=""|center:60 %}
-    <select name="hour">
+    <select name="hours[]">
       {% for _ in hours %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 100 %}0{% endif %}{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select> :
-    <select name="minute">
+    <select name="minutes[]">
       {% for _ in range %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select> :
-    <select name="second">
+    <select name="seconds[]">
       {% for _ in range %}
         <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select>
   {% endwith %}
+  <input type="hidden" name="stage-ids[]" value={{stage.pk}}>
 </div>
