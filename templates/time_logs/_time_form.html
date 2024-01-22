@@ -1,4 +1,5 @@
 <div class="time-imput">
+  <div class="time-label">{{stage.name}}</div>
   {% with hours=""|center:1000 range=""|center:60 %}
     <select name="hours[]">
       {% for _ in hours %}

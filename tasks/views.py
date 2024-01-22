@@ -21,7 +21,7 @@ import pdb
 class TaskCreateView(View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        stages = plan.stage_set.filter(order__gt=0)
+        stages = plan.stage_set.filter(order__gt=0).order_by("order")
         task_form = TaskForm()
         time_form = TimeForm()
         context = {
@@ -33,7 +33,7 @@ class TaskCreateView(View):
 
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
-        stages = plan.stage_set.filter(order__gt=0)
+        stages = plan.stage_set.filter(order__gt=0).order_by("order")
         pending_stage = plan.stage_set.get(order=-2)
         params = request.POST.copy()
         if "planed_times" not in params:
