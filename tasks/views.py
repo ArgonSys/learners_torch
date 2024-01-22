@@ -72,19 +72,57 @@ class TaskCreateView(View):
 class TaskUpdateView(View):
     def get(self, request, task_pk):
         task = get_object_or_404(Task, pk=task_pk)
-        form = TaskForm(instance=task)
-        context = {"form": form, "task_pk": task_pk}
+        plan = task.stage.plan
+        stages = plan.stage_set.filter(order__gt=0).order_by("order")
+        task_form = TaskForm(instance=task)
+        context = {
+            "task_form": task_form,
+            "stages": stages,
+            "task_pk": task_pk,
+        }
         return render(request, "tasks/edit.html", context)
 
     def post(self, request, task_pk):
         task = get_object_or_404(Task, pk=task_pk)
-        form = TaskForm(request.POST, instance=task)
-        if form.is_valid:
-            task = form.save(commit=False)
+        plan = task.stage.plan
+        stages = plan.stage_set.filter(order__gt=0).order_by("order")
+
+        params = request.POST.copy()
+        # 時間、分、秒のリストから秒数のリストに変換
+        if "planed_times" not in params:
+            times = convert_times(
+                params.getlist("hours[]"),
+                params.getlist("minutes[]"),
+                params.getlist("seconds[]"),
+            )
+            params["times"] = times
+
+        task_form = TaskForm(params, instance=task)
+        if task_form.is_valid():
+            task = task_form.save(commit=False)
             task.save()
-            return redirect("plans:show", plan_pk=task.stage.plan.pk)
-        context = {"form": form, "task_pk": task_pk}
-        return render(request, "tasks/edit.html", context)
+
+            times = params["times"]
+            for i in range(len(times)):
+                # 時間が設定されていないものを保存しないように
+                if times[i] == 0:
+                    continue
+
+                stage = get_object_or_404(Stage, pk=params.getlist("stage-ids[]")[i])
+                time_log = (
+                    TimeLog.objects.filter(task=task, stage=stage).first() or TimeLog()
+                )
+                time_log.planed_time = datetime.timedelta(seconds=times[i])
+                time_log.task = task
+                time_log.stage = stage
+                time_log.save()
+            return redirect("plans:show", plan_pk=plan.pk)
+
+        context = {
+            "task_form": task_form,
+            "stages": stages,
+        }
+        return render(request, "tasks/new.html", context)
 
 
 class TaskDeleteView(View):
