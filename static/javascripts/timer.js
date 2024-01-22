@@ -6,7 +6,7 @@ const DERAY_TIME = 10; //ms
 
 let viewW, viewH, r, incl;
 
-const initialTheta = 2*Math.PI * remainTime / planedTime;
+const initialTheta = planedTime != 0? 2*Math.PI * remainTime / planedTime: 0;
 let currentTheta = initialTheta;
 
 let countdownID, countupID;
@@ -62,7 +62,7 @@ function countdown() {
 
   const currentTime = Date.now();
   const deltaTime = currentTime - lastTime;
-  const deltaTheta = 2*Math.PI * deltaTime/planedTime;
+  const deltaTheta = planedTime != 0? 2*Math.PI * deltaTime/planedTime: 0;
   lastTime = Date.now();
 
   currentRemainTime -= deltaTime;
@@ -113,7 +113,7 @@ function countup() {
   console.log(loopCount, currentTheta);
 
   const deltaTime = Date.now() - lastTime;
-  const deltaTheta = 2*Math.PI * deltaTime/planedTime;
+  const deltaTheta = planedTime != 0? 2*Math.PI * deltaTime/planedTime: 0;
   lastTime = Date.now();
 
   currentRemainTime += deltaTime;

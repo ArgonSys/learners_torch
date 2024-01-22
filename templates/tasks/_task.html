@@ -3,7 +3,7 @@
     <div class="task__handle drag-handle"></div>
     <div class="task__header">
       <div class="task__name">
-        <a href="#" class="btn">{{ task.name }}</a>
+        <a href="{% url 'time_logs:measure_time' task.pk %}" class="btn">{{ task.name }}</a>
       </div>
       <div class="task__menu">
         <a href="{% url 'tasks:edit' task.pk %}" class="btn">{% include "_icon_pencil_square.html" %}</a>
