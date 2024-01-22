@@ -11,23 +11,28 @@ from .forms import TaskForm
 from plans.models import Plan
 from stages.models import Stage
 from time_logs.models import TimeLog
-from time_logs.forms import TimeForm
+from time_logs.forms import HourMinuteSecondForm, TimeForm
+
+
+import pdb
 
 
 class TaskCreateView(View):
     def get(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
         task_form = TaskForm()
-        time_formset = forms.inlineformset_factory(
-            Task,
-            TimeLog,
-            fields=("planed_time",),
-            extra=plan.stage_set.filter(order__gt=0).count(),
-            can_delete=False,
-        )
+        # time_formset = forms.inlineformset_factory(
+        #     Task,
+        #     TimeLog,
+        #     fields=("planed_time",),
+        #     extra=plan.stage_set.filter(order__gt=0).count(),
+        #     can_delete=False,
+        # )
+        time_form = TimeForm()
         context = {
             "task_form": task_form,
-            "time_formset": time_formset,
+            # "time_formset": time_formset,
+            "time_form": time_form,
             "plan_pk": plan_pk,
         }
         return render(request, "tasks/new.html", context)
@@ -35,25 +40,29 @@ class TaskCreateView(View):
     def post(self, request, plan_pk):
         plan = get_object_or_404(Plan, pk=plan_pk)
         pending_stage = plan.stage_set.get(order=-2)
-        task_form = TaskForm(request.POST)
-        if task_form.is_valid:
+        params = request.POST.copy()
+        if "planed_time" not in params:
+            form = HourMinuteSecondForm(params)
+            if form.is_valid():
+                cleaned = form.clean()
+                params["planed_time"] = cleaned["time"]
+
+        task_form = TaskForm(params)
+        planned_time_form = TimeForm(params)
+        if task_form.is_valid() and planned_time_form.is_valid():
             task = task_form.save(commit=False)
-            time_formset = forms.inlineformset_factory(
-                Task,
-                TimeLog,
-                fields=("planed_time",),
-                extra=plan.stage_set.filter(order__gt=0).count(),
-                can_delete=False,
-            )(request.POST)
-            if time_formset.is_valid:
-                task.stage = pending_stage
-                task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
-                task.save()
-                time_formset.save()
-                return redirect("plans:show", plan_pk=plan_pk)
+            planned_time = planned_time_form.save(commit=False)
+            task.stage = pending_stage
+            task.order = pending_stage.task_set.filter(order__gt=0).count() + 1
+            task.save()
+            planned_time.task = task
+            planned_time.stage = plan.stage_set.filter(order__gt=0).first()
+            planned_time.save()
+            return redirect("plans:show", plan_pk=plan_pk)
         context = {
             "task_form": task_form,
-            "time_formset": time_formset,
+            # "time_formset": time_formset,
+            "time_form": planned_time_form,
             "plan_pk": plan_pk,
         }
         return render(request, "tasks/new.html", context)
