@@ -1,4 +1,5 @@
 import math
+import datetime
 
 from django.shortcuts import render
 from django.views import View
@@ -16,7 +17,11 @@ class MeasureTimeView(View):
             int(time_log.planed_time.total_seconds() * 1000) if time_log else 0
         )
 
-        remain_time = planed_time
+        passed_time = datetime.timedelta()
+        for actual_time in time_log.actualtime_set.all():
+            passed_time += actual_time.actual_time
+
+        remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
         context = {"planed_time": planed_time, "remain_time": remain_time}
         return render(request, "time_logs/measure_time.html", context)
