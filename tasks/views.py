@@ -22,7 +22,7 @@ class TaskCreateView(View):
             Task,
             TimeLog,
             fields=("planed_time",),
-            extra=plan.stage_set.count(),
+            extra=plan.stage_set.filter(order__gt=0).count(),
             can_delete=False,
         )
         context = {
@@ -42,7 +42,7 @@ class TaskCreateView(View):
                 Task,
                 TimeLog,
                 fields=("planed_time",),
-                extra=plan.stage_set.count(),
+                extra=plan.stage_set.filter(order__gt=0).count(),
                 can_delete=False,
             )(request.POST)
             if time_formset.is_valid:
