@@ -11,10 +11,6 @@ from .forms import TaskForm
 from plans.models import Plan
 from stages.models import Stage
 from time_logs.models import TimeLog
-from time_logs.forms import HourMinuteSecondForm, TimeForm
-
-
-import pdb
 
 
 class TaskCreateView(View):
@@ -22,10 +18,8 @@ class TaskCreateView(View):
         plan = get_object_or_404(Plan, pk=plan_pk)
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
         task_form = TaskForm()
-        time_form = TimeForm()
         context = {
             "task_form": task_form,
-            "time_form": time_form,
             "stages": stages,
         }
         return render(request, "tasks/new.html", context)
@@ -36,6 +30,8 @@ class TaskCreateView(View):
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
         pending_stage = plan.stage_set.get(order=-2)
         params = request.POST.copy()
+
+        # 時間、分、秒のリストから秒数のリストに変換
         if "planed_times" not in params:
             times = convert_times(
                 params.getlist("hours[]"),
@@ -66,10 +62,8 @@ class TaskCreateView(View):
                 time_log.save()
             return redirect("plans:show", plan_pk=plan_pk)
 
-        time_form = TimeForm()
         context = {
             "task_form": task_form,
-            "time_form": time_form,
             "stages": stages,
         }
         return render(request, "tasks/new.html", context)
