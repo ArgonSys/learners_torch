@@ -1,4 +1,6 @@
-// remainTime, planedTime, iconStartHTML, iconStopHTML from measure_time.html
+// remainTime, planedTime, iconStartHTML, iconStopHTML,
+// saveActualTimeURL, deleteActualTimeURL   from measure_time.html
+// getCookie from utils.js
 const UNDER_HALF = 0;
 const CLOCK_WISE = 1;
 
@@ -33,16 +35,17 @@ function timer() {
   currentRemainTime = Math.abs(remainTime);
   currentTheta = initialTheta;
   setTimerCirclePath(mainTimerPi, currentTheta);
-  remainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
+  remainTimeArea.innerHTML = formatMsec(currentRemainTime, remainTime > 0);
 
-  console.log(remainTime);
   if(remainTime > 0){
     timerBtn.addEventListener("click", startCountDown);
   } else {
-    setCountupApparence()
+    setCountupApparence();
     timerBtn.addEventListener("click", startCountUp);
   }
 
+  startedTime = null;
+  lastTime = null;
   resetBtn.addEventListener("click", resetCount);
 }
 
@@ -65,6 +68,8 @@ function stopCountDown(event){
 
   clearInterval(countdownID);
   countdownID = null;
+
+  saveActualTime(Date.now() - startedTime);
 }
 
 
@@ -72,9 +77,6 @@ function countdown() {
   const timerBtn = document.querySelector(".timer-btn");
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
   const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
-
-  loopCount++;
-  console.log(loopCount, currentTheta);
 
   const currentTime = Date.now();
   const deltaTime = currentTime - (lastTime??startedTime);
@@ -94,7 +96,7 @@ function countdown() {
     countdownID = null;
     currentTheta = 0 - currentTheta;
 
-    setCountupApparence()
+    setCountupApparence();
 
     timerBtn.removeEventListener("click", stopCountDown);
     timerBtn.addEventListener("click", stopCountUp);
@@ -118,16 +120,17 @@ function stopCountUp(event){
   this.innerHTML = iconStartHTML;
   this.removeEventListener("click", stopCountUp);
   this.addEventListener("click", startCountUp);
+
   clearInterval(countupID);
   countupID = null;
+
+  saveActualTime(Date.now() - startedTime);
 }
 
 
 function countup() {
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
   const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
-  loopCount++;
-  console.log(loopCount, currentTheta);
 
   const deltaTime = Date.now() - (lastTime??startedTime);
   const deltaTheta = (planedTime != 0)? (2*Math.PI * deltaTime/planedTime): 0;
@@ -177,9 +180,6 @@ function resetCount(event){
   countdownID = null;
   countupID = null;
 
-  startedTime = null;
-  lastTime = null;
-
   resetTimerButton();
   removeCountupApparence();
 
@@ -227,7 +227,7 @@ function setCountupApparence() {
     ele.setAttribute("stroke", "red");
   });
 
-  remainTimeArea.setAttribute("style", "color:red;")
+  remainTimeArea.setAttribute("style", "color:red;");
 }
 
 
@@ -264,6 +264,43 @@ function getTimerVars(timerPi) {
   const [r, incl] = [overhalfD[4], overhalfD[6]]
 
   return [Number(viewW), Number(viewH), Number(r), incl];
+}
+
+
+function saveActualTime(actualTime) {
+  const taskId = document.querySelector(".timers__header .task-name").getAttribute("task-id");
+  const stageId = document.querySelector(".timers__header .stage-name").getAttribute("stage-id");
+
+  const XHR = new XMLHttpRequest();
+  const csrftoken = getCookie("csrftoken");
+  const data = JSON.stringify({
+    "task_pk": taskId,
+    "stage_pk": stageId,
+    "started_time": startedTime,
+    "actual_time": actualTime,
+  });
+
+  // saveActualTimeURL from measure_time.html
+  XHR.open("post", saveActualTimeURL, true);
+  XHR.responseType = "json";
+  XHR.setRequestHeader("X-CSRFToken", csrftoken);
+  XHR.setRequestHeader("content-type", "application/json");
+  XHR.send(data);
+  XHR.onload = () => {
+    if (XHR.status != 200) {
+      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+      return null;
+    }
+    planedTime =  XHR.response.planedTime;
+    remainTime =  XHR.response.remainTime;
+    if(planedTime != 0){
+      // remainTimeの正負を吸収、場合分けは timer()内で行う
+      initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
+    } else {
+      initialTheta = 0;
+    }
+    timer();
+  }
 }
 
 

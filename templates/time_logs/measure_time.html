@@ -4,10 +4,13 @@
 {% load time_logs_extras %}
 
 {% block extendhead %}
-<script>const planedTime = {{ planed_time }};</script>
-<script>const remainTime = {{ remain_time }};</script>
-<script>const iconStartHTML = `{% include "_icon_start.html" %}`;</script>
-<script>const iconStopHTML = `{% include "_icon_stop.html" %}`;</script>
+<script>
+  let planedTime = {{ planed_time }};
+  let remainTime = {{ remain_time }};
+  const iconStartHTML = `{% include "_icon_start.html" %}`;
+  const iconStopHTML = `{% include "_icon_stop.html" %}`;
+  const saveActualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
+</script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}
 
