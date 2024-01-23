@@ -1,9 +1,9 @@
 <div class="time-imput">
   <div class="time-label">{{stage.name}}</div>
-  {% with hours=""|center:1000 range=""|center:60 %}
+  {% with hours=""|center:100 range=""|center:60 %}
     <select name="hours[]">
       {% for _ in hours %}
-        <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 100 %}0{% endif %}{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
+        <option value="{{ forloop.counter0 }}">{% if forloop.counter0 < 10 %}0{% endif %}{{forloop.counter0}}</option>
       {% endfor %}
     </select> :
     <select name="minutes[]">
