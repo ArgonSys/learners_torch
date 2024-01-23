@@ -48,17 +48,18 @@ function timer() {
 
 
 function startCountDown(event){
-  startedTime = Date.now();
+  startedTime ??= Date.now();
+
   this.innerHTML = iconStopHTML;
   this.removeEventListener("click", startCountDown);
   this.addEventListener("click", stopCountDown);
+
   countdownID = setInterval(countdown, DERAY_TIME);
 }
 
 
 function stopCountDown(event){
   this.innerHTML = iconStartHTML;
-
   this.removeEventListener("click", stopCountDown);
   this.addEventListener("click", startCountDown);
 
@@ -77,7 +78,7 @@ function countdown() {
 
   const currentTime = Date.now();
   const deltaTime = currentTime - (lastTime??startedTime);
-  const deltaTheta = planedTime != 0? 2*Math.PI * deltaTime/planedTime: 0;
+  const deltaTheta = (planedTime != 0)? (2*Math.PI * deltaTime/planedTime): 0;
   lastTime = Date.now();
 
   currentRemainTime -= deltaTime;
@@ -103,9 +104,12 @@ function countdown() {
 }
 
 function startCountUp(event){
+  startedTime ??= Date.now();
+
   this.innerHTML = iconStopHTML;
   this.removeEventListener("click", startCountUp);
   this.addEventListener("click", stopCountUp);
+
   countupID = setInterval(countup, DERAY_TIME);
 }
 
@@ -126,7 +130,7 @@ function countup() {
   console.log(loopCount, currentTheta);
 
   const deltaTime = Date.now() - (lastTime??startedTime);
-  const deltaTheta = planedTime != 0? 2*Math.PI * deltaTime/planedTime: 0;
+  const deltaTheta = (planedTime != 0)? (2*Math.PI * deltaTime/planedTime): 0;
   lastTime = Date.now();
 
   currentRemainTime += deltaTime;
@@ -173,6 +177,7 @@ function resetCount(event){
   countdownID = null;
   countupID = null;
 
+  startedTime = null;
   lastTime = null;
 
   resetTimerButton();
