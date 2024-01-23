@@ -25,7 +25,12 @@ class MeasureTimeView(View):
 
             remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
-        context = {"planed_time": planed_time, "remain_time": remain_time}
+        context = {
+            "task": task,
+            "stage": stage,
+            "planed_time": planed_time,
+            "remain_time": remain_time,
+        }
         return render(request, "time_logs/measure_time.html", context)
 
     def post(self, request):

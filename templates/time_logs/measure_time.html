@@ -15,8 +15,8 @@
 <div class="timers-wrapper">
   <div class="timers">
     <div class="timers__header">
-      <div class="task-name">タスク名</div>
-      <div class="stage-name">inステージ名</div>
+      <div class="task-name" task-id="{{ task.pk }}">{{ task.name }}</div>
+      <div class="stage-name" stage-id="{{ stage.pk }}">in {{ stage.name }}</div>
     </div>
     <div class="timers__area">
       <div class="timer-main">
