@@ -6,26 +6,43 @@ const DERAY_TIME = 10; //ms
 
 let viewW, viewH, r, incl;
 
-const initialTheta = planedTime != 0? 2*Math.PI * remainTime / planedTime: 0;
-let currentTheta = initialTheta;
+let initialTheta;
+if(planedTime != 0){
+  // remainTimeの正負を吸収、場合分けは timer()内で行う
+  initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
+} else {
+  initialTheta = 0;
+}
 
 let countdownID, countupID;
 let startedTime, lastTime;
-let currentRemainTime = remainTime;
 
+let currentRemainTime;
+let currentTheta;
 
 let loopCount = 0;
 
 
 function timer() {
   const mainTimerPi = document.querySelector(".timer-main .timer-pi");
+  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
   const timerBtn = document.querySelector(".timer-btn");
   const resetBtn = document.querySelector(".reset-btn");
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
+
+  currentRemainTime = Math.abs(remainTime);
+  currentTheta = initialTheta;
   setTimerCirclePath(mainTimerPi, currentTheta);
+  remainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
 
+  console.log(remainTime);
+  if(remainTime > 0){
+    timerBtn.addEventListener("click", startCountDown);
+  } else {
+    setCountupApparence()
+    timerBtn.addEventListener("click", startCountUp);
+  }
 
-  timerBtn.addEventListener("click", startCountDown);
   resetBtn.addEventListener("click", resetCount);
 }
 
@@ -160,23 +177,10 @@ function resetCount(event){
   countdownID = null;
   countupID = null;
 
-  const mainTimerPi = document.querySelector(".timer-main .timer-pi");
-  const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
-  const timerBtn = document.querySelector(".timer-btn");
-
-  currentTheta = initialTheta;
-  setTimerCirclePath(mainTimerPi, currentTheta);
-
-  currentRemainTime = remainTime;
-  remainTimeArea.innerHTML = formatMsec(currentRemainTime, false);
-
-  timerBtn.innerHTML = iconStartHTML;
-  timerBtn.removeEventListener("click", stopCountUp);
-  timerBtn.removeEventListener("click", stopCountDown);
-  timerBtn.removeEventListener("click", startCountUp);
-  timerBtn.addEventListener("click", startCountDown);
-
+  resetTimerButton();
   removeCountupApparence();
+
+  timer();
 }
 
 
@@ -240,6 +244,14 @@ function removeCountupApparence() {
   remainTimeArea.removeAttribute("style");
 }
 
+function resetTimerButton() {
+  const timerBtn = document.querySelector(".timer-btn");
+  timerBtn.innerHTML = iconStartHTML;
+  timerBtn.removeEventListener("click", stopCountUp);
+  timerBtn.removeEventListener("click", stopCountDown);
+  timerBtn.removeEventListener("click", startCountUp);
+  timerBtn.removeEventListener("click", startCountDown);
+}
 
 function getTimerVars(timerPi) {
   const viewBox = timerPi.getAttribute("viewBox").split(" ");

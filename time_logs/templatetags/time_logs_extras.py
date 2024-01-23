@@ -15,6 +15,7 @@ def format_msec(msec):
     Args:
         msec (string): integer
     """
+    msec = abs(msec)
     hour = msec // MSEC_PER_HOUR
     msec = msec % MSEC_PER_HOUR
     minute = msec // MSEC_PER_MINUTE
