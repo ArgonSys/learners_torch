@@ -1,4 +1,3 @@
-import math
 import datetime
 
 from django.shortcuts import render
@@ -30,4 +29,9 @@ class MeasureTimeView(View):
         return render(request, "time_logs/measure_time.html", context)
 
     def post(self, request):
+        return render(request, "time_logs/measure_time.html")
+
+
+class DeleteTimeView(View):
+    def post(self, request, task_pk, time_log_pk):
         return render(request, "time_logs/measure_time.html")
