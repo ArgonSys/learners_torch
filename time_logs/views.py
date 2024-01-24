@@ -1,8 +1,8 @@
 import datetime
 import json
 
-from django.shortcuts import render
-from django.http import HttpResponseNotFound, JsonResponse
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseNotFound, HttpResponseForbidden, JsonResponse
 from django.views import View
 
 from tasks.models import Task
@@ -42,7 +42,7 @@ class MeasureTimeView(View):
         data = json.loads(request.body)
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if not time_log:
-            return HttpResponseNotFound("time_log not found")
+            return HttpResponseNotFound("time_logが見つかりません")
 
         # javascriptの基準(1970/1/1 00:00:00)を加える
         date_js_std = datetime.datetime(1970, 1, 1, tzinfo=datetime.UTC)
@@ -70,4 +70,11 @@ class MeasureTimeView(View):
 
 class DeleteTimeView(View):
     def post(self, request, task_pk, time_log_pk):
+        task = get_object_or_404(Task, pk=task_pk)
+        if request.user != task.stage.plan.owner:
+            return HttpResponseForbidden("この記録の消去は禁止されています")
+
+        time_log = get_object_or_404(TimeLog, pk=time_log_pk)
+        actual_time = time_log.actualtime_set.lastest("date_started")
+        actual_time.delete()
         return render(request, "time_logs/measure_time.html")
