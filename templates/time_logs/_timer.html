@@ -1,0 +1,35 @@
+{% load static %}
+{% load time_logs_extras %}
+
+
+<div class="timers-wrapper">
+  <div class="timers">
+    <div class="timers__header">
+      <div class="task-name" task-id="{{ task.pk }}">{{ task.name }}</div>
+      <div class="stage-name" stage-id="{{ stage.pk }}">in {{ stage.name }}</div>
+    </div>
+    <div class="timers__area">
+      <div class="timer-main">
+        <div class="timer-main__inner">
+          <div class="remain-time">{{ remain_time|format_msec }}</div>
+          <div class="entire-time">/ {{ planed_time|format_msec }}</div>
+        </div>
+        {% include "time_logs/_timer_pi.html" %}
+      </div>
+      <div class="timer-btns">
+        <button type="button" class="timer-btn">{% include "_icon_start.html" %}</button>
+        <button type="button" class="reset-btn">{% include "_icon_arrow_clockwise.html" %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let planedTime = {{ planed_time }};
+  let remainTime = {{ remain_time }};
+  const iconStartHTML = `{% include "_icon_start.html" %}`;
+  const iconStopHTML = `{% include "_icon_stop.html" %}`;
+  const saveActualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
+  const deleteActualTimeURL = "{% url 'time_logs:delete_time' task.pk time_log_pk %}";
+</script>
+<script src="{% static 'javascripts/timer.js' %}"></script>

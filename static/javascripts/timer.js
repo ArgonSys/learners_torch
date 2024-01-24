@@ -1,5 +1,5 @@
 // remainTime, planedTime, iconStartHTML, iconStopHTML,
-// saveActualTimeURL, deleteActualTimeURL   from measure_time.html
+// saveActualTimeURL, deleteActualTimeURL   from _timer.html
 // getCookie from utils.js
 const UNDER_HALF = 0;
 const CLOCK_WISE = 1;
@@ -280,7 +280,7 @@ function saveActualTime(measuredTime) {
     "measured_time": measuredTime,
   });
 
-  // saveActualTimeURL from measure_time.html
+  // saveActualTimeURL from _timer.html
   XHR.open("post", saveActualTimeURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
@@ -308,7 +308,7 @@ function deleteLatestRecord() {
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
 
-  // deleteActualTimeURL from measure_time.html
+  // deleteActualTimeURL from _timer.html
   XHR.open("post", deleteActualTimeURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
