@@ -2,4 +2,15 @@
 
 {% block main %}
 {% include "time_logs/_timer.html" %}
+
+<div class="actual-times">
+  {% for actual_time in actual_times%}
+    <div class="actual-time">
+      <div class="task-name">{{actual_time.time_log.task.name}}</div>
+      <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
+      <div class="date-started">{{actual_time.date_started}}</div>
+      <div class="measured-time">{{actual_time.measured_time}}</div>
+    </div>
+  {% endfor %}
+</div>
 {% endblock %}

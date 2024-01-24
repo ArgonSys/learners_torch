@@ -21,8 +21,9 @@ class MeasureTimeView(View):
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
 
+            actual_times = time_log.actualtime_set.all()
             passed_time = datetime.timedelta()
-            for actual_time in time_log.actualtime_set.all():
+            for actual_time in actual_times:
                 passed_time += actual_time.measured_time
 
             remain_time = planed_time - int(passed_time.total_seconds() * 1000)
@@ -30,7 +31,8 @@ class MeasureTimeView(View):
         context = {
             "task": task,
             "stage": stage,
-            "time_log_pk": time_log.pk,
+            "time_log": time_log,
+            "actual_times": actual_times,
             "planed_time": planed_time,
             "remain_time": remain_time,
         }
@@ -68,7 +70,6 @@ class MeasureTimeView(View):
         response = {
             "planedTime": planed_time,
             "remainTime": remain_time,
-            "time_log_pk": time_log.pk,
         }
         return JsonResponse(response)
 
@@ -94,6 +95,5 @@ class DeleteTimeView(View):
         response = {
             "planedTime": planed_time,
             "remainTime": remain_time,
-            "time_log_pk": time_log.pk,
         }
         return JsonResponse(response)
