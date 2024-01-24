@@ -10,6 +10,7 @@
   const iconStartHTML = `{% include "_icon_start.html" %}`;
   const iconStopHTML = `{% include "_icon_stop.html" %}`;
   const saveActualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
+  const deleteActualTimeURL = "{% url 'time_logs:delete_time' task.pk time_log_pk %}";
 </script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
 {% endblock %}

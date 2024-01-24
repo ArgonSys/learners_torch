@@ -174,7 +174,7 @@ function resetCount(event){
   } else {
     // タイマーが動作していない場合、レコードの削除を伴う
     if(!confirm("直前の記録を消去しますか？")) return;
-
+    deleteLatestRecord();
   }
 
   countdownID = null;
@@ -291,6 +291,35 @@ function saveActualTime(actualTime) {
       alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
       return null;
     }
+    planedTime =  XHR.response.planedTime;
+    remainTime =  XHR.response.remainTime;
+    if(planedTime != 0){
+      // remainTimeの正負を吸収、場合分けは timer()内で行う
+      initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
+    } else {
+      initialTheta = 0;
+    }
+    timer();
+  }
+}
+
+
+function deleteLatestRecord() {
+  const XHR = new XMLHttpRequest();
+  const csrftoken = getCookie("csrftoken");
+
+  // deleteActualTimeURL from measure_time.html
+  XHR.open("post", deleteActualTimeURL, true);
+  XHR.responseType = "json";
+  XHR.setRequestHeader("X-CSRFToken", csrftoken);
+  XHR.setRequestHeader("content-type", "application/json");
+  XHR.send();
+  XHR.onload = () => {
+    if (XHR.status != 200) {
+      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+      return null;
+    }
+
     planedTime =  XHR.response.planedTime;
     remainTime =  XHR.response.remainTime;
     if(planedTime != 0){

@@ -30,6 +30,7 @@ class MeasureTimeView(View):
         context = {
             "task": task,
             "stage": stage,
+            "time_log_pk": time_log.pk,
             "planed_time": planed_time,
             "remain_time": remain_time,
         }
@@ -64,7 +65,11 @@ class MeasureTimeView(View):
 
         remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
-        response = {"planedTime": planed_time, "remainTime": remain_time}
+        response = {
+            "planedTime": planed_time,
+            "remainTime": remain_time,
+            "time_log_pk": time_log.pk,
+        }
         return JsonResponse(response)
 
 
@@ -75,6 +80,20 @@ class DeleteTimeView(View):
             return HttpResponseForbidden("この記録の消去は禁止されています")
 
         time_log = get_object_or_404(TimeLog, pk=time_log_pk)
-        actual_time = time_log.actualtime_set.lastest("date_started")
+        actual_time = time_log.actualtime_set.latest("date_started")
         actual_time.delete()
-        return render(request, "time_logs/measure_time.html")
+
+        planed_time = int(time_log.planed_time.total_seconds() * 1000)
+
+        passed_time = datetime.timedelta()
+        for actual_time in time_log.actualtime_set.all():
+            passed_time += actual_time.actual_time
+
+        remain_time = planed_time - int(passed_time.total_seconds() * 1000)
+
+        response = {
+            "planedTime": planed_time,
+            "remainTime": remain_time,
+            "time_log_pk": time_log.pk,
+        }
+        return JsonResponse(response)
