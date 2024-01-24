@@ -11,7 +11,7 @@
     <div class="timers__area">
       <div class="timer-main">
         <div class="timer-main__inner">
-          <div class="remain-time">{{ remain_time|format_msec }}</div>
+          <div class="remain-time">　</div> {% comment %} 空行 {% endcomment %}
           <div class="entire-time">/ {{ planed_time|format_msec }}</div>
         </div>
         {% include "time_logs/_timer_pi.html" %}
@@ -30,6 +30,6 @@
   const iconStartHTML = `{% include "_icon_start.html" %}`;
   const iconStopHTML = `{% include "_icon_stop.html" %}`;
   const saveActualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
-  const deleteActualTimeURL = "{% url 'time_logs:delete_time' task.pk time_log_pk %}";
+  const deleteActualTimeURL = "{% url 'time_logs:delete_time' task.pk time_log.pk %}";
 </script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
