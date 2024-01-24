@@ -27,7 +27,7 @@ class ActualTime(models.Model):
     date_started = models.DateTimeField(
         _("started time"), auto_now=False, auto_now_add=False
     )
-    actual_time = models.DurationField(_("actual time"))
+    measured_time = models.DurationField(_("actual time"))
 
     class Meta:
         db_table = "actual_times"

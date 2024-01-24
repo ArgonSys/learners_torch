@@ -267,7 +267,7 @@ function getTimerVars(timerPi) {
 }
 
 
-function saveActualTime(actualTime) {
+function saveActualTime(measuredTime) {
   const taskId = document.querySelector(".timers__header .task-name").getAttribute("task-id");
   const stageId = document.querySelector(".timers__header .stage-name").getAttribute("stage-id");
 
@@ -277,7 +277,7 @@ function saveActualTime(actualTime) {
     "task_pk": taskId,
     "stage_pk": stageId,
     "started_time": startedTime,
-    "actual_time": actualTime,
+    "measured_time": measuredTime,
   });
 
   // saveActualTimeURL from measure_time.html

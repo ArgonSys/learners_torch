@@ -150,7 +150,7 @@ task: ForeignKey
 | id                  | bigint   | PRI | PRIMARY_KEY      |
 | time_log_id         | bigint   | MUL | FOREIGN_KEY      |
 | date_started        | datetime |     | NOT NULL         |
-| actual_time         | bigint   |     | NOT NULL         |
+| measured_time        | bigint   |     | NOT NULL         |
 
 ### アソシエーション
 time_log: ForeignKey

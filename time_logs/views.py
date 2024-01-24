@@ -23,7 +23,7 @@ class MeasureTimeView(View):
 
             passed_time = datetime.timedelta()
             for actual_time in time_log.actualtime_set.all():
-                passed_time += actual_time.actual_time
+                passed_time += actual_time.measured_time
 
             remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
@@ -50,18 +50,18 @@ class MeasureTimeView(View):
         date_started = date_js_std + datetime.timedelta(
             seconds=data["started_time"] / 1000
         )
-        time = datetime.timedelta(milliseconds=data["actual_time"])
+        measured_time = datetime.timedelta(milliseconds=data["measured_time"])
         actual_time = ActualTime(
             time_log=time_log,
             date_started=date_started,
-            actual_time=time,
+            measured_time=measured_time,
         )
         actual_time.save()
         planed_time = int(time_log.planed_time.total_seconds() * 1000)
 
         passed_time = datetime.timedelta()
         for actual_time in time_log.actualtime_set.all():
-            passed_time += actual_time.actual_time
+            passed_time += actual_time.measured_time
 
         remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
@@ -87,7 +87,7 @@ class DeleteTimeView(View):
 
         passed_time = datetime.timedelta()
         for actual_time in time_log.actualtime_set.all():
-            passed_time += actual_time.actual_time
+            passed_time += actual_time.measured_time
 
         remain_time = planed_time - int(passed_time.total_seconds() * 1000)
 
