@@ -68,12 +68,16 @@ class MeasureTimeView(View):
 
 
 class DeleteTimeView(View):
-    def post(self, request, task_pk, time_log_pk):
+    def post(self, request, task_pk):
         task = get_object_or_404(Task, pk=task_pk)
-        if request.user != task.stage.plan.owner:
+        stage = task.stage
+        if request.user != stage.plan.owner:
             return HttpResponseForbidden("この記録の消去は禁止されています")
 
-        time_log = get_object_or_404(TimeLog, pk=time_log_pk)
+        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
+        if not time_log:
+            return HttpResponseNotFound("time_logが見つかりません")
+
         actual_time = time_log.actualtime_set.latest("date_started")
         actual_time.delete()
 
