@@ -37,6 +37,7 @@ function timer() {
   setTimerCirclePath(mainTimerPi, currentTheta);
   remainTimeArea.innerHTML = formatMsec(currentRemainTime, remainTime > 0);
 
+  resetTimerButton()
   if(remainTime > 0){
     timerBtn.addEventListener("click", startCountDown);
   } else {
@@ -51,22 +52,26 @@ function timer() {
 
 
 function startCountDown(event){
+  const timerBtn = document.querySelector(".timer-btn");
+
   startedTime ??= Date.now();
 
-  this.innerHTML = iconStopHTML;
-  this.removeEventListener("click", startCountDown);
-  this.addEventListener("click", stopCountDown);
-  window.addEventListener("pagehide", stopCountDown);
+  timerBtn.innerHTML = iconStopHTML;
+  timerBtn.removeEventListener("click", startCountDown);
+  timerBtn.addEventListener("click", stopCountDown);
+  window.addEventListener("beforeunload", stopCountDown);
 
   countdownID = setInterval(countdown, DERAY_TIME);
 }
 
 
 function stopCountDown(event){
-  this.innerHTML = iconStartHTML;
-  this.removeEventListener("click", stopCountDown);
-  window.removeEventListener("pagehide", stopCountDown);
-  this.addEventListener("click", startCountDown);
+  const timerBtn = document.querySelector(".timer-btn");
+
+  timerBtn.innerHTML = iconStartHTML;
+  timerBtn.removeEventListener("click", stopCountDown);
+  window.removeEventListener("beforeunload", stopCountDown);
+  timerBtn.addEventListener("click", startCountDown);
 
   clearInterval(countdownID);
   countdownID = null;
@@ -108,22 +113,26 @@ function countdown() {
 }
 
 function startCountUp(event){
+  const timerBtn = document.querySelector(".timer-btn");
+
   startedTime ??= Date.now();
 
-  this.innerHTML = iconStopHTML;
-  this.removeEventListener("click", startCountUp);
-  this.addEventListener("click", stopCountUp);
-  window.addEventListener("pagehide", stopCountUp);
+  timerBtn.innerHTML = iconStopHTML;
+  timerBtn.removeEventListener("click", startCountUp);
+  timerBtn.addEventListener("click", stopCountUp);
+  window.addEventListener("beforeunload", stopCountUp);
 
   countupID = setInterval(countup, DERAY_TIME);
 }
 
 
 function stopCountUp(event){
-  this.innerHTML = iconStartHTML;
-  this.removeEventListener("click", stopCountUp);
-  window.removeEventListener("pagehide", stopCountUp);
-  this.addEventListener("click", startCountUp);
+  const timerBtn = document.querySelector(".timer-btn");
+
+  timerBtn.innerHTML = iconStartHTML;
+  timerBtn.removeEventListener("click", stopCountUp);
+  window.removeEventListener("beforeunload", stopCountUp);
+  timerBtn.addEventListener("click", startCountUp);
 
   clearInterval(countupID);
   countupID = null;
@@ -258,8 +267,8 @@ function resetTimerButton() {
   timerBtn.removeEventListener("click", stopCountDown);
   timerBtn.removeEventListener("click", startCountUp);
   timerBtn.removeEventListener("click", startCountDown);
-  window.removeEventListener("pagehide", stopCountUp);
-  window.removeEventListener("pagehide", stopCountDown);
+  window.removeEventListener("beforeunload", stopCountUp);
+  window.removeEventListener("beforeunload", stopCountDown);
 }
 
 function getTimerVars(timerPi) {
@@ -340,3 +349,4 @@ function deleteLatestRecord() {
 
 
 window.addEventListener("load", timer);
+window.addEventListener("render", timer);
