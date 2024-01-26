@@ -143,6 +143,36 @@ class TaskDeleteView(View):
         return redirect("plans:show", plan_pk=plan.pk)
 
 
+class TaskShowView(View):
+    def get(self, request, task_pk):
+        task = Task.objects.get(pk=task_pk)
+        stage = task.stage
+
+        planed_time = 0
+        remain_time = 0
+
+        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
+        if time_log:
+            planed_time = int(time_log.planed_time.total_seconds() * 1000)
+
+            actual_times = time_log.actualtime_set.all()
+            passed_time = datetime.timedelta()
+            for actual_time in actual_times:
+                passed_time += actual_time.measured_time
+
+            remain_time = planed_time - int(passed_time.total_seconds() * 1000)
+
+        context = {
+            "task": task,
+            "stage": stage,
+            "time_log": time_log,
+            "actual_times": actual_times,
+            "planed_time": planed_time,
+            "remain_time": remain_time,
+        }
+        return render(request, "tasks/show.html", context)
+
+
 class TaskSwapView(View):
     @transaction.atomic
     def post(self, request):
