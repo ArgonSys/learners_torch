@@ -1,5 +1,5 @@
 // remainTime, planedTime, iconStartHTML, iconStopHTML,
-// saveActualTimeURL, deleteActualTimeURL   from _timer.html
+// actualTimeURL, deleteActualTimeURL   from _timer.html
 // getCookie from utils.js
 const UNDER_HALF = 0;
 const CLOCK_WISE = 1;
@@ -8,13 +8,8 @@ const DERAY_TIME = 10; //ms
 
 let viewW, viewH, r, incl;
 
+let planedTime, remainTime;
 let initialTheta;
-if(planedTime != 0){
-  // remainTimeの正負を吸収、場合分けは timer()内で行う
-  initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
-} else {
-  initialTheta = 0;
-}
 
 let countdownID, countupID;
 let startedTime, lastTime;
@@ -32,22 +27,27 @@ function timer() {
   const resetBtn = document.querySelector(".reset-btn");
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
 
-  currentRemainTime = Math.abs(remainTime);
-  currentTheta = initialTheta;
-  setTimerCirclePath(mainTimerPi, currentTheta);
-  remainTimeArea.innerHTML = formatMsec(currentRemainTime, remainTime > 0);
+  fetchInitialValues().then(() => {
+    console.log("currentValue");
 
-  resetTimerButton()
-  if(remainTime > 0){
-    timerBtn.addEventListener("click", startCountDown);
-  } else {
-    setCountupApparence();
-    timerBtn.addEventListener("click", startCountUp);
-  }
+    currentRemainTime = Math.abs(remainTime);
+    currentTheta = initialTheta;
 
-  startedTime = null;
-  lastTime = null;
-  resetBtn.addEventListener("click", resetCount);
+    setTimerCirclePath(mainTimerPi, currentTheta);
+    remainTimeArea.innerHTML = formatMsec(currentRemainTime, remainTime > 0);
+
+    resetTimerButton()
+    if(remainTime > 0){
+      timerBtn.addEventListener("click", startCountDown);
+    } else {
+      setCountupApparence();
+      timerBtn.addEventListener("click", startCountUp);
+    }
+
+    startedTime = null;
+    lastTime = null;
+    resetBtn.addEventListener("click", resetCount);
+  });
 }
 
 
@@ -281,6 +281,34 @@ function getTimerVars(timerPi) {
   return [Number(viewW), Number(viewH), Number(r), incl];
 }
 
+function fetchInitialValues(resolve) {
+  return new Promise((resolve, reject) => {
+    const XHR = new XMLHttpRequest();
+    XHR.open("get", actualTimeURL, true);
+    XHR.responseType = "json";
+    XHR.send();
+    XHR.onload = () => {
+      if (XHR.status != 200) {
+        alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+        reject();
+      }
+
+      planedTime =  XHR.response.planedTime;
+      remainTime =  XHR.response.remainTime;
+      console.log(planedTime, remainTime, initialTheta);
+
+      if(planedTime != 0){
+        // remainTimeの正負を吸収、場合分けは timer()内で行う
+        initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
+      } else {
+        initialTheta = 0;
+      }
+      resolve();
+    }
+  });
+}
+
+
 
 function saveActualTime(measuredTime) {
   const taskId = document.querySelector(".timers__header .task-name").getAttribute("task-id");
@@ -295,8 +323,7 @@ function saveActualTime(measuredTime) {
     "measured_time": measuredTime,
   });
 
-  // saveActualTimeURL from _timer.html
-  XHR.open("post", saveActualTimeURL, true);
+  XHR.open("post", actualTimeURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
   XHR.setRequestHeader("content-type", "application/json");
@@ -306,14 +333,7 @@ function saveActualTime(measuredTime) {
       alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
       return null;
     }
-    planedTime =  XHR.response.planedTime;
-    remainTime =  XHR.response.remainTime;
-    if(planedTime != 0){
-      // remainTimeの正負を吸収、場合分けは timer()内で行う
-      initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
-    } else {
-      initialTheta = 0;
-    }
+
     timer();
   }
 }
@@ -323,7 +343,6 @@ function deleteLatestRecord() {
   const XHR = new XMLHttpRequest();
   const csrftoken = getCookie("csrftoken");
 
-  // deleteActualTimeURL from _timer.html
   XHR.open("post", deleteActualTimeURL, true);
   XHR.responseType = "json";
   XHR.setRequestHeader("X-CSRFToken", csrftoken);
@@ -348,5 +367,5 @@ function deleteLatestRecord() {
 }
 
 
-window.addEventListener("load", timer);
-window.addEventListener("render", timer);
+window.addEventListener("pageshow", timer);
+// window.addEventListener("render", timer);

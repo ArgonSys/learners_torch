@@ -25,11 +25,9 @@
 </div>
 
 <script>
-  let planedTime = {{ planed_time }};
-  let remainTime = {{ remain_time }};
   const iconStartHTML = `{% include "_icon_start.html" %}`;
   const iconStopHTML = `{% include "_icon_stop.html" %}`;
-  const saveActualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
+  const actualTimeURL = "{% url 'time_logs:measure_time' task.pk %}";
   const deleteActualTimeURL = "{% url 'time_logs:delete_time' task.pk time_log.pk %}";
 </script>
 <script src="{% static 'javascripts/timer.js' %}"></script>
