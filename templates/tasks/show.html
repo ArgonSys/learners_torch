@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block extendhead %}
+<link rel="stylesheet" href="{% static 'stylesheets/loader.css' %}">
+{% endblock %}
 
 {% block main %}
 {% include "time_logs/_timer.html" %}

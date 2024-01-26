@@ -3,6 +3,9 @@
 
 
 <div class="timers-wrapper">
+  <div class="timers-loader hidden">
+    {% include "_loader.html" %}
+  </div>
   <div class="timers">
     <div class="timers__header">
       <div class="task-name" task-id="{{ task.pk }}">{{ task.name }}</div>

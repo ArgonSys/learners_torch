@@ -25,8 +25,12 @@ function timer() {
   const remainTimeArea = mainTimerPi.closest(".timer-main").querySelector(".remain-time");
   const timerBtn = document.querySelector(".timer-btn");
   const resetBtn = document.querySelector(".reset-btn");
+  const timersLoader = document.querySelector(".timers-loader");
+
+
   [viewW, viewH, r, incl] = getTimerVars(mainTimerPi);
 
+  timersLoader.classList.remove("hidden");
   fetchInitialValues().then(() => {
     console.log("currentValue");
 
@@ -36,7 +40,7 @@ function timer() {
     setTimerCirclePath(mainTimerPi, currentTheta);
     remainTimeArea.innerHTML = formatMsec(currentRemainTime, remainTime > 0);
 
-    resetTimerButton()
+    resetTimerButton();
     if(remainTime > 0){
       timerBtn.addEventListener("click", startCountDown);
     } else {
@@ -47,6 +51,8 @@ function timer() {
     startedTime = null;
     lastTime = null;
     resetBtn.addEventListener("click", resetCount);
+
+    timersLoader.classList.add("hidden");
   });
 }
 
@@ -67,16 +73,20 @@ function startCountDown(event){
 
 function stopCountDown(event){
   const timerBtn = document.querySelector(".timer-btn");
+  const timersLoader = document.querySelector(".timers-loader");
 
   timerBtn.innerHTML = iconStartHTML;
-  timerBtn.removeEventListener("click", stopCountDown);
-  window.removeEventListener("beforeunload", stopCountDown);
-  timerBtn.addEventListener("click", startCountDown);
 
   clearInterval(countdownID);
   countdownID = null;
 
-  saveActualTime(Date.now() - startedTime);
+  timersLoader.classList.remove("hidden");
+  saveActualTime(Date.now() - startedTime).then(() => {
+    timer();
+    timerBtn.removeEventListener("click", stopCountDown);
+    window.removeEventListener("beforeunload", stopCountDown);
+    timerBtn.addEventListener("click", startCountDown);
+  });
 }
 
 
@@ -128,16 +138,20 @@ function startCountUp(event){
 
 function stopCountUp(event){
   const timerBtn = document.querySelector(".timer-btn");
+  const timersLoader = document.querySelector(".timers-loader");
 
   timerBtn.innerHTML = iconStartHTML;
-  timerBtn.removeEventListener("click", stopCountUp);
-  window.removeEventListener("beforeunload", stopCountUp);
-  timerBtn.addEventListener("click", startCountUp);
 
   clearInterval(countupID);
   countupID = null;
 
-  saveActualTime(Date.now() - startedTime);
+  timersLoader.classList.remove("hidden");
+  saveActualTime(Date.now() - startedTime).then(() => {
+    timer();
+    timerBtn.removeEventListener("click", stopCountUp);
+    window.removeEventListener("beforeunload", stopCountUp);
+    timerBtn.addEventListener("click", startCountUp);
+  });
 }
 
 
@@ -187,16 +201,28 @@ function resetCount(event){
   } else {
     // タイマーが動作していない場合、レコードの削除を伴う
     if(!confirm("直前の記録を消去しますか？")) return;
-    deleteLatestRecord();
+
   }
 
-  countdownID = null;
-  countupID = null;
+  if(countdownID || countupID){
+    countdownID = null;
+    countupID = null;
 
-  resetTimerButton();
-  removeCountupApparence();
+    resetTimerButton();
+    removeCountupApparence();
 
-  timer();
+    timer();
+  } else {
+    const timersLoader = document.querySelector(".timers-loader");
+    timersLoader.classList.remove("hidden");
+
+    deleteLatestRecord().then(() => {
+      resetTimerButton();
+      removeCountupApparence();
+
+      timer();
+    })
+  }
 }
 
 
@@ -281,7 +307,7 @@ function getTimerVars(timerPi) {
   return [Number(viewW), Number(viewH), Number(r), incl];
 }
 
-function fetchInitialValues(resolve) {
+function fetchInitialValues() {
   return new Promise((resolve, reject) => {
     const XHR = new XMLHttpRequest();
     XHR.open("get", actualTimeURL, true);
@@ -311,59 +337,62 @@ function fetchInitialValues(resolve) {
 
 
 function saveActualTime(measuredTime) {
-  const taskId = document.querySelector(".timers__header .task-name").getAttribute("task-id");
-  const stageId = document.querySelector(".timers__header .stage-name").getAttribute("stage-id");
+  return new Promise((resolve, reject) => {
+    const taskId = document.querySelector(".timers__header .task-name").getAttribute("task-id");
+    const stageId = document.querySelector(".timers__header .stage-name").getAttribute("stage-id");
 
-  const XHR = new XMLHttpRequest();
-  const csrftoken = getCookie("csrftoken");
-  const data = JSON.stringify({
-    "task_pk": taskId,
-    "stage_pk": stageId,
-    "started_time": startedTime,
-    "measured_time": measuredTime,
-  });
+    const XHR = new XMLHttpRequest();
+    const csrftoken = getCookie("csrftoken");
+    const data = JSON.stringify({
+      "task_pk": taskId,
+      "stage_pk": stageId,
+      "started_time": startedTime,
+      "measured_time": measuredTime,
+    });
 
-  XHR.open("post", actualTimeURL, true);
-  XHR.responseType = "json";
-  XHR.setRequestHeader("X-CSRFToken", csrftoken);
-  XHR.setRequestHeader("content-type", "application/json");
-  XHR.send(data);
-  XHR.onload = () => {
-    if (XHR.status != 200) {
-      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
-      return null;
+    XHR.open("post", actualTimeURL, true);
+    XHR.responseType = "json";
+    XHR.setRequestHeader("X-CSRFToken", csrftoken);
+    XHR.setRequestHeader("content-type", "application/json");
+    XHR.send(data);
+    XHR.onload = () => {
+      if (XHR.status != 200) {
+        alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+        reject();
+      }
+      resolve();
     }
-
-    timer();
-  }
+  });
 }
 
 
 function deleteLatestRecord() {
-  const XHR = new XMLHttpRequest();
-  const csrftoken = getCookie("csrftoken");
+  return new Promise((resolve, reject) => {
+    const XHR = new XMLHttpRequest();
+    const csrftoken = getCookie("csrftoken");
 
-  XHR.open("post", deleteActualTimeURL, true);
-  XHR.responseType = "json";
-  XHR.setRequestHeader("X-CSRFToken", csrftoken);
-  XHR.setRequestHeader("content-type", "application/json");
-  XHR.send();
-  XHR.onload = () => {
-    if (XHR.status != 200) {
-      alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
-      return null;
-    }
+    XHR.open("post", deleteActualTimeURL, true);
+    XHR.responseType = "json";
+    XHR.setRequestHeader("X-CSRFToken", csrftoken);
+    XHR.setRequestHeader("content-type", "application/json");
+    XHR.send();
+    XHR.onload = () => {
+      if (XHR.status != 200) {
+        alert(`Error ${ XHR.status }: ${ XHR.statusText }`);
+        return null;
+      }
 
-    planedTime =  XHR.response.planedTime;
-    remainTime =  XHR.response.remainTime;
-    if(planedTime != 0){
-      // remainTimeの正負を吸収、場合分けは timer()内で行う
-      initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
-    } else {
-      initialTheta = 0;
-    }
-    timer();
-  }
+      planedTime =  XHR.response.planedTime;
+      remainTime =  XHR.response.remainTime;
+      if(planedTime != 0){
+        // remainTimeの正負を吸収、場合分けは timer()内で行う
+        initialTheta = Math.abs(2*Math.PI * remainTime / planedTime);
+      } else {
+        initialTheta = 0;
+      }
+      resolve();
+    };
+  });
 }
 
 
