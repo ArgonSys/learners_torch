@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load time_logs_extras %}
 
 {% block extendhead %}
 <link rel="stylesheet" href="{% static 'stylesheets/loader.css' %}">
@@ -7,15 +8,16 @@
 
 {% block main %}
 {% include "time_logs/_timer.html" %}
-
-<div class="actual-times">
-  {% for actual_time in actual_times%}
-    <div class="actual-time">
-      <div class="task-name">{{actual_time.time_log.task.name}}</div>
-      <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
-      <div class="date-started">{{actual_time.date_started}}</div>
-      <div class="measured-time">{{actual_time.measured_time}}</div>
-    </div>
-  {% endfor %}
+<div class="actual-times-wrapper">
+  <h3>{{task.name}}の学習履歴</h3>
+  <div class="actual-times">
+    {% for actual_time in actual_times%}
+      <div class="actual-time">
+        <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
+        <div class="date-started">{{actual_time.date_started|date:"Y/m/d H:i:s"}}</div>
+        <div class="measured-time">{{actual_time.measured_time|format_duration:"h:m:s"}}</div>
+      </div>
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

@@ -23,3 +23,9 @@ def format_msec(msec):
     sec = msec // MSEC_PER_SECOND
 
     return f"{hour:0>2}:{minute:0>2}:{sec:0>2}"
+
+
+@register.filter
+def format_duration(duration, format):
+    total_msec = int(duration.total_seconds() * 1000)
+    return format_msec(total_msec)
