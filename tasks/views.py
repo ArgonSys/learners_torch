@@ -10,7 +10,28 @@ from .forms import TaskForm
 
 from plans.models import Plan
 from stages.models import Stage
-from time_logs.models import TimeLog
+from time_logs.models import TimeLog, ActualTime
+
+
+class TaskShowView(View):
+    def get(self, request, task_pk):
+        task = Task.objects.get(pk=task_pk)
+        stage = task.stage
+        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
+        planed_time = int(time_log.planed_time.total_seconds() * 1000)
+
+        actual_times = ActualTime.objects.none()
+        for tlog in task.timelog_set.all():
+            actual_times = actual_times.union(tlog.actualtime_set.all())
+        actual_times = actual_times.order_by("-date_started")
+
+        context = {
+            "task": task,
+            "stage": stage,
+            "planed_time": planed_time,
+            "actual_times": actual_times,
+        }
+        return render(request, "tasks/show.html", context)
 
 
 class TaskCreateView(View):
@@ -141,20 +162,6 @@ class TaskDeleteView(View):
 
         task.delete()
         return redirect("plans:show", plan_pk=plan.pk)
-
-
-class TaskShowView(View):
-    def get(self, request, task_pk):
-        task = Task.objects.get(pk=task_pk)
-        stage = task.stage
-        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
-        planed_time = int(time_log.planed_time.total_seconds() * 1000)
-        context = {
-            "task": task,
-            "stage": stage,
-            "planed_time": planed_time,
-        }
-        return render(request, "tasks/show.html", context)
 
 
 class TaskSwapView(View):
