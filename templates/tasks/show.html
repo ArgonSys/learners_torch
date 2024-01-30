@@ -11,12 +11,15 @@
 <div class="actual-times-wrapper">
   <h3>{{task.name}}の学習履歴</h3>
   <div class="actual-times">
-    {% for actual_time in actual_times%}
-      <div class="actual-time">
-        <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
-        <div class="date-started">{{actual_time.date_started|date:"Y/m/d H:i:s"}}</div>
-        <div class="measured-time">{{actual_time.measured_time|format_duration:"h:m:s"}}</div>
-      </div>
+    {% for date, actual_times in actual_times_by_date.items %}
+      <div class="date">{{date|date:"Y/m/d"}}</div>
+      {% for actual_time in actual_times %}
+        <div class="actual-time">
+          <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
+          <div class="date-started">{{actual_time.date_started|date:"H:i:s"}}</div>
+          <div class="measured-time">{{actual_time.measured_time|format_duration:"h:m:s"}}</div>
+        </div>
+      {% endfor %}
     {% endfor %}
   </div>
 </div>

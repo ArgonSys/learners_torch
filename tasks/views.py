@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views import View
 from django.db import transaction
+from django.utils import timezone
 
 from .models import Task
 from .forms import TaskForm
@@ -11,6 +12,7 @@ from .forms import TaskForm
 from plans.models import Plan
 from stages.models import Stage
 from time_logs.models import TimeLog, ActualTime
+from time_logs.utils import in_date
 
 
 class TaskShowView(View):
@@ -25,11 +27,24 @@ class TaskShowView(View):
             actual_times = actual_times.union(tlog.actualtime_set.all())
         actual_times = actual_times.order_by("-date_started")
 
+        actual_times_by_date = dict()
+        date = None
+        for actual_time in actual_times:
+            if date is None or not in_date(actual_time.date_started, date):
+                d = actual_time.date_started.date()
+                t = datetime.time()
+                date = datetime.datetime.combine(d, t, timezone.get_default_timezone())
+
+            if date not in actual_times_by_date:
+                actual_times_by_date[date] = list()
+
+            actual_times_by_date[date].append(actual_time)
+
         context = {
             "task": task,
             "stage": stage,
             "planed_time": planed_time,
-            "actual_times": actual_times,
+            "actual_times_by_date": actual_times_by_date,
         }
         return render(request, "tasks/show.html", context)
 
