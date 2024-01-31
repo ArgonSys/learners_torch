@@ -19,26 +19,32 @@ class TaskShowView(View):
     def get(self, request, task_pk):
         task = Task.objects.get(pk=task_pk)
         stage = task.stage
-        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
-        planed_time = int(time_log.planed_time.total_seconds() * 1000)
 
+        planed_time = 0
         actual_times = ActualTime.objects.none()
-        for tlog in task.timelog_set.all():
-            actual_times = actual_times.union(tlog.actualtime_set.all())
-        actual_times = actual_times.order_by("-date_started")
-
         actual_times_by_date = dict()
-        date = None
-        for actual_time in actual_times:
-            if date is None or not in_date(actual_time.date_started, date):
-                d = actual_time.date_started.date()
-                t = datetime.time()
-                date = datetime.datetime.combine(d, t, timezone.get_default_timezone())
 
-            if date not in actual_times_by_date:
-                actual_times_by_date[date] = list()
+        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
+        if time_log:
+            planed_time = int(time_log.planed_time.total_seconds() * 1000)
 
-            actual_times_by_date[date].append(actual_time)
+            for tlog in task.timelog_set.all():
+                actual_times = actual_times.union(tlog.actualtime_set.all())
+            actual_times = actual_times.order_by("-date_started")
+
+            date = None
+            for actual_time in actual_times:
+                if date is None or not in_date(actual_time.date_started, date):
+                    d = actual_time.date_started.date()
+                    t = datetime.time()
+                    date = datetime.datetime.combine(
+                        d, t, timezone.get_default_timezone()
+                    )
+
+                if date not in actual_times_by_date:
+                    actual_times_by_date[date] = list()
+
+                actual_times_by_date[date].append(actual_time)
 
         context = {
             "task": task,
