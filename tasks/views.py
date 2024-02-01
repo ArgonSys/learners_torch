@@ -11,8 +11,7 @@ from .forms import TaskForm
 
 from plans.models import Plan
 from stages.models import Stage
-from time_logs.models import TimeLog, ActualTime
-from time_logs.utils import in_date
+from time_logs.models import TimeLog
 
 
 class TaskShowView(View):
@@ -21,31 +20,13 @@ class TaskShowView(View):
         stage = task.stage
 
         planed_time = 0
-        actual_times = ActualTime.objects.none()
         progresses = []
         actual_times_by_date = dict()
 
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
-            for tlog in task.timelog_set.all():
-                actual_times = actual_times.union(tlog.actualtime_set.all())
-            actual_times = actual_times.order_by("-date_started")
-
-            # 日付ごとに並び替え
-            date = None
-            for actual_time in actual_times:
-                if date is None or not in_date(actual_time.date_started, date):
-                    d = actual_time.date_started.date()
-                    t = datetime.time()
-                    date = datetime.datetime.combine(
-                        d, t, timezone.get_default_timezone()
-                    )
-
-                if date not in actual_times_by_date:
-                    actual_times_by_date[date] = list()
-
-                actual_times_by_date[date].append(actual_time)
+            actual_times_by_date = task.actual_times_by_date
 
         time_logs = task.timelog_set.all()
         for time_log in time_logs:
