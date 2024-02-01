@@ -20,12 +20,7 @@ class MeasureTimeView(View):
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
-
-            passed_time = datetime.timedelta()
-            for actual_time in time_log.actualtime_set.all():
-                passed_time += actual_time.measured_time
-
-            remain_time = planed_time - int(passed_time.total_seconds() * 1000)
+            remain_time = int(time_log.remain_time.total_seconds() * 1000)
 
         response = {
             "planedTime": planed_time,
@@ -54,13 +49,9 @@ class MeasureTimeView(View):
             measured_time=measured_time,
         )
         actual_time.save()
+
         planed_time = int(time_log.planed_time.total_seconds() * 1000)
-
-        passed_time = datetime.timedelta()
-        for actual_time in time_log.actualtime_set.all():
-            passed_time += actual_time.measured_time
-
-        remain_time = planed_time - int(passed_time.total_seconds() * 1000)
+        remain_time = int(time_log.remain_time.total_seconds() * 1000)
 
         response = {
             "planedTime": planed_time,
@@ -84,12 +75,7 @@ class DeleteTimeView(View):
         actual_time.delete()
 
         planed_time = int(time_log.planed_time.total_seconds() * 1000)
-
-        passed_time = datetime.timedelta()
-        for actual_time in time_log.actualtime_set.all():
-            passed_time += actual_time.measured_time
-
-        remain_time = planed_time - int(passed_time.total_seconds() * 1000)
+        remain_time = int(time_log.remain_time.total_seconds() * 1000)
 
         response = {
             "planedTime": planed_time,

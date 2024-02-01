@@ -48,21 +48,14 @@ class TaskShowView(View):
                 actual_times_by_date[date].append(actual_time)
 
         time_logs = task.timelog_set.all()
-        if time_logs:
-            for time_log in time_logs:
-                passed_time = datetime.timedelta()
-                for actual_time in time_log.actualtime_set.all():
-                    passed_time += actual_time.measured_time
-
-                remain_time = time_log.planed_time - passed_time
-
-                progress = {
-                    "stage": time_log.stage,
-                    "remain_time": remain_time,
-                    "passed_time": passed_time,
-                    "planed_time": time_log.planed_time,
-                }
-                progresses.append(progress)
+        for time_log in time_logs:
+            progress = {
+                "stage": time_log.stage,
+                "remain_time": time_log.remain_time,
+                "passed_time": time_log.passed_time,
+                "planed_time": time_log.planed_time,
+            }
+            progresses.append(progress)
 
         context = {
             "task": task,
