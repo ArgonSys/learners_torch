@@ -666,12 +666,13 @@ footer {
 
 .time-logs {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .progresses-wrapper {
   width: 600px;
   height: 500px;
-  padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -708,7 +709,6 @@ footer {
 .actual-times-wrapper {
   width: 600px;
   height: 500px;
-  padding: 50px;
   display: flex;
   flex-direction: column;
   align-items: center;
