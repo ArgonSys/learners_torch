@@ -1,5 +1,6 @@
-from django.db import models
+import datetime
 
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
@@ -18,6 +19,18 @@ class TimeLog(models.Model):
         db_table = "time_logs"
         verbose_name = _("time_log")
         verbose_name_plural = _("time_logs")
+
+    @property
+    def passed_time(self):
+        passed_time = datetime.timedelta()
+        actual_times = self.actualtime_set.all()
+        for actual_time in actual_times:
+            passed_time += actual_time.measured_time
+        return passed_time
+
+    @property
+    def remain_time(self):
+        return self.planed_time - self.passed_time
 
 
 class ActualTime(models.Model):
