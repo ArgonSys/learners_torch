@@ -8,32 +8,34 @@
 
 {% block main %}
 {% include "time_logs/_timer.html" %}
-<div class="progresses-wrapper">
-  <h3>{{task.name}}の学習進捗</h3>
-  <div class="progresses">
-    {% for progress in progresses %}
-      <div class="progress">
-        <div class="stage-name">{{ progress.stage.name }}</div>
-        <div class="passed-time">{{ progress.passed_time|format_duration:"h:m:s" }}</div>
-        <div class="remain-time">{{ progress.remain_time|format_duration:"h:m:s" }}</div>
-        <div class="planed-time">{{ progress.planed_time|format_duration:"h:m:s" }}</div>
-      </div>
-    {% endfor %}
-  </div>
-</div>
-<div class="actual-times-wrapper">
-  <h3>{{task.name}}の学習履歴</h3>
-  <div class="actual-times">
-    {% for date, actual_times in actual_times_by_date.items %}
-      <div class="date">{{date|date:"Y/m/d"}}</div>
-      {% for actual_time in actual_times %}
-        <div class="actual-time">
-          <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
-          <div class="date-started">{{actual_time.date_started|date:"H:i:s"}}</div>
-          <div class="measured-time">{{actual_time.measured_time|format_duration:"h:m:s"}}</div>
+<div class="time-logs">
+  <div class="progresses-wrapper">
+    <h3>{{task.name}}の学習進捗</h3>
+    <div class="progresses">
+      {% for progress in progresses %}
+        <div class="progress">
+          <div class="stage-name">{{ progress.stage.name }}</div>
+          <div class="passed-time">{{ progress.passed_time|format_duration:"h:m:s" }}</div>
+          <div class="remain-time">{{ progress.remain_time|format_duration:"h:m:s" }}</div>
+          <div class="planed-time">{{ progress.planed_time|format_duration:"h:m:s" }}</div>
         </div>
       {% endfor %}
-    {% endfor %}
+    </div>
+  </div>
+  <div class="actual-times-wrapper">
+    <h3>{{task.name}}の学習履歴</h3>
+    <div class="actual-times">
+      {% for date, actual_times in actual_times_by_date.items %}
+        <div class="date">{{date|date:"Y/m/d"}}</div>
+        {% for actual_time in actual_times %}
+          <div class="actual-time">
+            <div class="stage-name">{{actual_time.time_log.stage.name}}</div>
+            <div class="date-started">{{actual_time.date_started|date:"H:i:s"}}</div>
+            <div class="measured-time">{{actual_time.measured_time|format_duration:"h:m:s"}}</div>
+          </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
   </div>
 </div>
 {% endblock %}
