@@ -22,16 +22,17 @@ class TaskShowView(View):
 
         planed_time = 0
         actual_times = ActualTime.objects.none()
+        progresses = []
         actual_times_by_date = dict()
 
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
-
             for tlog in task.timelog_set.all():
                 actual_times = actual_times.union(tlog.actualtime_set.all())
             actual_times = actual_times.order_by("-date_started")
 
+            # 日付ごとに並び替え
             date = None
             for actual_time in actual_times:
                 if date is None or not in_date(actual_time.date_started, date):
@@ -46,10 +47,28 @@ class TaskShowView(View):
 
                 actual_times_by_date[date].append(actual_time)
 
+        time_logs = task.timelog_set.all()
+        if time_logs:
+            for time_log in time_logs:
+                passed_time = datetime.timedelta()
+                for actual_time in time_log.actualtime_set.all():
+                    passed_time += actual_time.measured_time
+
+                remain_time = time_log.planed_time - passed_time
+
+                progress = {
+                    "stage": time_log.stage,
+                    "remain_time": remain_time,
+                    "passed_time": passed_time,
+                    "planed_time": time_log.planed_time,
+                }
+                progresses.append(progress)
+
         context = {
             "task": task,
             "stage": stage,
             "planed_time": planed_time,
+            "progresses": progresses,
             "actual_times_by_date": actual_times_by_date,
         }
         return render(request, "tasks/show.html", context)

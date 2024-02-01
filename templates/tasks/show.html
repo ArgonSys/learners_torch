@@ -8,6 +8,19 @@
 
 {% block main %}
 {% include "time_logs/_timer.html" %}
+<div class="progresses-wrapper">
+  <h3>{{task.name}}の学習進捗</h3>
+  <div class="progresses">
+    {% for progress in progresses %}
+      <div class="progress">
+        <div class="stage-name">{{ progress.stage.name }}</div>
+        <div class="passed-time">{{ progress.passed_time|format_duration:"h:m:s" }}</div>
+        <div class="remain-time">{{ progress.remain_time|format_duration:"h:m:s" }}</div>
+        <div class="planed-time">{{ progress.planed_time|format_duration:"h:m:s" }}</div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
 <div class="actual-times-wrapper">
   <h3>{{task.name}}の学習履歴</h3>
   <div class="actual-times">
