@@ -20,7 +20,12 @@
       </div>
       {% if user.is_authenticated %}
         <div class="header__activate">
-          <a href="#" class="btn">最近のタスク</a>
+          学習を始めましょう😆
+          {% if current_task %}
+            {% include "tasks/_task.html" with task=current_task %}
+          {% else %}
+            始めたタスクがまだないようです😢
+          {% endif%}
         </div>
         <div class="header__right">
           <div class="menu">

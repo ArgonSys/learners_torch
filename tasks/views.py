@@ -38,12 +38,14 @@ class TaskShowView(View):
             }
             progresses.append(progress)
 
+        current_task = request.user.current_task
         context = {
             "task": task,
             "stage": stage,
             "planed_time": planed_time,
             "progresses": progresses,
             "actual_times_by_date": actual_times_by_date,
+            "current_task": current_task,
         }
         return render(request, "tasks/show.html", context)
 
@@ -53,9 +55,11 @@ class TaskCreateView(View):
         plan = get_object_or_404(Plan, pk=plan_pk)
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
         task_form = TaskForm()
+        current_task = request.user.current_task
         context = {
             "task_form": task_form,
             "stages": stages,
+            "current_task": current_task,
         }
         return render(request, "tasks/new.html", context)
 
@@ -97,9 +101,11 @@ class TaskCreateView(View):
                 time_log.save()
             return redirect("plans:show", plan_pk=plan_pk)
 
+        current_task = request.user.current_task
         context = {
             "task_form": task_form,
             "stages": stages,
+            "current_task": current_task,
         }
         return render(request, "tasks/new.html", context)
 
@@ -110,10 +116,12 @@ class TaskUpdateView(View):
         plan = task.stage.plan
         stages = plan.stage_set.filter(order__gt=0).order_by("order")
         task_form = TaskForm(instance=task)
+        current_task = request.user.current_task
         context = {
             "task_form": task_form,
             "stages": stages,
             "task_pk": task_pk,
+            "current_task": current_task,
         }
         return render(request, "tasks/edit.html", context)
 
@@ -153,9 +161,11 @@ class TaskUpdateView(View):
                 time_log.save()
             return redirect("plans:show", plan_pk=plan.pk)
 
+        current_task = request.user.current_task
         context = {
             "task_form": task_form,
             "stages": stages,
+            "current_task": current_task,
         }
         return render(request, "tasks/new.html", context)
 

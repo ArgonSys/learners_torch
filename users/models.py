@@ -12,6 +12,8 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from time_logs.models import ActualTime
+
 
 class UserManager(BaseUserManager):
     def _create_user(self, username, email, password, **extra_fields):
@@ -76,3 +78,23 @@ class User(AbstractBaseUser, PermissionsMixin):
     def clean(self):
         super().clean()
         self.email = self.__class__.objects.normalize_email(self.email)
+
+
+    @property
+    def current_task(self):
+        actual_times = ActualTime.objects.none()
+        plans = self.plan_set.all()
+        for plan in plans:
+            stages = plan.stage_set.all()
+            for stage in stages:
+                time_logs = stage.timelog_set.all()
+                for time_log in time_logs:
+                    actual_times = actual_times.union(time_log.actualtime_set.all())
+
+        current_actual_time = actual_times.order_by("-date_started").first()
+        if current_actual_time:
+            current_task = current_actual_time.time_log.task
+        else:
+            current_task = None
+
+        return current_task

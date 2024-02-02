@@ -14,7 +14,8 @@ class StageCreateView(View):
     def get(self, request, plan_pk):
         get_object_or_404(Plan, pk=plan_pk)
         form = StageForm
-        context = {"form": form, "plan_pk": plan_pk}
+        current_task = request.user.current_task
+        context = {"form": form, "plan_pk": plan_pk, "current_task": current_task}
         return render(request, "stages/new.html", context)
 
     def post(self, request, plan_pk):
@@ -26,7 +27,8 @@ class StageCreateView(View):
             stage.order = plan.stage_set.filter(order__gt=0).count() + 1
             stage.save()
             return redirect("plans:show", plan_pk=plan_pk)
-        context = {"form": form}
+        current_task = request.user.current_task
+        context = {"form": form, "current_task": current_task}
         return render(request, "stages/new.html", context)
 
 
@@ -34,7 +36,8 @@ class StageUpdateView(View):
     def get(self, request, plan_pk, stage_pk):
         stage = get_object_or_404(Stage, pk=stage_pk)
         form = StageForm(instance=stage)
-        context = {"form": form, "plan_pk": plan_pk, "stage_pk": stage_pk}
+        current_task = request.user.current_task
+        context = {"form": form, "plan_pk": plan_pk, "stage_pk": stage_pk, "current_task": current_task}
         return render(request, "stages/edit.html", context)
 
     def post(self, request, plan_pk, stage_pk):
@@ -45,7 +48,7 @@ class StageUpdateView(View):
             stage.plan = get_object_or_404(Plan, pk=plan_pk)
             stage.save()
             return redirect("plans:show", plan_pk=plan_pk)
-        context = {"form": form}
+        context = {"form": form, "current_task": current_task}
         return render(request, "stages/new.html", context)
 
 
