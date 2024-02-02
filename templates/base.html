@@ -20,8 +20,8 @@
       </div>
       {% if user.is_authenticated %}
         <div class="header__activate">
-          学習を始めましょう😆
           {% if current_task %}
+            前回の学習を続けましょう😆
             {% include "tasks/_task.html" with task=current_task %}
           {% else %}
             始めたタスクがまだないようです😢
