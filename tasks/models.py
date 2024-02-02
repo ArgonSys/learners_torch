@@ -26,16 +26,13 @@ class Task(models.Model):
     @property
     def actual_times_by_date(self):
         actual_times_by_date = dict()
-        actual_times = ActualTime.objects.none()
-        for time_log in self.timelog_set.all():
-            actual_times = actual_times.union(time_log.actualtime_set.all())
-        actual_times = actual_times.order_by("-date_started")
+        actual_times = ActualTime.objects.filter(time_log__task=self).order_by("-date_started")
 
         date = None
         for actual_time in actual_times:
             if date is None or not in_date(actual_time.date_started, date):
                 d = actual_time.date_started.date()
-                t = datetime.time()
+                t = datetime.time()  # 00:00:00
                 date = datetime.datetime.combine(d, t, timezone.get_default_timezone())
 
             if date not in actual_times_by_date:
