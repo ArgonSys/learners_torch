@@ -81,9 +81,10 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     @property
     def current_task(self):
-        current_actual_time = ActualTime.objects.filter(time_log__stage__plan__owner=self).order_by("-date_started").first()
-        if current_actual_time:
-            current_task = current_actual_time.time_log.task
+        actual_times = ActualTime.objects.filter(time_log__stage__plan__owner=self)
+        latest_actual_time = actual_times.order_by("-date_started").first()
+        if latest_actual_time:
+            current_task = latest_actual_time.time_log.task
         else:
             current_task = None
 
