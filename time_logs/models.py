@@ -24,8 +24,8 @@ class TimeLog(models.Model):
     def passed_time(self):
         passed_time = datetime.timedelta()
         actual_times = self.actualtime_set.all()
-        for actual_time in actual_times:
-            passed_time += actual_time.measured_time
+        if actual_times:
+            passed_time = actual_times.aggregate(passed_time=models.Sum("measured_time"))["passed_time"]
         return passed_time
 
     @property
