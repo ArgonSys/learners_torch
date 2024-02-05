@@ -10,7 +10,7 @@ from .forms import TaskForm
 
 from plans.models import Plan
 from stages.models import Stage
-from time_logs.models import TimeLog
+from time_logs.models import TimeLog, ActualTime
 
 
 class TaskShowView(View):
@@ -22,27 +22,29 @@ class TaskShowView(View):
         progresses = []
         actual_times_by_date = dict()
 
+        actual_times = ActualTime.objects.prefetch_related("time_log").filter(time_log__task=task).order_by("-date_started")
+
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
-            actual_times_by_date = task.actual_times_by_date
+            # actual_times_by_date = task.actual_times_by_date
 
-        time_logs = task.timelog_set.all()
-        for time_log in time_logs:
-            progress = {
-                "stage": time_log.stage,
-                "remain_time": time_log.remain_time,
-                "passed_time": time_log.passed_time,
-                "planed_time": time_log.planed_time,
-            }
-            progresses.append(progress)
+        # time_logs = task.timelog_set.all()
+        # for time_log in time_logs:
+        #     progress = {
+        #         "stage": time_log.stage,
+        #         "remain_time": time_log.remain_time,
+        #         "passed_time": time_log.passed_time,
+        #         "planed_time": time_log.planed_time,
+        #     }
+        #     progresses.append(progress)
 
         context = {
             "task": task,
             "stage": stage,
             "planed_time": planed_time,
             "progresses": progresses,
-            "actual_times_by_date": actual_times_by_date,
+            "actual_times": actual_times,
         }
         return render(request, "tasks/show.html", context)
 
