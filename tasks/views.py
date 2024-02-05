@@ -20,14 +20,12 @@ class TaskShowView(View):
 
         planed_time = 0
         progresses = []
-        actual_times_by_date = dict()
 
         actual_times = ActualTime.objects.prefetch_related("time_log").filter(time_log__task=task).order_by("-date_started")
 
         time_log = TimeLog.objects.filter(task=task, stage=stage).first()
         if time_log:
             planed_time = int(time_log.planed_time.total_seconds() * 1000)
-            # actual_times_by_date = task.actual_times_by_date
 
         # time_logs = task.timelog_set.all()
         # for time_log in time_logs:
