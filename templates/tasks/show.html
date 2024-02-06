@@ -38,8 +38,12 @@
       {% define None as prev_date %}
       {% for actual_time in actual_times %}
         {% if actual_time.date_started.date != prev_date %}
-          <div class="date">{{ actual_time.date_started.date|date:"Y/m/d" }}</div>
+          {% if prev_date != None %}
+            </div> {% comment %} /sticky-wrapper {% endcomment %}
+          {% endif %}
           {% define actual_time.date_started.date as prev_date %}
+          <div class="sticky-wrapper">
+            <div class="date">{{ actual_time.date_started.date|date:"Y/m/d" }}</div>
         {% endif %}
         <div class="actual-time">
           <div class="stage-name">{{ actual_time.time_log.stage.name }}</div>
@@ -47,6 +51,7 @@
           <div class="date-started">({{ actual_time.date_started|date:"H:i:s" }})</div>
         </div>
       {% endfor %}
+      </div> {% comment %} /sticky-wrapper {% endcomment %}
     </div>
   </div>
 </div>
