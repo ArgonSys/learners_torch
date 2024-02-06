@@ -23,7 +23,8 @@ class TaskShowView(View):
         actual_times = ActualTime.objects.prefetch_related("time_log__stage")\
             .filter(time_log__task=task).order_by("-date_started")
 
-        progresses = TimeLog.objects.progress().prefetch_related("stage")
+        progresses = TimeLog.objects.progress().prefetch_related("stage")\
+            .filter(task=task).order_by("stage__order")
 
         progress = progresses.filter(task=task, stage=stage).first()
         if progress:
