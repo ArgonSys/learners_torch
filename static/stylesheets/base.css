@@ -684,6 +684,11 @@ footer {
   overflow: hidden scroll;
 }
 
+.progresses__header {
+  width: 100%;
+  display: flex;
+}
+
 .progress {
   width: 100%;
   display: flex;
@@ -691,19 +696,39 @@ footer {
 }
 
 .progress > .stage-name {
-  width: 100%;
+  width: 25%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.progress > .passed-time {
-  width: calc(100% / 3);
+.progress .progress__meter {
+  width: 50%;
+  border: 1px solid black;
+  border-radius: 1000000px;
+  overflow: hidden;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  position: relative;
 }
 
-.progress > .remain-time {
-  width: calc(100% / 3);
+.progress .remain-time {
+  position: absolute;
+  left: 0;
+}
+
+.progress .passed-time {
+  position: absolute;
+  right: 0;
+}
+
+.progress .passed-meter {
+  height: 100%;
+  background-color: tomato;
 }
 
 .progress > .planed-time {
-  width: calc(100% / 3);
+  width: 25%;
 }
 
 .actual-times-wrapper {
