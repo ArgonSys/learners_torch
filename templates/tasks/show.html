@@ -5,6 +5,7 @@
 
 {% block extendhead %}
 <link rel="stylesheet" href="{% static 'stylesheets/loader.css' %}">
+<script src="{% static 'javascripts/toggle_times.js' %}"></script>
 {% endblock %}
 
 {% block main %}
@@ -13,17 +14,17 @@
   <div class="progresses-wrapper">
     <h3>{{task.name}}の学習進捗</h3>
     <div class="progresses">
-      <div class="progresses__header">
+      {% comment %} <div class="progresses__header">
         <div>ステージ</div>
-        <div>進捗 (経過時間 or 残り時間)</div>
+        <div>進捗 (残り時間 or 経過時間)</div>
         <div>想定時間</div>
-      </div>
+      </div> {% endcomment %}
       {% for progress in progresses %}
         <div class="progress">
           <div class="stage-name">{{ progress.stage.name }}</div>
           <div class="progress__meter">
-            <div class="remain-time"><span class="inner-text hidden">{{ progress.remain_time|format_duration:"h:m:s" }}</span></div>
             <div class="passed-time"><span class="inner-text">{{ progress.passed_time|format_duration:"h:m:s" }}</span></div>
+            <div class="remain-time"><span class="inner-text hidden">{{ progress.remain_time|format_duration:"h:m:s" }}</span></div>
             <div class="passed-meter" style="width:{{ progress.passed_ratio }}%;"></div>
           </div>
           <div class="planed-time">{{ progress.planed_time|format_duration:"h:m:s" }}</div>
@@ -42,8 +43,8 @@
         {% endif %}
         <div class="actual-time">
           <div class="stage-name">{{ actual_time.time_log.stage.name }}</div>
-          <div class="date-started">{{ actual_time.date_started|date:"H:i:s" }}</div>
           <div class="measured-time">{{ actual_time.measured_time|format_duration:"h:m:s" }}</div>
+          <div class="date-started">({{ actual_time.date_started|date:"H:i:s" }})</div>
         </div>
       {% endfor %}
     </div>

@@ -691,45 +691,52 @@ footer {
 
 .progress {
   width: 100%;
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  margin-bottom: 10px;
 }
 
 .progress > .stage-name {
-  width: 25%;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-right: 10px;
 }
 
 .progress .progress__meter {
-  width: 50%;
   border: 1px solid black;
-  border-radius: 1000000px;
+  border-radius: 10000px;
   overflow: hidden;
   display: flex;
-  justify-content: end;
+  justify-content: start;
   align-items: center;
   position: relative;
+  margin-right: 10px;
+}
+
+.progress .progress__meter:hover {
+  cursor: pointer;
+}
+
+
+.progress .passed-time {
+  position: absolute;
+  left: 10px;
 }
 
 .progress .remain-time {
   position: absolute;
-  left: 0;
-}
-
-.progress .passed-time {
-  position: absolute;
-  right: 0;
+  right: 10px;
 }
 
 .progress .passed-meter {
   height: 100%;
-  background-color: tomato;
+  background-color: #ff9382;
 }
 
 .progress > .planed-time {
-  width: 25%;
+  text-align: left;
 }
+
 
 .actual-times-wrapper {
   width: 600px;
@@ -742,23 +749,47 @@ footer {
 .actual-times {
   width: 70%;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   overflow: hidden scroll;
+  position: relative;
+}
+
+.actual-times > .date {
+  font-size: 0.8rem;
+  padding: 3px 10px;
+  color: #434343;
+  background-color: white;
+  border-radius: 10000px;
+  border: 1px solid #434343;
+  margin: 10px 0 20px;
+  position:sticky;
+  top: 10px;
 }
 
 .actual-time {
   width: 100%;
   display: flex;
-  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .actual-time > .stage-name {
-  width: 50%;
-}
-
-.actual-time > .date-started {
-  width: 50%;
+  width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .actual-time > .measured-time {
-  width: 100%;
+  width: 30%;
+  text-align: center;
+}
+
+.actual-time > .date-started {
+  width: 30%;
+  font-size: 0.8rem;
+  color: #434343;
+  text-align: right;
 }
