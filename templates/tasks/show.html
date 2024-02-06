@@ -43,7 +43,7 @@
           {% endif %}
           {% define actual_time.date_started.date as prev_date %}
           <div class="sticky-wrapper">
-            <div class="date">{{ actual_time.date_started.date|date:"Y/m/d" }}</div>
+            <div class="date">{{ actual_time.date_started|date:"Y/m/d" }}</div>
         {% endif %}
         <div class="actual-time">
           <div class="stage-name">{{ actual_time.time_log.stage.name }}</div>
