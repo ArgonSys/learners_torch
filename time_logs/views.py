@@ -17,10 +17,10 @@ class MeasureTimeView(View):
         planed_time = 0
         remain_time = 0
 
-        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
-        if time_log:
-            planed_time = int(time_log.planed_time.total_seconds() * 1000)
-            remain_time = int(time_log.remain_time.total_seconds() * 1000)
+        progress = TimeLog.objects.progress().filter(task=task, stage=stage).first()
+        if progress:
+            planed_time = int(progress.planed_time.total_seconds() * 1000)
+            remain_time = int(progress.remain_time.total_seconds() * 1000)
 
         response = {
             "planedTime": planed_time,
@@ -50,8 +50,10 @@ class MeasureTimeView(View):
         )
         actual_time.save()
 
-        planed_time = int(time_log.planed_time.total_seconds() * 1000)
-        remain_time = int(time_log.remain_time.total_seconds() * 1000)
+        progress = TimeLog.objects.progress().filter(task=task, stage=stage).first()
+        if progress:
+            planed_time = int(progress.planed_time.total_seconds() * 1000)
+            remain_time = int(progress.remain_time.total_seconds() * 1000)
 
         response = {
             "planedTime": planed_time,

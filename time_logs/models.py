@@ -1,7 +1,7 @@
-import datetime
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+
+from time_logs.managers import TimeLogManager
 
 
 class TimeLog(models.Model):
@@ -15,22 +15,12 @@ class TimeLog(models.Model):
     date_created = models.DateTimeField(_("created time"), auto_now_add=True)
     date_updated = models.DateTimeField(_("updated time"), auto_now=True)
 
+    objects = TimeLogManager()
+
     class Meta:
         db_table = "time_logs"
         verbose_name = _("time_log")
         verbose_name_plural = _("time_logs")
-
-    @property
-    def passed_time(self):
-        passed_time = datetime.timedelta()
-        actual_times = self.actualtime_set.all()
-        if actual_times:
-            passed_time = actual_times.aggregate(passed_time=models.Sum("measured_time"))["passed_time"]
-        return passed_time
-
-    @property
-    def remain_time(self):
-        return self.planed_time - self.passed_time
 
 
 class ActualTime(models.Model):

@@ -19,23 +19,15 @@ class TaskShowView(View):
         stage = task.stage
 
         planed_time = 0
-        progresses = []
 
-        actual_times = ActualTime.objects.prefetch_related("time_log").filter(time_log__task=task).order_by("-date_started")
+        actual_times = ActualTime.objects.prefetch_related("time_log__stage")\
+            .filter(time_log__task=task).order_by("-date_started")
 
-        time_log = TimeLog.objects.filter(task=task, stage=stage).first()
-        if time_log:
-            planed_time = int(time_log.planed_time.total_seconds() * 1000)
+        progresses = TimeLog.objects.progress().prefetch_related("stage")
 
-        # time_logs = task.timelog_set.all()
-        # for time_log in time_logs:
-        #     progress = {
-        #         "stage": time_log.stage,
-        #         "remain_time": time_log.remain_time,
-        #         "passed_time": time_log.passed_time,
-        #         "planed_time": time_log.planed_time,
-        #     }
-        #     progresses.append(progress)
+        progress = progresses.filter(task=task, stage=stage).first()
+        if progress:
+            planed_time = int(progress.planed_time.total_seconds() * 1000)
 
         context = {
             "task": task,
