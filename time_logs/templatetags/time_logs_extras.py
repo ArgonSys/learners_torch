@@ -29,3 +29,11 @@ def format_msec(msec):
 def format_duration(duration, format):
     total_msec = int(duration.total_seconds() * 1000)
     return format_msec(total_msec)
+
+
+@register.filter
+def ratio_in(duration, divider):
+    ratio = 0
+    if divider != 0:
+        ratio = duration / divider * 100
+    return ratio

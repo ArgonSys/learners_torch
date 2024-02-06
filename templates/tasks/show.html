@@ -25,7 +25,7 @@
           <div class="progress__meter">
             <div class="passed-time"><span class="inner-text">{{ progress.passed_time|format_duration:"h:m:s" }}</span></div>
             <div class="remain-time"><span class="inner-text hidden">{{ progress.remain_time|format_duration:"h:m:s" }}</span></div>
-            <div class="passed-meter" style="width:{{ progress.passed_ratio }}%;"></div>
+            <div class="passed-meter" style="width:{{ progress.passed_time|ratio_in:progress.planed_time }}%;"></div>
           </div>
           <div class="planed-time">{{ progress.planed_time|format_duration:"h:m:s" }}</div>
         </div>
