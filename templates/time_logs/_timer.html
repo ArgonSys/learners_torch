@@ -8,14 +8,14 @@
   </div>
   <div class="timers">
     <div class="timers__header">
-      <div class="task-name" task-id="{{ task.pk }}">{{ task.name }}</div>
-      <div class="stage-name" stage-id="{{ stage.pk }}">in {{ stage.name }}</div>
+      <h3 class="task-name" task-id="{{ task.pk }}">{{ task.name }}</h2>
+      <h3 class="stage-name" stage-id="{{ stage.pk }}">in {{ stage.name }}</h2>
     </div>
     <div class="timers__area">
       <div class="timer-main">
         <div class="timer-main__inner">
           <div class="remain-time">　</div> {% comment %} 空行 {% endcomment %}
-          <div class="entire-time">/ {{ planed_time|format_msec }}</div>
+          <div class="entire-time">{{ planed_time|format_msec }}</div>
         </div>
         {% include "time_logs/_timer_pi.html" %}
       </div>
