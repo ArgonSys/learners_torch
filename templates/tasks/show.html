@@ -12,13 +12,8 @@
 {% include "time_logs/_timer.html" %}
 <div class="time-logs">
   <div class="progresses-wrapper">
-    <h3>{{task.name}}の学習進捗</h3>
+    <h3 class="progresses-heading">{{task.name}}の学習進捗</h3>
     <div class="progresses">
-      {% comment %} <div class="progresses__header">
-        <div>ステージ</div>
-        <div>進捗 (残り時間 or 経過時間)</div>
-        <div>想定時間</div>
-      </div> {% endcomment %}
       {% for progress in progresses %}
         <div class="progress">
           <div class="stage-name">{{ progress.stage.name }}</div>
@@ -33,7 +28,7 @@
     </div>
   </div>
   <div class="actual-times-wrapper">
-    <h3>{{task.name}}の学習履歴</h3>
+    <h3 class="actual-times-heading">{{task.name}}の学習履歴</h3>
     <div class="actual-times">
       {% define None as prev_date %}
       {% for actual_time in actual_times %}

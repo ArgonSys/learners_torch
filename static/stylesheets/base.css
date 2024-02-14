@@ -518,17 +518,15 @@ footer {
 
 .timers {
   width: min(80vw, 80vh);
-  height: calc(min(80vw, 80vh) + calc(350px/0.85 *0.15));
+  height: calc(min(80vw, 80vh) / 0.9);
   min-width: 350px;
-  min-height: calc(350px / 0.85);
-
-
+  min-height: calc(350px / 0.9);
   background-color: ivory;
 }
 
 .timers__header {
   width: 100%;
-  height: calc(350px/0.85 *0.15);
+  height: calc((1/0.9 - 1) * 100%);
   background-color: chartreuse;
   position: relative;
 }
@@ -536,14 +534,16 @@ footer {
 .timers__header > .task-name {
   position: absolute;
   top: 10px;
-  left: 50%;
-  transform: translate(-50%, 0);
+  left: 10px;
+  /* transform: translate(-50%, 0); */
+  font-size: max(min(3vw, 3vh), calc(350px * 3 / 80));
 }
 
 .timers__header > .stage-name {
   position: absolute;
   bottom: 0;
   right: 10px;
+  font-size: max(min(3vw, 3vh), calc(350px * 3 / 80));
 }
 
 .timers__area {
@@ -557,14 +557,14 @@ footer {
   aspect-ratio: 1 / 1;
   border-radius: 50%;
   position: absolute;
-  top: 40%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  font-size: 1.5rem;
+  font-size: max(min(5vw, 5vh), calc(350px * 5 / 80));
 }
 
 .timer-pi {
@@ -681,17 +681,35 @@ footer {
 
 
 .time-logs {
+  /* 100vh - header-height */
+  height: calc(100vh - min(10vh, 80px));
+  padding-top: 10%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
 }
 
+@media screen and (max-width: 600px) {
+  .time-logs {
+    /* 100vh - header-height */
+    height: calc((100vh - min(10vh, 80px)) * 2);
+  }
+}
+
 .progresses-wrapper {
-  width: 300px;
-  height: 500px;
+  width: 35%;
+  height: 80%;
+  min-width: 300px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+  .progresses-wrapper {
+    height: 40%;
+  }
 }
 
 .progresses {
@@ -700,9 +718,11 @@ footer {
   overflow: hidden scroll;
 }
 
-.progresses__header {
+.progresses-heading {
   width: 100%;
+  margin-bottom: 30px;
   display: flex;
+  justify-content: center;
 }
 
 .progress {
@@ -755,11 +775,26 @@ footer {
 
 
 .actual-times-wrapper {
-  width: 300px;
-  height: 500px;
+  width: 35%;
+  height: 80%;
+  min-width: 300px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+@media screen and (max-width: 600px) {
+  .actual-times-wrapper {
+    height: 40%;
+  }
+}
+
+.actual-times-heading {
+  width: 100%;
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
 }
 
 .actual-times {
