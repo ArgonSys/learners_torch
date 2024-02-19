@@ -2,9 +2,19 @@
 
 
 {% block main %}
-<form method="post">
-  {% csrf_token %}
-  {{form}}
-  <button type="submit">登録</button>
-</form>
+<div class="signup-wrapper">
+  <div class="signup-menu">
+    <div class="left-menu">
+      <h3 class="signup-heading">SignUp</h3>
+      <div class="login-link">
+        <p>登録済みの方は　<a href="#" class="btn">こちら</a></p>
+      </div>
+    </div>
+    <form method="post" class="signup-form">
+      {% csrf_token %}
+      {{form}}
+      <button type="submit">新規登録</button>
+    </form>
+  </div>
+</div>
 {% endblock %}

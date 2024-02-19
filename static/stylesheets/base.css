@@ -1,14 +1,21 @@
-* {
-  box-sizing: border-box;
-}
-
-a {
-  color: #000;
-  text-decoration: none;
-}
-
 h3 {
-  margin: 0;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+button {
+  background-color: #8c6660;
+  color: #fff;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+input {
+  color: #4a4a4a;
+  border-radius: 5px;
+  background-color: #eaeaea;
+  padding: 0 5px;
+  margin-bottom: 20px;
 }
 
 .like-a {
@@ -102,6 +109,147 @@ footer {
   background-color: aliceblue;
   border-radius: 15%;
 }
+
+.signup-wrapper {
+  display: flex;
+  padding-top: 30px;
+  margin-bottom: 50px;
+}
+
+.signup-menu {
+  width: 600px;
+  height: 800px;
+  border: 1px solid #000;
+  margin: 0 auto 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.signup-menu > .left-menu {
+  width: 40%;
+  padding: 30px;
+}
+
+.signup-menu .signup-heading {
+  color: #ff4500;
+}
+
+.signup-menu .login-link {
+  color:#434343;
+  margin-top: 80px;
+}
+
+.signup-form {
+  width: 40%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.signup-btn {
+  margin-top: 10px;
+}
+
+
+@media screen and (max-width: 600px) {
+  .signup-menu {
+    width: 90%;
+    height: 450px;
+    flex-direction: column;
+  }
+
+  .signup-menu > .left-menu {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .signup-menu .signup-link {
+    margin-top: 0;
+  }
+
+  .signup-form {
+    width: 100%;
+    height: 40%;
+  }
+}
+
+
+.login-wrapper {
+  display: flex;
+  padding-top: 30px;
+  margin-bottom: 50px;
+}
+
+.login-menu {
+  width: 600px;
+  height: 300px;
+  border: 1px solid #000;
+  margin: 0 auto 0;
+  display: flex;
+  justify-content: space-around;
+}
+
+.login-menu > .left-menu {
+  width: 40%;
+  padding: 30px;
+}
+
+.login-menu .login-heading {
+  color: #ff4500;
+}
+
+.login-menu .signup-link {
+  color:#434343;
+  margin-top: 80px;
+}
+
+.login-form {
+  width: 40%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.login-btn {
+  margin-top: 10px;
+}
+
+
+@media screen and (max-width: 600px) {
+  .login-menu {
+    width: 90%;
+    height: 450px;
+    flex-direction: column;
+  }
+
+  .login-menu > .left-menu {
+    width: 100%;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+  }
+
+  .login-menu .signup-link {
+    margin-top: 0;
+  }
+
+  .login-form {
+    width: 100%;
+    height: 40%;
+  }
+}
+
+
 
 .plans {
   width: 100%;
