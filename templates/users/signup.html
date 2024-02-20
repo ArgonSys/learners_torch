@@ -12,7 +12,8 @@
     </div>
     <form method="post" class="signup-form">
       {% csrf_token %}
-      {{form}}
+      {{ form }}
+      {{ profile_form }}
       <button type="submit">新規登録</button>
     </form>
   </div>
