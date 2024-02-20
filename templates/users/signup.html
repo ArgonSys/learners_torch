@@ -12,9 +12,19 @@
     </div>
     <form method="post" class="signup-form">
       {% csrf_token %}
-      {{ form }}
-      {{ profile_form }}
-      <button type="submit">新規登録</button>
+      {% for field in form %}
+        <label for={{ field.id_for_label }}></label>
+        {{ field }}
+        {{ field.help_text }}
+        {{ field.errors }}
+      {% endfor %}
+      {% for field in profile_form %}
+        {% if field == profile_form.icon %}
+          <label for="{{ field.id_for_label }}" class="img-uploader">アイコンを選択</label>
+        {% endif %}
+        {{ field }}
+      {% endfor %}
+      <button type="submit" class="signup-btn">新規登録</button>
     </form>
   </div>
 </div>
