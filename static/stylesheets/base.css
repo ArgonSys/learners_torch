@@ -136,7 +136,11 @@ footer {
 
 .signup-menu .login-link {
   color:#434343;
-  margin-top: 80px;
+  margin-top: 100px;
+}
+
+.signup-menu .login-link a {
+  margin-left: 0.5em;
 }
 
 .signup-form {
@@ -207,6 +211,10 @@ footer {
 .login-menu .signup-link {
   color:#434343;
   margin-top: 80px;
+}
+
+.login-menu .signup-link a {
+  margin-left: 0.5em;
 }
 
 .login-form {
