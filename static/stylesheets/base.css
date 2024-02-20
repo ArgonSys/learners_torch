@@ -10,12 +10,22 @@ button {
   padding: 0 10px;
 }
 
-input {
+input, textarea {
   color: #4a4a4a;
   border-radius: 5px;
   background-color: #eaeaea;
   padding: 0 5px;
-  margin-bottom: 20px;
+}
+
+.img-uploader {
+  color: #cf5b20;
+  padding: 0 5px;
+  border: 1px solid #9f2613;
+  border-radius: 5px;
+}
+
+.img-uploader:hover {
+  cursor: pointer;
 }
 
 .like-a {
@@ -118,7 +128,7 @@ footer {
 
 .signup-menu {
   width: 600px;
-  height: 800px;
+  /* height: 800px; */
   border: 1px solid #000;
   margin: 0 auto 0;
   display: flex;
@@ -145,11 +155,23 @@ footer {
 
 .signup-form {
   width: 40%;
-  padding: 30px;
+  margin: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.signup-form > input:nth-of-type(n+3) {
+  margin: 20px 0 10px;
+}
+
+.signup-form .img-uploader {
+  margin: 20px 20px;
+}
+
+.signup-form textarea {
+  width: 100%;
 }
 
 .signup-btn {
@@ -160,7 +182,7 @@ footer {
 @media screen and (max-width: 600px) {
   .signup-menu {
     width: 90%;
-    height: 450px;
+    /* height: 450px; */
     flex-direction: column;
   }
 
@@ -224,6 +246,10 @@ footer {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+
+.login-form input:nth-of-type(n+3) {
+  margin: 20px 0 10px;
 }
 
 .login-btn {
