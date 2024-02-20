@@ -47,7 +47,16 @@ class User(AbstractBaseUser, PermissionsMixin):
         validators=[username_validator],
     )
 
-    email = models.EmailField(_("email address"), unique=True)
+    email = models.EmailField(
+        _("email address"),
+        help_text=_(
+            "Required. Include @. Later part must be two or more . separated blocks"
+        ),
+        unique=True,
+        error_messages={
+            "unique": _("A user with that email address already exists."),
+        },
+    )
 
     date_joined = models.DateTimeField(_("date joined"), default=timezone.now)
 
