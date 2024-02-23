@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 class Profile(models.Model):
     def icon_upload_url(instance, filename):
-        return f"/user_icons/{instance.user.pk}/{filename}"
+        return f"user_icons/{instance.user.pk}/{filename}"
 
     user = models.OneToOneField(
         "users.User", verbose_name=_("user"), on_delete=models.CASCADE
