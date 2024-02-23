@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "betterforms",
     "users.apps.UsersConfig",
     "plans.apps.PlansConfig",
     "stages.apps.StagesConfig",
@@ -71,7 +72,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                "users.context_processors.get_context"
+                "users.context_processors.get_context",
             ],
         },
     },

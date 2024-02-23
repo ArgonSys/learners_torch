@@ -1,12 +1,14 @@
-from typing import Any
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from django.utils.translation import gettext as _
+from betterforms.multiform import MultiModelForm
+
 
 from .models import User
+from profiles.forms import ProfileForm
 
 
-class SignupForm(UserCreationForm):
+class UserForm(UserCreationForm):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
@@ -40,6 +42,13 @@ class SignupForm(UserCreationForm):
             "username",
             "email",
         )
+
+
+class SignupForm(MultiModelForm):
+    form_classes = {
+        "user": UserForm,
+        "profile": ProfileForm,
+    }
 
 
 class LoginForm(AuthenticationForm):

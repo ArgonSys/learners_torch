@@ -10,19 +10,17 @@
         <p>ご登録がお済みの方は<a href="{% url 'users:login' %}" class="btn">こちら</a></p>
       </div>
     </div>
-    <form method="post" class="signup-form">
+    <form method="post" enctype="multipart/form-data" class="signup-form">
       {% csrf_token %}
       {% for field in form %}
-        <label for={{ field.id_for_label }}></label>
+        {% if field == form.forms.profile.icon %}
+          <label for="{{ field.id_for_label }}" class="img-uploader">アイコンを選択</label>
+        {% else %}
+          <label for={{ field.id_for_label }}></label>
+        {% endif %}
         {{ field }}
         {{ field.help_text }}
         {{ field.errors }}
-      {% endfor %}
-      {% for field in profile_form %}
-        {% if field == profile_form.icon %}
-          <label for="{{ field.id_for_label }}" class="img-uploader">アイコンを選択</label>
-        {% endif %}
-        {{ field }}
       {% endfor %}
       <button type="submit" class="signup-btn">新規登録</button>
     </form>

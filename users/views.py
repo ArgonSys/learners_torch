@@ -9,8 +9,6 @@ from django.urls import reverse_lazy
 from .models import User
 from .forms import SignupForm, LoginForm
 
-from profiles.forms import ProfileForm
-
 
 class SignupView(CreateView):
     model = User
@@ -18,10 +16,12 @@ class SignupView(CreateView):
     template_name = "users/signup.html"
     success_url = reverse_lazy("top")
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["profile_form"] = ProfileForm()
-        return context
+    def form_valid(self, form):
+        user = form["user"].save()
+        profile = form["profile"].save(commit=False)
+        profile.user = user
+        profile.save()
+        return super().form_valid(form)
 
 
 class LoginView(BaseLoginView):
