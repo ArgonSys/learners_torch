@@ -39,13 +39,13 @@
               <button type="submit" class="btn like-a">ログアウト</button>
             </form>
           </div>
-          <div class="header__user">
+          <a href={% url "users:mypage" %} class="header__user">
             {% if user.profile.icon.url != "" %}
               <img src="{{ user.profile.icon.url }}" alt={{ user.username }} class="icon">
             {% else %}
               <div class="alt-icon">{{ user.username|first }}</div>
             {% endif %}
-          </div>
+          </a>
         </div>
       {% else %}
         <div class="header__right">
