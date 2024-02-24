@@ -27,4 +27,4 @@ class Link(models.Model):
         Profile, verbose_name=_("profile"), on_delete=models.CASCADE
     )
     name = models.CharField(_("link name"), max_length=50)
-    link = models.CharField(_("link URL"), max_length=150)
+    url = models.CharField(_("link URL"), max_length=150)

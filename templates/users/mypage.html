@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="profile">
+  <div class="profile__header">
+    <img src={{ user.profile.icon.url }} class="icon">
+    <div class="username">{{ user.username }}</div>
+    <button class="edit-btn">編集</button>
+  </div>
+  <div class="email">{{ user.email }}</div>
+  <div class="bio">{{ user.profile.bio }}</div>
+  <div class="affiliation">{{ user.profile.affiliation }}</div>
+  <div class="location">{{ user.profile.location }}</div>
+  <ul class="links">
+    {% for link in user.profile.links %}
+      <li class="link">
+        <a href={{ link.url }} class="link__name">{{ link.name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div class="graph-area">
+  <canvas id="time-gap-graph"></canvas>
+</div>
+
+<div class="study-log-calender">
+  <table>
+    {% for wday in wdays %}
+      <tr>
+        <th>{{ wday.name }}</th>
+        {% for week in weeks %}
+          <th date="{{ week.date_Sun|add:wday.from_Sun|date }}" style="background: green;"></th>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}
