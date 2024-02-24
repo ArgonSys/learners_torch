@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load define_action %}
+{% load get_val_from_dict %}
 
 {% block main %}
 <div class="profile">
@@ -12,7 +14,7 @@
   <div class="affiliation">{{ user.profile.affiliation }}</div>
   <div class="location">{{ user.profile.location }}</div>
   <ul class="links">
-    {% for link in user.profile.links %}
+    {% for link in links %}
       <li class="link">
         <a href={{ link.url }} class="link__name">{{ link.name }}</a>
       </li>
@@ -25,15 +27,33 @@
 </div>
 
 <div class="study-log-calender">
-  <table>
-    {% for wday in wdays %}
+  <table style="writing-mode:vertical-lr;">
+    <thead>
       <tr>
-        <th>{{ wday.name }}</th>
-        {% for week in weeks %}
-          <th date="{{ week.date_Sun|add:wday.from_Sun|date }}" style="background: green;"></th>
+        {% for wday in wdays %}
+          <th style="writing-mode: horizontal-tb;">{{ wday.name }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for week in weeks %}
+      <tr style="writing-mode: horizontal-tb;">
+        {% for wday in wdays %}
+          {% with date=week.date_Sun|add:wday.from_Sun|date:"Y-m-d" %}
+            <th style="writing-mode: horizontal-tb;" date={{ date }}>
+              {% with total_time=total_time_by_date|key:date %}
+                {% if total_time %}
+                  <div time={{total_time.total_time}} style="width:10px; height:10px; background-color:#00FF00{{ total_time.hexdig_alph }}; border:1px solid black;">　</div>
+                {% else %}
+                  <div  style="width:10px; height:10px; border:1px solid black;">　</div>
+                {% endif %}
+              {% endwith %}
+            </th>
+          {% endwith %}
         {% endfor %}
       </tr>
     {% endfor %}
+    </tbody>
   </table>
 </div>
 {% endblock %}
