@@ -106,6 +106,12 @@ class MypageView(View):
             else:
                 sum += actual_time.measured_time
 
+        total_time_by_date[str(date)] = {
+            "total_time": int(sum.total_seconds() * 1000),
+            "hexdig_alph": set_hexdig_alph(sum / timedelta(hours=3)),
+        }
+
+        print("total_time_by_date:", total_time_by_date)
         context = {
             "wdays": wdays,
             "weeks": weeks,
