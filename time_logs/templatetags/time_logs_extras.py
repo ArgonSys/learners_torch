@@ -11,11 +11,12 @@ MSEC_PER_SECOND = 1000
 @register.filter
 def format_msec(msec):
     """time format filter
+    default(msec="") "00:00:00"
 
     Args:
-        msec (string): integer
+        msec (string): can be cast to integer
     """
-    msec = abs(msec)
+    msec = abs(int(msec if msec != "" else 0))
     hour = msec // MSEC_PER_HOUR
     msec = msec % MSEC_PER_HOUR
     minute = msec // MSEC_PER_MINUTE
