@@ -27,28 +27,29 @@
 </div>
 
 <div class="study-log-calender">
-  <table style="writing-mode:vertical-lr;">
+  <table>
     <thead>
       <tr>
         {% for wday in wdays %}
-          <th style="writing-mode: horizontal-tb;">{{ wday.name }}</th>
+          <th>{{ wday.name }}</th>
         {% endfor %}
       </tr>
     </thead>
     <tbody>
+    {% now "Y-m-d" as today %}
     {% for week in weeks %}
-      <tr style="writing-mode: horizontal-tb;">
+      <tr>
         {% for wday in wdays %}
           {% with date=week.date_Sun|add:wday.from_Sun|date:"Y-m-d" %}
-            <th style="writing-mode: horizontal-tb;" date={{ date }}>
+            <td date={{ date }}>
               {% with total_time=total_time_by_date|key:date %}
                 {% if total_time %}
-                  <div time={{total_time.total_time}} style="width:10px; height:10px; background-color:#00FF00{{ total_time.hexdig_alph }}; border:1px solid black;">　</div>
-                {% else %}
-                  <div  style="width:10px; height:10px; border:1px solid black;">　</div>
+                  <div time={{total_time.total_time}} style="background-color:#00FF00{{ total_time.hexdig_alph }};">　</div>
+                {% elif date <= today %}
+                  <div time="0">　</div>
                 {% endif %}
               {% endwith %}
-            </th>
+            </td>
           {% endwith %}
         {% endfor %}
       </tr>
