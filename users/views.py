@@ -44,21 +44,43 @@ class LogoutView(BaseLogoutView):
 class MypageView(View):
     def get(self, request):
         wdays = [
-            {"name": "Sun", "from_Sun": timedelta(days=0)},
+            {"name": "", "from_Sun": timedelta(days=0)},
             {"name": "Mon", "from_Sun": timedelta(days=1)},
-            {"name": "Tue", "from_Sun": timedelta(days=2)},
+            {"name": "", "from_Sun": timedelta(days=2)},
             {"name": "Wed", "from_Sun": timedelta(days=3)},
-            {"name": "Thu", "from_Sun": timedelta(days=4)},
+            {"name": "", "from_Sun": timedelta(days=4)},
             {"name": "Fri", "from_Sun": timedelta(days=5)},
-            {"name": "Sat", "from_Sun": timedelta(days=6)},
+            {"name": "", "from_Sun": timedelta(days=6)},
+        ]
+
+        months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
         ]
 
         weeks_of_a_year = 53  # 7 x 53 = 371
         latest_Sun = get_recent_Sun(datetime.now())
-        weeks = [
-            {"date_Sun": latest_Sun - timedelta(days=week * 7)}
-            for week in range(weeks_of_a_year, -1, -1)
-        ]
+        weeks = []
+        for i in range(weeks_of_a_year, -1, -1):
+            date_Sun = latest_Sun - timedelta(days=i * 7)
+            if (
+                date_Sun.month != (date_Sun + timedelta(days=6)).month
+                or date_Sun.month != (date_Sun - timedelta(days=1)).month
+            ):
+                month = months[(date_Sun + timedelta(days=6)).month - 1]
+            else:
+                month = ""
+            weeks.append({"date_Sun": date_Sun, "month": month})
 
         actual_times = ActualTime.objects.filter(
             time_log__stage__plan__owner=request.user
@@ -74,7 +96,7 @@ class MypageView(View):
             if date != actual_time.date_started.date():
                 print(f"date: {date}")
                 total_time_by_date[str(date)] = {
-                    "total_time": sum,
+                    "total_time": int(sum.total_seconds() * 1000),
                     "hexdig_alph": set_hexdig_alph(sum / timedelta(hours=3)),
                 }
 

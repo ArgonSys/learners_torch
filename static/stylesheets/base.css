@@ -176,6 +176,7 @@ footer {
   align-items: center;
 }
 
+/* skip csrf token input, first input field */
 .signup-form > input:nth-of-type(n+3) {
   margin: 20px 0 10px;
 }
@@ -297,6 +298,64 @@ footer {
   }
 }
 
+
+.study-log-calender table {
+  writing-mode: vertical-lr;
+}
+
+.study-log-calender thead th {
+  writing-mode: horizontal-tb;
+  font-size: 0.8rem;
+  color: #5e5e5e;
+  padding-right: 5px;
+}
+
+.study-log-calender tbody th {
+  width: 16px;
+  overflow-x: visible;
+  padding-bottom: 3px;
+}
+
+.study-log-calender tbody th {
+  writing-mode: horizontal-tb;
+  font-size: 0.8rem;
+  color: #5e5e5e;
+}
+
+.study-log-calender tbody td {
+  padding: 0 3px;
+}
+
+.study-log-calender tbody td div {
+  width: 10px;
+  height: 10px;
+  background-color: #ececec;
+  border: 1px solid #bebebe80;
+  margin: auto;
+  position: relative;
+  writing-mode: horizontal-tb;
+}
+
+.study-log-calender tbody td div:hover > .hidden {
+  width: 110px;
+  height: 60px;
+  background-color: #fff;
+  padding: 7px 5px;
+  position: absolute;
+  z-index: 1000;
+  top: 150%;
+  left: 50%;
+  transform: translate(-50%, 0);
+  display: block;
+}
+
+.study-log-calender tbody:hover {
+  cursor: default;
+}
+
+.study-log-calender tbody th div:hover {
+  cursor: pointer;
+}
 
 
 .plans {

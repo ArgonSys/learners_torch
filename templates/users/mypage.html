@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 {% load define_action %}
 {% load get_val_from_dict %}
+{% load time_logs_extras %}
+
 
 {% block main %}
 <div class="profile">
@@ -30,6 +32,7 @@
   <table>
     <thead>
       <tr>
+        <th></th>
         {% for wday in wdays %}
           <th>{{ wday.name }}</th>
         {% endfor %}
@@ -39,14 +42,25 @@
     {% now "Y-m-d" as today %}
     {% for week in weeks %}
       <tr>
+        <th>{{ week.month }}</th>
         {% for wday in wdays %}
           {% with date=week.date_Sun|add:wday.from_Sun|date:"Y-m-d" %}
-            <td date={{ date }}>
+            <td>
               {% with total_time=total_time_by_date|key:date %}
                 {% if total_time %}
-                  <div time={{total_time.total_time}} style="background-color:#00FF00{{ total_time.hexdig_alph }};">　</div>
+                  <div style="background-color:#00FF00{{ total_time.hexdig_alph }};">
+                    <div class="hidden">
+                      <p>{{ date }}</p>
+                      <p>{{ total_time.total_time|format_msec }}</p>
+                    </div>
+                  </div>
                 {% elif date <= today %}
-                  <div time="0">　</div>
+                  <div>
+                    <div class="hidden">
+                      <p>{{ date }}</p>
+                      <p>{{ "0"|format_msec }}</p>
+                    </div>
+                  </div>
                 {% endif %}
               {% endwith %}
             </td>
